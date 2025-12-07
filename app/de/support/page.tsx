@@ -68,48 +68,55 @@ export default function SupportPage() {
               <Accordion type="single" collapsible className="w-full">
                 <AccordionItem value="faq-1">
                   <AccordionTrigger className="text-gray-900">
-                    Wie kann ich ein neues Schaden-Dossier anlegen?
+                    Es gibt sehr viele Fälle in meiner Organisation, wie behalte ich die Übersicht über meine Verantwortlichkeiten?
                   </AccordionTrigger>
                   <AccordionContent className="text-gray-600">
-                    Navigieren Sie in Claimity zum Bereich „Schaden erfassen“, füllen Sie die Pflichtfelder aus
-                    und wählen Sie die gewünschte Expert:innen-Steuerung. Das Dossier wird automatisch angelegt und kann
-                    später ergänzt werden.
+                    Sie könnnen in der Fallliste neben dem Suchfeld nach Fällen filtern, die an sie zugewiesen sind.
+                    So können sie den Überblick über ihre Verantwortlichkeiten behalten.
                   </AccordionContent>
                 </AccordionItem>
                 <AccordionItem value="faq-2">
                   <AccordionTrigger className="text-gray-900">
-                    Wie steuere ich Expert:innen oder Dienstleister:innen?
+                    Wie füge ich weitere Nutzer zu Claimity hinzu?
                   </AccordionTrigger>
                   <AccordionContent className="text-gray-600">
-                    Basierend auf Dossier-Typ, Region und Verfügbarkeit schlägt Claimity passende Expert:innen vor.
-                    Sie können Vorschläge anpassen, fixieren oder automatisch vergeben lassen.
+                    Als Organisationsadmin können Sie neue Nutzer in den Organisationseinstellungen hinzufügen. Diese erhalten dann automatisch eine E-Mail mit einem Einladungslink.
                   </AccordionContent>
                 </AccordionItem>
                 <AccordionItem value="faq-3">
                   <AccordionTrigger className="text-gray-900">
-                    Wie erhalte ich Benachrichtigungen zu Statusänderungen?
+                    Wie entferne ich Nutzer aus meiner Claimity-Organisation?
                   </AccordionTrigger>
                   <AccordionContent className="text-gray-600">
-                    Aktivieren Sie E-Mail- oder In-App-Benachrichtigungen im Profilbereich. Für Integrationen stehen
-                    zusätzlich Webhooks in der API zur Verfügung.
+                    Als Organisationsadmin können Sie bestehende Nutzer in den Organisationseinstellungen entfernen. Diese haben dann keinen Zugriff mehr auf Ihre Daten.
+                    Allerdings muss es immer mindestens einen Admin-Nutzer geben, der die Organisation verwalten kann.
                   </AccordionContent>
                 </AccordionItem>
                 <AccordionItem value="faq-4">
                   <AccordionTrigger className="text-gray-900">
-                    Gibt es eine API und Beispiel-Integrationen?
+                    Wie erhalte ich Benachrichtigungen zu wesentlichen Aktivitäten?
                   </AccordionTrigger>
                   <AccordionContent className="text-gray-600">
-                    Ja. Die API-Dokumentation beschreibt Endpoints, Datenmodelle und Webhooks. Beispiel-Snippets helfen
-                    beim schnellen Einstieg.
+                    Als Organisationsadmin können Sie E-Mail-Benachrichtigungen in den Organisationseinstellungen aktivieren. Für Integrationen stehen
+                    zusätzlich Webhooks in der API zur Verfügung.
                   </AccordionContent>
                 </AccordionItem>
                 <AccordionItem value="faq-5">
+                  <AccordionTrigger className="text-gray-900">
+                    Gibt es eine API und Beispiel-Integrationen?
+                  </AccordionTrigger>
+                  <AccordionContent className="text-gray-600">
+                    Ja. Die API-Dokumentation beschreibt Endpunkte, Datenmodelle und Webhooks. Beispiel-Snippets helfen
+                    beim schnellen Einstieg.
+                  </AccordionContent>
+                </AccordionItem>
+                <AccordionItem value="faq-6">
                   <AccordionTrigger className="text-gray-900">
                     An wen kann ich mich bei technischen Problemen wenden?
                   </AccordionTrigger>
                   <AccordionContent className="text-gray-600">
                     Nutzen Sie das Support-Formular unten. Bei kritischen Störungen bitte zusätzlich den Statushinweis
-                    in Ihrer E-Mail vermerken.
+                    in Ihrer Meldung vermerken.
                   </AccordionContent>
                 </AccordionItem>
               </Accordion>

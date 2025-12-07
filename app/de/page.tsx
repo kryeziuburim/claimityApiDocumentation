@@ -8,7 +8,7 @@ import { LanguageSwitcherDark } from "@/components/language-switcher-dark"
 export const metadata: Metadata = {
   title: "Claimity – Dokumentation",
   description:
-    "Dokumentation der Claimity Plattform. Claimity vermittelt zertifizierte Expert:innen automatisch – für schnellere Bearbeitung, weniger Aufwand und volle Transparenz.",
+    "Dokumentation der Claimity Plattform. Claimity vermittelt zertifizierte Experten automatisch – für schnellere Bearbeitung, weniger Aufwand und volle Transparenz.",
   alternates: {
     canonical: "/de/",
     languages: {
@@ -87,7 +87,7 @@ export default function Home() {
                     </li>
                     <li className="flex items-center gap-2">
                       <span className="h-1.5 w-1.5 rounded-full bg-teal-400" />
-                      Schadenerfassung & Expert:innen-Steuerung
+                      Schadenerfassung & Experten-Steuerung
                     </li>
                     <li className="flex items-center gap-2">
                       <span className="h-1.5 w-1.5 rounded-full bg-teal-400" />

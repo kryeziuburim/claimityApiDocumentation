@@ -67,44 +67,55 @@ export default function SupportPage() {
               <Accordion type="single" collapsible className="w-full">
                 <AccordionItem value="faq-1">
                   <AccordionTrigger className="text-gray-900">
-                    How do I create a new claim file?
+                    There are many cases in my organization — how do I keep track of my responsibilities?
                   </AccordionTrigger>
                   <AccordionContent className="text-gray-600">
-                    Go to “Create claim”, fill in the required fields and choose the desired expert assignment.
-                    The file is created automatically and can be completed later.
+                    In the case list, use the filter next to the search field to show only cases assigned to you.
+                    This helps you keep track of your responsibilities.
                   </AccordionContent>
                 </AccordionItem>
                 <AccordionItem value="faq-2">
                   <AccordionTrigger className="text-gray-900">
-                    How do I steer experts or service providers?
+                    How do I add additional users to Claimity?
                   </AccordionTrigger>
                   <AccordionContent className="text-gray-600">
-                    Based on claim type, region and availability, Claimity suggests suitable experts.
-                    You can adjust, fix or automatically assign suggestions.
+                    As an organization admin, you can add new users in the organization settings.
+                    They will automatically receive an invitation email.
                   </AccordionContent>
                 </AccordionItem>
                 <AccordionItem value="faq-3">
                   <AccordionTrigger className="text-gray-900">
-                    How do I receive notifications about status changes?
+                    How do I remove users from my Claimity organization?
                   </AccordionTrigger>
                   <AccordionContent className="text-gray-600">
-                    Enable email or in-app notifications in your profile. For integrations, webhooks are available in the API.
+                    As an organization admin, you can remove existing users in the organization settings.
+                    They will then no longer have access to your data. There must always be at least one admin user to manage the organization.
                   </AccordionContent>
                 </AccordionItem>
                 <AccordionItem value="faq-4">
                   <AccordionTrigger className="text-gray-900">
-                    Is there an API and example integrations?
+                    How do I receive notifications about important activities?
                   </AccordionTrigger>
                   <AccordionContent className="text-gray-600">
-                    Yes. The API documentation describes endpoints, data models and webhooks. Example snippets help you get started quickly.
+                    As an organization admin, you can enable email notifications in the organization settings.
+                    For integrations, webhooks are also available in the API.
                   </AccordionContent>
                 </AccordionItem>
                 <AccordionItem value="faq-5">
                   <AccordionTrigger className="text-gray-900">
+                    Is there an API and example integrations?
+                  </AccordionTrigger>
+                  <AccordionContent className="text-gray-600">
+                    Yes. The API documentation describes endpoints, data models and webhooks.
+                    Example snippets help you get started quickly.
+                  </AccordionContent>
+                </AccordionItem>
+                <AccordionItem value="faq-6">
+                  <AccordionTrigger className="text-gray-900">
                     Who can I contact in case of technical issues?
                   </AccordionTrigger>
                   <AccordionContent className="text-gray-600">
-                    Use the support form below. For critical incidents, please additionally mention the status note in your email.
+                    Use the support form below. For critical incidents, please additionally mention the status note in your report.
                   </AccordionContent>
                 </AccordionItem>
               </Accordion>

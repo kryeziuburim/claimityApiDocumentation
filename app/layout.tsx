@@ -12,7 +12,7 @@ const _geistMono = Geist_Mono({ subsets: ["latin"] })
 export const metadata: Metadata = {
   title: "Claimity – Schadenmanagement. Digital. Effizient.",
   description:
-    "Claimity vermittelt zertifizierte Expert:innen automatisch – für schnellere Bearbeitung, weniger Aufwand und volle Transparenz.",
+    "Claimity vermittelt zertifizierte Experten automatisch – für schnellere Bearbeitung, weniger Aufwand und volle Transparenz.",
 }
 
 export default function RootLayout({

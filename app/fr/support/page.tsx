@@ -68,47 +68,54 @@ export default function SupportPage() {
               <Accordion type="single" collapsible className="w-full">
                 <AccordionItem value="faq-1">
                   <AccordionTrigger className="text-gray-900">
-                    Comment créer un nouveau dossier de sinistre ?
+                    Il y a de très nombreux dossiers dans mon organisation — comment garder une vue d’ensemble de mes responsabilités ?
                   </AccordionTrigger>
                   <AccordionContent className="text-gray-600">
-                    Accédez à « Créer un sinistre », remplissez les champs obligatoires et choisissez l’affectation
-                    d’experts souhaitée. Le dossier est créé automatiquement et peut être complété ultérieurement.
+                    Dans la liste des dossiers, utilisez le filtre à côté du champ de recherche pour n’afficher que les dossiers qui vous sont attribués.
+                    Cela vous aide à garder une vue d’ensemble de vos responsabilités.
                   </AccordionContent>
                 </AccordionItem>
                 <AccordionItem value="faq-2">
                   <AccordionTrigger className="text-gray-900">
-                    Comment piloter des expert·e·s ou des prestataires de services ?
+                    Comment ajouter d’autres utilisateur·rice·s à Claimity ?
                   </AccordionTrigger>
                   <AccordionContent className="text-gray-600">
-                    En fonction du type de dossier, de la région et de la disponibilité, Claimity suggère des expert·e·s
-                    approprié·e·s. Vous pouvez ajuster, fixer ou attribuer automatiquement ces suggestions.
+                    En tant qu’administrateur·rice de l’organisation, vous pouvez ajouter de nouveaux utilisateur·rice·s dans les paramètres de l’organisation.
+                    Ils/elles reçoivent automatiquement un e‑mail d’invitation.
                   </AccordionContent>
                 </AccordionItem>
                 <AccordionItem value="faq-3">
                   <AccordionTrigger className="text-gray-900">
-                    Comment recevoir des notifications sur les changements d’état ?
+                    Comment supprimer des utilisateur·rice·s de mon organisation Claimity ?
                   </AccordionTrigger>
                   <AccordionContent className="text-gray-600">
-                    Activez les notifications par e-mail ou dans l’application dans votre profil. Pour les intégrations,
-                    des webhooks sont également disponibles dans l’API.
+                    En tant qu’administrateur·rice de l’organisation, vous pouvez supprimer des utilisateur·rice·s existant·e·s dans les paramètres de l’organisation.
+                    Ils/elles n’auront alors plus accès à vos données. Il doit toujours y avoir au moins un·e administrateur·rice pour gérer l’organisation.
                   </AccordionContent>
                 </AccordionItem>
                 <AccordionItem value="faq-4">
                   <AccordionTrigger className="text-gray-900">
-                    Existe-t-il une API et des exemples d’intégration ?
+                    Comment recevoir des notifications sur les activités importantes ?
                   </AccordionTrigger>
                   <AccordionContent className="text-gray-600">
-                    Oui. La documentation API décrit les endpoints, modèles de données et webhooks. Des extraits d’exemples
-                    facilitent la prise en main.
+                    En tant qu’administrateur·rice de l’organisation, vous pouvez activer les notifications par e‑mail dans les paramètres de l’organisation.
+                    Pour les intégrations, des webhooks sont également disponibles dans l’API.
                   </AccordionContent>
                 </AccordionItem>
                 <AccordionItem value="faq-5">
                   <AccordionTrigger className="text-gray-900">
+                    Existe‑t‑il une API et des exemples d’intégration ?
+                  </AccordionTrigger>
+                  <AccordionContent className="text-gray-600">
+                    Oui. La documentation API décrit les endpoints, modèles de données et webhooks. Des extraits d’exemples facilitent la prise en main.
+                  </AccordionContent>
+                </AccordionItem>
+                <AccordionItem value="faq-6">
+                  <AccordionTrigger className="text-gray-900">
                     Qui contacter en cas de problème technique ?
                   </AccordionTrigger>
                   <AccordionContent className="text-gray-600">
-                    Utilisez le formulaire d’assistance ci-dessous. Pour les incidents critiques, merci de mentionner
-                    en plus l’état du service dans votre e-mail.
+                    Utilisez le formulaire d’assistance ci‑dessous. Pour les incidents critiques, merci de mentionner en plus l’état du service dans votre signalement.
                   </AccordionContent>
                 </AccordionItem>
               </Accordion>
