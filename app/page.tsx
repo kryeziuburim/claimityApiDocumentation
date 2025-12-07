@@ -7,14 +7,13 @@ import ModernLoader from "@/components/modern-loader"
 export default function RootRedirect() {
   const router = useRouter()
 
-  // useEffect(() => {
-  //   router.replace("/de/")
-  // }, [router])
+  useEffect(() => {
+    router.replace("/de/")
+  }, [router])
 
   return (
     <>
-      {/* <ModernLoader message="Daten werden geladen …" /> */}
-      <ModernLoader message="Diese Seite ist aktuell in Bearbeitung." />
+      <ModernLoader message="Daten werden geladen …" />
       <noscript>
         <main className="min-h-screen flex items-center justify-center p-8">
           <div className="text-center text-sm text-foreground/70">

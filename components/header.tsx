@@ -16,48 +16,38 @@ export function Header() {
   const L =
     lang === "de"
       ? {
-          why: "Warum Claimity",
-          features: "Funktionen",
-          modules: "Dienstleistungen",
-          book: "Termin buchen",
-          clientLogin: "Anmelden",
-          contact: "Kontakt",
           navTitle: "Navigation",
+          home: "Startseite",
+          support: "Support",
+          manual: "Bedienungsanleitung",
+          api: "API Integration",
+          clientLogin: "Anmelden",
         }
       : lang === "en"
       ? {
-          why: "Why Claimity",
-          features: "Features",
-          modules: "Services",
-          book: "Calendar Booking",
-          clientLogin: "Login",
-          contact: "Contact us",
           navTitle: "Navigation",
+          support: "Support",
+          manual: "Manual",
+          api: "API-Integration",
+          clientLogin: "Login",
         }
       : {
-          why: "Pourquoi Claimity",
-          features: "Fonctionnalités",
-          modules: "Services",
-          book: "Réserver une démo",
-          clientLogin: "Connexion",
-          contact: "Contact",
           navTitle: "Navigation",
+          support: "Assistance",
+          manual: "Mode d'emploi",
+          api: "Intégration API",
+          clientLogin: "Connexion",
         }
 
   const homeHref = `${base}/`
-  const whyHref = `${base}/#why`
-  const featuresHref = `${base}/#features`
-  const modulesHref = `${base}/#modules`
-  const integrationHref = `${base}/#integration`
-  const bookingHref = `${base}/#book`
-  const faqHref = `${base}/#faq`
-  const contactHref = `${base}/contact`
+  const supportHref = `${base}/support`
+  const manualHref = `${base}/manual`
+  const apiHref = `${base}/api`
 
   const menu = [
-    { href: whyHref, label: L.why },
-    { href: featuresHref, label: L.features },
-    { href: modulesHref, label: L.modules },
-    { href: bookingHref, label: L.book },
+    { href: supportHref, label: L.support },
+    { href: manualHref, label: L.manual },
+    { href: apiHref, label: L.api },
   ]
 
   return (
@@ -71,7 +61,7 @@ export function Header() {
         </Link>
 
         {/* Navigation Menu */}
-        <nav className="hidden md:flex items-center gap-8">
+        {/* <nav className="hidden md:flex items-center gap-8">
           {menu.map((item) => (
             <Link
               key={item.href}
@@ -81,7 +71,7 @@ export function Header() {
               {item.label}
             </Link>
           ))}
-        </nav>
+        </nav> */}
 
         {/* CTAs + Language */}
         <div className="hidden md:flex items-center gap-4">
@@ -90,9 +80,6 @@ export function Header() {
               {L.clientLogin}
             </Link>
           </Button>
-          <Link href={contactHref} className="text-sm font-small text-gray-700 hover:text-gray-900 transition-colors mr-4">
-            {L.contact}
-          </Link>
           <LanguageSwitcher />
         </div>
 
@@ -129,9 +116,6 @@ export function Header() {
                   <Link href="https://app.claimity.ch" target="_blank" rel="noopener noreferrer">
                     {L.clientLogin}
                   </Link>
-                </Button>
-                <Button asChild variant="outline" className="justify-start ml-4 mr-4">
-                  <Link href={contactHref}>{L.contact}</Link>
                 </Button>
                 <div className="px-4">
                   <LanguageSwitcher />

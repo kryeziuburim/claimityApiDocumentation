@@ -13,16 +13,14 @@ export function Footer() {
   const L =
     lang === "de"
       ? {
-          product: "Produkt",
+          support: "Support",
+          manual: "Bedienungsanleitung",
+          api: "API Integration",
+          website: "Website",
+          booking: "Termin buchen",
+          help: "Hilfe",
           company: "Unternehmen",
           contactSection: "Kontakt",
-          functions: "Funktionen",
-          modules: "Dienstleistungen",
-          integration: "Integration",
-          process: "Prozess",
-          why: "Warum Claimity",
-          references: "Referenzen",
-          faq: "FAQ",
           contact: "Kontakt",
           emailLabel: "E‑Mail:",
           phoneLabel: "Telefon:",
@@ -42,16 +40,14 @@ export function Footer() {
         }
       : lang === "en"
       ? {
-          product: "Product",
+          support: "Support",
+          manual: "Manual",
+          api: "API-Integration",
+          website: "Website",
+          booking: "Book a Meeting",
+          help: "Help",
           company: "Company",
           contactSection: "Contact",
-          functions: "Features",
-          modules: "Services",
-          integration: "Integration",
-          process: "Process",
-          why: "Why Claimity",
-          references: "References",
-          faq: "FAQ",
           contact: "Contact",
           emailLabel: "Email:",
           phoneLabel: "Phone:",
@@ -70,16 +66,14 @@ export function Footer() {
           phoneHref: "tel:+41783447736",
         }
       : {
-          product: "Produit",
+          support: "Assistance",
+          manual: "Mode d'emploi",
+          api: "Intégration API",
+          website: "Site Web",
+          booking: "Prendre rendez-vous",
+          help: "Aide",
           company: "Entreprise",
           contactSection: "Contact",
-          functions: "Fonctions",
-          modules: "Services",
-          integration: "Intégration",
-          process: "Processus",
-          why: "Pourquoi Claimity",
-          references: "Références",
-          faq: "FAQ",
           contact: "Formulaire de contact",
           emailLabel: "E‑mail:",
           phoneLabel: "Téléphone:",
@@ -99,18 +93,17 @@ export function Footer() {
         }
 
   const homeHref = `${base}/`
-  const contactHref = `${base}/contact`
-  const privacyHref = `${base}/privacy`
-  const termsHref = `${base}/terms`
   const imprintHref = `${base}/legal-notice`
+  const supportHref = `${base}/support`
+  const manualHref = `${base}/manual`
+  const apiHref = `${base}/api`
 
-  const whyHref = `${base}/#why`
-  const featuresHref = `${base}/#features`
-  const modulesHref = `${base}/#modules`
-  const integrationHref = `${base}/#integration`
-  const processHref = `${base}/#process`
-  const referencesHref = `${base}/#references`
-  const faqHref = `${base}/#faq`
+  // External website links per language
+  const websiteRoot = `https://www.claimity.ch/${lang}/`
+  const websiteHref = websiteRoot
+  const bookingHref = `${websiteRoot}#book`
+  const privacyHref = `${websiteRoot}privacy`
+  const termsHref = `${websiteRoot}terms`
 
   return (
     <footer className="bg-[#1a1f2e] border-t border-gray-800 py-16">
@@ -148,26 +141,21 @@ export function Footer() {
 
           {/* Column 1 - Produkt */}
           <div className="space-y-4">
-            <h3 className="text-base font-bold text-white">{L.product}</h3>
+            <h3 className="text-base font-bold text-white">{L.help}</h3>
             <ul className="space-y-3">
               <li>
-                <Link href={featuresHref} className="text-sm text-gray-300 hover:text-white transition-colors">
-                  {L.functions}
+                <Link href={manualHref} className="text-sm text-gray-300 hover:text-white transition-colors">
+                  {L.manual}
                 </Link>
               </li>
               <li>
-                <Link href={modulesHref} className="text-sm text-gray-300 hover:text-white transition-colors">
-                  {L.modules}
+                <Link href={apiHref} className="text-sm text-gray-300 hover:text-white transition-colors">
+                  {L.api}
                 </Link>
               </li>
               <li>
-                <Link href={integrationHref} className="text-sm text-gray-300 hover:text-white transition-colors">
-                  {L.integration}
-                </Link>
-              </li>
-              <li>
-                <Link href={processHref} className="text-sm text-gray-300 hover:text-white transition-colors">
-                  {L.process}
+                <Link href={supportHref} className="text-sm text-gray-300 hover:text-white transition-colors">
+                  {L.support}
                 </Link>
               </li>
             </ul>
@@ -178,23 +166,13 @@ export function Footer() {
             <h3 className="text-base font-bold text-white">{L.company}</h3>
             <ul className="space-y-3">
               <li>
-                <Link href={whyHref} className="text-sm text-gray-300 hover:text-white transition-colors">
-                  {L.why}
-                </Link>
-              </li>
-              {/* <li>
-                <Link href={referencesHref} className="text-sm text-gray-600 hover:text-gray-900 transition-colors">
-                  {L.references}
-                </Link>
-              </li> */}
-              <li>
-                <Link href={faqHref} className="text-sm text-gray-300 hover:text-white transition-colors">
-                  {L.faq}
+                <Link href={websiteHref} className="text-sm text-gray-300 hover:text-white transition-colors">
+                  {L.website}
                 </Link>
               </li>
               <li>
-                <Link href={contactHref} className="text-sm text-gray-300 hover:text-white transition-colors">
-                  {L.contact}
+                <Link href={bookingHref} className="text-sm text-gray-300 hover:text-white transition-colors">
+                  {L.booking}
                 </Link>
               </li>
             </ul>
