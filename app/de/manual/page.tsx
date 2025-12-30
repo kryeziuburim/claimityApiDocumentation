@@ -1,7 +1,8 @@
 import type { Metadata } from "next"
+import Link from "next/link"
 import { Footer } from "@/components/footer"
 import { LanguageSwitcher } from "@/components/language-switcher"
-import { FileDown, Users, ShieldCheck } from "lucide-react"
+import { FileDown, Users, ShieldCheck, Mail, Phone, ArrowRight, FormInput } from "lucide-react"
 
 export const metadata: Metadata = {
   title: "Claimity - Bedienungsanleitung",
@@ -77,7 +78,7 @@ export default function ManualPage() {
                       <div className="min-w-0">
                         <h3 className="text-lg font-semibold text-gray-900">Für Experten</h3>
                         <p className="mt-1 text-sm text-gray-600">
-                          Claimity Bedienungsanleitung (PDF) – Rollen, Workflows und Best Practices.
+                          Claimity Bedienungsanleitung (PDF) – Rollen, Workflows und Best Practices für Experten.
                         </p>
                       </div>
                     </div>
@@ -104,7 +105,7 @@ export default function ManualPage() {
                       <div className="min-w-0">
                         <h3 className="text-lg font-semibold text-gray-900">Für Versicherer</h3>
                         <p className="mt-1 text-sm text-gray-600">
-                          Claimity Bedienungsanleitung (PDF) – Prozesse, Rollen und häufige Fragen.
+                          Claimity Bedienungsanleitung (PDF) – Rollen, Workflows und Best Practices für Versicherer.
                         </p>
                       </div>
                     </div>
@@ -118,6 +119,30 @@ export default function ManualPage() {
                       PDF herunterladen
                     </a>
                   </div>
+                </div>
+              </div>
+              <p className="mt-10 text-sm font-semibold text-gray-900 md:text-base">
+                Sie benötigen weitere Informationen oder zusätzliche Hilfe?
+              </p>
+              <div>
+                <p className="mt-2 text-sm text-gray-600">
+                  Kontaktieren Sie uns oder vereinbaren Sie einen Termin – wir unterstützen Sie gerne.
+                </p>
+                <div className="mt-5 flex flex-wrap gap-3">
+                  <Link
+                    href="/de/support"
+                    className="inline-flex items-center justify-center gap-2 rounded-xl bg-teal-700 px-4 py-2.5 text-sm font-medium text-white shadow-sm transition-colors hover:bg-teal-800"
+                  >
+                    <FormInput className="h-4 w-4" aria-hidden="true" />
+                    Kontaktformular
+                  </Link>
+                  <a
+                    href="mailto:info@claimity.ch"
+                    className="inline-flex items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-medium text-gray-900 shadow-sm transition-colors hover:bg-slate-50"
+                  >
+                    <Mail className="h-4 w-4 text-slate-500" aria-hidden="true" />
+                    info@claimity.ch
+                  </a>
                 </div>
               </div>
             </div>

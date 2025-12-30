@@ -264,7 +264,7 @@ export default function Page() {
                 onClick={() => setIsMobileMenuOpen(false)}
                 className="inline-flex items-center rounded-md border border-slate-200 bg-white/90 px-2 py-1 text-xs text-gray-900 shadow-sm hover:bg-white"
               >
-                <X className="mr-1 h-4 w-4" /> Schließen
+                <X className="mr-1 h-4 w-4" /> Schliessen
               </button>
             </div>
             <nav className="space-y-1 px-3" role="navigation" aria-label="API Navigation">
@@ -436,7 +436,7 @@ function FirstStepsSection() {
             step: "1",
             title: "Konto anlegen",
             description:
-              "Erstellen Sie ein Claimity Konto (app.claimity.ch) und schließen Sie die Einrichtung ab. Mit vorhandenem Konto können Sie fortfahren.",
+              "Erstellen Sie ein Claimity Konto (app.claimity.ch) und schliessen Sie die Einrichtung ab. Mit vorhandenem Konto können Sie fortfahren.",
           },
           {
             step: "2",
@@ -489,7 +489,7 @@ function ReportingSection() {
       <div>
         <h2 className="mb-4 text-3xl font-bold tracking-tight text-balance">Problem melden</h2>
         <p className="text-sm leading-relaxed text-muted-foreground text-pretty md:text-base">
-          Wenn Sie auf einen Fehler gestoßen sind, helfen wir weiter. Stellen Sie vorab sicher, dass das Problem
+          Wenn Sie auf einen Fehler gestossen sind, helfen wir weiter. Stellen Sie vorab sicher, dass das Problem
           reproduzierbar ist.
         </p>
       </div>
