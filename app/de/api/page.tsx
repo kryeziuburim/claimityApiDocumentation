@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect, useCallback, useMemo } from "react"
+import { useState, useEffect, useCallback, useMemo, useRef, useLayoutEffect } from "react"
 import { Menu, X, ChevronRight, FileText, BookOpen, Bug, History, Lock, Code, Users, Shield } from "lucide-react"
 import { Button } from "@/components/simple-button"
 import { cn } from "@/lib/utils"
@@ -58,10 +58,43 @@ const navigationItems: NavItem[] = [
 ]
 
 export default function Page() {
-  const [activeSection, setActiveSection] = useState("overview")
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const [expandedItems, setExpandedItems] = useState<string[]>([])
   const [footerInView, setFooterInView] = useState(false)
+  const [pastHero, setPastHero] = useState(false)
+  const heroSentinelRef = useRef<HTMLDivElement | null>(null)
+  const contentWrapperRef = useRef<HTMLDivElement | null>(null)
+  const [desktopContentOffsetPx, setDesktopContentOffsetPx] = useState(0)
+
+  // Layout-Shift nur dann, wenn die Sidebar (w-64) den Content tatsächlich überlappen würde.
+  // Auf sehr großen Screens bleibt der Content unverändert.
+  useLayoutEffect(() => {
+    const SIDEBAR_WIDTH_PX = 256
+    const GAP_PX = 44
+
+    const update = () => {
+      if (typeof window === "undefined") return
+
+      // Unterhalb lg wird die Sidebar ohnehin per Mobile-Menü genutzt.
+      if (window.innerWidth < 1024) {
+        setDesktopContentOffsetPx(0)
+        return
+      }
+
+      const el = contentWrapperRef.current
+      if (!el) return
+
+      const left = el.getBoundingClientRect().left
+      const required = SIDEBAR_WIDTH_PX + GAP_PX
+      const needed = Math.max(0, required - left)
+
+      setDesktopContentOffsetPx(needed < 1 ? 0 : Math.ceil(needed))
+    }
+
+    update()
+    window.addEventListener("resize", update)
+    return () => window.removeEventListener("resize", update)
+  }, [])
 
   const toggleExpanded = (id: string) => {
     setExpandedItems((prev) => (prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id]))
@@ -79,6 +112,20 @@ export default function Page() {
 
   // Scroll + Active section highlighting (IntersectionObserver)
   const [activeId, setActiveId] = useState<string>("overview")
+
+  // Sidebar soll erst ab dem ersten Inhaltsbereich (unterhalb der Hero) einblenden.
+  useEffect(() => {
+    const el = heroSentinelRef.current
+    if (!el) return
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setPastHero(!entry.isIntersecting)
+      },
+      { root: null, threshold: [0], rootMargin: "-96px 0px 0px 0px" }
+    )
+    observer.observe(el)
+    return () => observer.disconnect()
+  }, [])
 
   const handleNavigate = useCallback((id: string) => {
     if (typeof window !== "undefined") {
@@ -154,15 +201,22 @@ export default function Page() {
   }, [activeId, childToParent])
 
   // URL-Hash anhand aktivem Abschnitt aktualisieren (beim Scrollen)
+  // Wichtig: NICHT direkt beim initialen Page-Load den Hash setzen, sonst springt der Browser
+  // sofort zum ersten Section-Anchor (und die Hero ist weg).
   useEffect(() => {
     if (!activeId) return
-    if (typeof window !== "undefined") {
-      const current = window.location.hash.replace(/^#/, "")
-      if (current !== activeId) {
-        try { history.replaceState(null, "", `#${activeId}`) } catch {}
-      }
+    if (typeof window === "undefined") return
+
+    const hasInitialHash = window.location.hash.length > 1
+    // Hash erst synchronisieren, wenn der User wirklich in den Content scrollt
+    // oder wenn die Seite mit Hash geöffnet wurde (Deep-Link).
+    if (!pastHero && !hasInitialHash) return
+
+    const current = window.location.hash.replace(/^#/, "")
+    if (current !== activeId) {
+      try { history.replaceState(null, "", `#${activeId}`) } catch {}
     }
-  }, [activeId])
+  }, [activeId, pastHero])
   
   // Footer-Sentinel IntersectionObserver (10% Sichtbarkeit)
   useEffect(() => {
@@ -179,9 +233,18 @@ export default function Page() {
   }, [])
 
   const effectiveActive = childToParent[activeId] ?? activeId
-  // Sidebar-Einblendung ab "Erste Schritte" (und alle nachfolgenden Kapitel)
-  const revealFrom = new Set(["first-steps","reporting","changelog","authentication","api-basics","experts","insurer"])
-  const showSidebar = revealFrom.has(effectiveActive) && !footerInView
+  // Sidebar-Einblendung ab dem ersten Bereich ("Übersicht") und alle nachfolgenden Kapitel.
+  const revealFrom = new Set([
+    "overview",
+    "first-steps",
+    "reporting",
+    "changelog",
+    "authentication",
+    "api-basics",
+    "experts",
+    "insurer",
+  ])
+  const showSidebar = pastHero && revealFrom.has(effectiveActive) && !footerInView
 
   return (
     <div className="min-h-screen bg-white text-gray-900">
@@ -269,19 +332,14 @@ export default function Page() {
               <div className="relative left-1/2 aspect-[1155/678] w-[72rem] -translate-x-1/2 bg-gradient-to-tr from-teal-500/20 via-cyan-400/15 to-sky-500/15" />
             </div>
 
-            <div
-              className={cn(
-                "relative mx-auto max-w-7xl px-6 pb-16 pt-10 md:pb-20 md:pt-16 lg:pb-24 lg:pt-20 lg:grid lg:grid-cols-[16rem_1fr]",
-                "transition-[padding] duration-[400ms] ease-out"
-              )}
-            >
+            <div className="relative mx-auto max-w-7xl px-6 pb-16 pt-10 md:pb-20 md:pt-16 lg:pb-24 lg:pt-20">
               <div className="absolute right-6 top-6 z-10">
                 <LanguageSwitcher />
               </div>
               <div className="absolute left-6 top-6 z-10 lg:hidden">
                 <button
                   onClick={() => setIsMobileMenuOpen((v) => !v)}
-                  className="inline-flex items-center rounded-md border border-slate-200 bg-white/90 px-3 py-2 text-sm text-gray-900 shadow-sm backdrop-blur hover:bg-white"
+                  className="inline-flex items-center rounded-md bg-white/90 px-3 py-1 text-sm text-gray-900 hover:bg-white"
                 >
                   <Menu className="mr-2 h-4 w-4" />
                   Menü
@@ -289,7 +347,7 @@ export default function Page() {
               </div>
 
               {/* Hero */}
-              <div className="w-full lg:col-start-2">
+              <div className="w-full">
                 <p className="inline-flex items-center rounded-full bg-teal-50 px-3 py-1 text-xs font-medium text-teal-700 ring-1 ring-teal-100">
                   Claimity API
                 </p>
@@ -301,7 +359,14 @@ export default function Page() {
                 </p>
               </div>
 
-              <div className="mx-auto mt-10 max-w-5xl lg:col-start-2">
+              {/* Sentinel: Sobald dieser beim Scrollen aus dem Viewport ist, gilt die Hero als "vorbei" */}
+              <div ref={heroSentinelRef} className="h-px w-full" aria-hidden="true" />
+
+              <div
+                ref={contentWrapperRef}
+                className="mt-8 w-full transition-[padding] duration-300 ease-out md:mt-10"
+                style={showSidebar && desktopContentOffsetPx ? { paddingLeft: desktopContentOffsetPx } : undefined}
+              >
                 <Section id="overview"><OverviewSection /></Section>
                 <Section id="first-steps"><FirstStepsSection /></Section>
                 <Section id="reporting"><ReportingSection /></Section>
@@ -326,7 +391,7 @@ function OverviewSection() {
     <div className="space-y-6">
       <div>
         <h2 className="mb-4 text-3xl font-bold tracking-tight text-balance">Übersicht</h2>
-        <p className="text-lg leading-relaxed text-muted-foreground text-pretty">
+        <p className="text-sm leading-relaxed text-muted-foreground text-pretty md:text-base">
           Die API nutzt HTTPS-Methoden und RESTful Endpoints, um Ressourcen im System zu erstellen, zu bearbeiten und zu
           verwalten. Als Austauschformat dient JSON.
         </p>
@@ -362,7 +427,7 @@ function FirstStepsSection() {
     <div className="space-y-6">
       <div>
         <h2 className="mb-4 text-3xl font-bold tracking-tight text-balance">Erste Schritte</h2>
-        <p className="text-lg leading-relaxed text-muted-foreground text-pretty">So starten Sie mit der API:</p>
+        <p className="text-sm leading-relaxed text-muted-foreground text-pretty md:text-base">So starten Sie mit der API:</p>
       </div>
 
       <div className="space-y-4">
@@ -423,7 +488,7 @@ function ReportingSection() {
     <div className="space-y-6">
       <div>
         <h2 className="mb-4 text-3xl font-bold tracking-tight text-balance">Problem melden</h2>
-        <p className="text-lg leading-relaxed text-muted-foreground text-pretty">
+        <p className="text-sm leading-relaxed text-muted-foreground text-pretty md:text-base">
           Wenn Sie auf einen Fehler gestoßen sind, helfen wir weiter. Stellen Sie vorab sicher, dass das Problem
           reproduzierbar ist.
         </p>
@@ -474,7 +539,7 @@ function ChangeLogSection() {
     <div className="space-y-6">
       <div>
         <h2 className="mb-4 text-3xl font-bold tracking-tight text-balance">Änderungsprotokoll</h2>
-        <p className="text-lg leading-relaxed text-muted-foreground text-pretty">
+        <p className="text-sm leading-relaxed text-muted-foreground text-pretty md:text-base">
           Alle Änderungen und Updates der aktuellen API‑Version im Überblick.
         </p>
       </div>
@@ -516,7 +581,13 @@ function ChangeLogSection() {
 }
 
 const Section = ({ id, children }: { id: string; children: React.ReactNode }) => (
-  <section id={id} className="scroll-mt-24 py-20 md:py-24">
+  <section
+    id={id}
+    className={cn(
+      "scroll-mt-24",
+      id === "overview" ? "pt-8 pb-20 md:pt-10 md:pb-24" : "py-20 md:py-24",
+    )}
+  >
     {children}
   </section>
 )
@@ -526,7 +597,7 @@ function AuthenticationSection() {
     <div className="space-y-6">
       <div>
         <h2 className="mb-4 text-3xl font-bold tracking-tight text-balance">Authentifizierung</h2>
-        <p className="text-lg leading-relaxed text-muted-foreground text-pretty">
+        <p className="text-sm leading-relaxed text-muted-foreground text-pretty md:text-base">
           Alle API‑Requests erfordern Authentifizierung via OAuth 2.0 oder API‑Schlüssel.
         </p>
       </div>
@@ -566,7 +637,7 @@ function ApiBasicsSection() {
     <div className="space-y-6">
       <div>
         <h2 className="mb-4 text-3xl font-bold tracking-tight text-balance">API‑Grundlagen</h2>
-        <p className="text-lg leading-relaxed text-muted-foreground text-pretty">
+        <p className="text-sm leading-relaxed text-muted-foreground text-pretty md:text-base">
           Zentrale Konzepte und Konventionen, die in der gesamten API genutzt werden.
         </p>
       </div>
@@ -634,7 +705,7 @@ function ExpertsSection() {
     <div className="space-y-6">
       <div>
         <h2 className="mb-4 text-3xl font-bold tracking-tight text-balance">Experten</h2>
-        <p className="text-lg leading-relaxed text-muted-foreground text-pretty">
+        <p className="text-sm leading-relaxed text-muted-foreground text-pretty md:text-base">
           Der Endpoint „Experten“ dient zur Verwaltung von Profilen und zugehörigen Daten.
         </p>
       </div>
@@ -687,7 +758,7 @@ function InsurerSection() {
     <div className="space-y-6">
       <div>
         <h2 className="mb-4 text-3xl font-bold tracking-tight text-balance">Versicherer</h2>
-        <p className="text-lg leading-relaxed text-muted-foreground text-pretty">
+        <p className="text-sm leading-relaxed text-muted-foreground text-pretty md:text-base">
           Der Endpoint „Versicherer“ bietet Zugriff auf Gesellschaftsdaten und zugehörige Operationen.
         </p>
       </div>

@@ -87,7 +87,7 @@ export default function Home() {
                     </li>
                     <li className="flex items-center gap-2">
                       <span className="h-1.5 w-1.5 rounded-full bg-teal-400" />
-                      Schadenerfassung & Experten-Steuerung
+                      Schadenerfassung & Steuerung
                     </li>
                     <li className="flex items-center gap-2">
                       <span className="h-1.5 w-1.5 rounded-full bg-teal-400" />

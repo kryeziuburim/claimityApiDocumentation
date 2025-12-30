@@ -1,8 +1,7 @@
 import type { Metadata } from "next"
-import Link from "next/link"
-import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 import { LanguageSwitcher } from "@/components/language-switcher"
+import { FileDown, Users, ShieldCheck } from "lucide-react"
 
 export const metadata: Metadata = {
   title: "Claimity - Bedienungsanleitung",
@@ -55,45 +54,72 @@ export default function ManualPage() {
             </p>
           </div>
 
-          <div className="mt-10 grid gap-6 md:grid-cols-2">
-            <div className="bg-gray-50 rounded-2xl p-8 space-y-3">
-              <h2 className="text-xl font-bold text-gray-900">Erste Schritte</h2>
-              <ul className="list-disc list-inside text-gray-700 space-y-1">
-                <li>Anmelden und Benutzerkonto einrichten</li>
-                <li>Schaden erfassen</li>
-                <li>Übersicht und Statusverfolgung</li>
-              </ul>
-            </div>
-            <div className="bg-gray-50 rounded-2xl p-8 space-y-3">
-              <h2 className="text-xl font-bold text-gray-900">Rollen & Berechtigungen</h2>
-              <ul className="list-disc list-inside text-gray-700 space-y-1">
-                <li>Rollenmodell</li>
-                <li>Teamverwaltung</li>
-                <li>Zwei-Faktor-Authentifizierung</li>
-              </ul>
-            </div>
-            <div className="bg-gray-50 rounded-2xl p-8 space-y-3">
-              <h2 className="text-xl font-bold text-gray-900">Fallerstellung</h2>
-              <ul className="list-disc list-inside text-gray-700 space-y-1">
-                <li>Fallerstellungsprozess</li>
-                <li>Pflichtfelder</li>
-                <li>Expertenzuweisung</li>
-              </ul>
-            </div>
-            <div className="bg-gray-50 rounded-2xl p-8 space-y-3">
-              <h2 className="text-xl font-bold text-gray-900">Berichte</h2>
-              <ul className="list-disc list-inside text-gray-700 space-y-1">
-                <li>Standardberichte</li>
-                <li>Export</li>
-                <li>Kennzahlen im Dashboard</li>
-              </ul>
-            </div>
-            <div className="bg-gray-50 rounded-2xl p-8 space-y-3">
-              <h2 className="text-xl font-bold text-gray-900">API Integration</h2>
-              <p className="text-gray-700">Technische Integrationsdetails findest du in der API-Dokumentation.</p>
-              <Link href="/de/api/" className="text-teal-700 hover:underline">
-                Zur API-Dokumentation
-              </Link>
+          <div className="mt-12">
+            <div className="rounded-2xl border border-teal-200/70 bg-gradient-to-br from-teal-50 via-white to-cyan-50 p-8 shadow-sm">
+              <div className="flex items-start justify-between gap-6">
+                <div>
+                  <h2 className="mt-3 text-xl font-semibold text-gray-900">Bedienungsanleitungen herunterladen</h2>
+                  <p className="mt-2 text-sm text-gray-600 md:text-base">
+                    Hier finden Sie die vollständigen PDF-Handbücher für Experten und Versicherer.
+                  </p>
+                </div>
+              </div>
+
+              <div className="mt-6 grid gap-6 md:grid-cols-2">
+                {/* Experten */}
+                <div className="group relative overflow-hidden rounded-2xl border border-teal-200/70 bg-white/70 p-6 backdrop-blur">
+                  <div className="pointer-events-none absolute -right-20 -top-24 h-56 w-56 rounded-full bg-white" />
+                  <div className="relative">
+                    <div className="flex items-start gap-4">
+                      <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-teal-500/10 ring-1 ring-teal-200/60">
+                        <Users className="h-5 w-5 text-teal-800" aria-hidden="true" />
+                      </div>
+                      <div className="min-w-0">
+                        <h3 className="text-lg font-semibold text-gray-900">Für Experten</h3>
+                        <p className="mt-1 text-sm text-gray-600">
+                          Claimity Bedienungsanleitung (PDF) – Rollen, Workflows und Best Practices.
+                        </p>
+                      </div>
+                    </div>
+
+                    <a
+                      href="/assets/de/manual/Claimity_Bedienungsanleitung_Experten.pdf"
+                      download
+                      className="mt-5 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-teal-700 px-4 py-2.5 text-sm font-medium text-white shadow-sm transition-colors hover:bg-teal-800"
+                    >
+                      <FileDown className="h-4 w-4" aria-hidden="true" />
+                      PDF herunterladen
+                    </a>
+                  </div>
+                </div>
+
+                {/* Versicherer */}
+                <div className="group relative overflow-hidden rounded-2xl border border-teal-200/70 bg-white/70 p-6 backdrop-blur">
+                  <div className="pointer-events-none absolute -right-20 -top-24 h-56 w-56 rounded-full bg-white" />
+                  <div className="relative">
+                    <div className="flex items-start gap-4">
+                      <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-cyan-500/10 ring-1 ring-cyan-200/60">
+                        <ShieldCheck className="h-5 w-5 text-cyan-800" aria-hidden="true" />
+                      </div>
+                      <div className="min-w-0">
+                        <h3 className="text-lg font-semibold text-gray-900">Für Versicherer</h3>
+                        <p className="mt-1 text-sm text-gray-600">
+                          Claimity Bedienungsanleitung (PDF) – Prozesse, Rollen und häufige Fragen.
+                        </p>
+                      </div>
+                    </div>
+
+                    <a
+                      href="/assets/de/manual/Claimity_Bedienungsanleitung_Versicherungen.pdf"
+                      download
+                      className="mt-5 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-teal-700 px-4 py-2.5 text-sm font-medium text-white shadow-sm transition-colors hover:bg-teal-800"
+                    >
+                      <FileDown className="h-4 w-4" aria-hidden="true" />
+                      PDF herunterladen
+                    </a>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
