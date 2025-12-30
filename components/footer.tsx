@@ -215,7 +215,7 @@ export function Footer() {
 
         {/* Bottom Bar - Copyright & Legal Links */}
         <div className="pt-8 border-t border-gray-700 flex flex-col md:flex-row justify-between items-center gap-4">
-          <p className="text-sm text-gray-300">© 2025 {L.companyName}. {L.rights}</p>
+          <p className="text-sm text-gray-300">© 2026 {L.companyName}. {L.rights}</p>
           <div className="flex flex-wrap gap-6 md:flex-nowrap justify-center md:justify-start w-full md:w-auto">
             <Link href={imprintHref} className="text-sm text-gray-300 hover:text-white transition-colors">
               {L.imprint}

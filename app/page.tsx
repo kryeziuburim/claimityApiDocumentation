@@ -13,13 +13,16 @@ export default function RootRedirect() {
 
   return (
     <>
-      <ModernLoader message="Daten werden geladen …" />
+      <ModernLoader variant="dark" message="Daten werden geladen …" />
       <noscript>
-        <main className="min-h-screen flex items-center justify-center p-8">
-          <div className="text-center text-sm text-foreground/70">
+        <main className="min-h-screen flex items-center justify-center bg-slate-950 p-8 text-slate-50">
+          <div className="text-center text-sm text-slate-200/80">
             <p>
               JavaScript ist deaktiviert. Bitte öffnen Sie{" "}
-              <a href="/de/" className="underline">/de/</a>.
+              <a href="/de/" className="text-teal-200 underline">
+                /de/
+              </a>
+              .
             </p>
           </div>
         </main>

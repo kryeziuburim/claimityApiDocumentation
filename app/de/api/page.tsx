@@ -1,9 +1,11 @@
 "use client"
 
-import { useState, useEffect, useCallback } from "react"
+import { useState, useEffect, useCallback, useMemo } from "react"
 import { Menu, X, ChevronRight, FileText, BookOpen, Bug, History, Lock, Code, Users, Shield } from "lucide-react"
 import { Button } from "@/components/simple-button"
 import { cn } from "@/lib/utils"
+import { Footer } from "@/components/footer"
+import { LanguageSwitcher } from "@/components/language-switcher"
 
 interface NavItem {
   id: string
@@ -37,11 +39,11 @@ const navigationItems: NavItem[] = [
   },
   {
     id: "experts",
-    title: "Expert:innen",
+    title: "Experten",
     icon: Users,
     children: [
-      { id: "experts-placeholder-1", title: "Expert:innen auflisten" },
-      { id: "experts-placeholder-2", title: "Expert:in erstellen" },
+      { id: "experts-placeholder-1", title: "Experten auflisten" },
+      { id: "experts-placeholder-2", title: "Experte erstellen" },
     ],
   },
   {
@@ -58,16 +60,30 @@ const navigationItems: NavItem[] = [
 export default function Page() {
   const [activeSection, setActiveSection] = useState("overview")
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
-  const [expandedItems, setExpandedItems] = useState<string[]>(["authentication", "api-basics"])
+  const [expandedItems, setExpandedItems] = useState<string[]>([])
+  const [footerInView, setFooterInView] = useState(false)
 
   const toggleExpanded = (id: string) => {
     setExpandedItems((prev) => (prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id]))
   }
 
+  const childToParent = useMemo(() => {
+    const map: Record<string, string> = {}
+    navigationItems.forEach((i) => {
+      i.children?.forEach((c) => {
+        map[c.id] = i.id
+      })
+    })
+    return map
+  }, [])
+
   // Scroll + Active section highlighting (IntersectionObserver)
   const [activeId, setActiveId] = useState<string>("overview")
 
   const handleNavigate = useCallback((id: string) => {
+    if (typeof window !== "undefined") {
+      try { history.pushState(null, "", `#${id}`) } catch {}
+    }
     const el = document.getElementById(id)
     if (el) {
       el.scrollIntoView({ behavior: "smooth", block: "start" })
@@ -92,7 +108,7 @@ export default function Page() {
       },
       {
         root: null,
-        rootMargin: "-40% 0px -50% 0px",
+        rootMargin: "-20% 0px -70% 0px",
         threshold: [0, 0.25, 0.5, 0.75, 1],
       }
     )
@@ -111,18 +127,84 @@ export default function Page() {
     }
   }, [])
 
+  // Bei initialer URL mit Hash dorthin scrollen (nach Mount)
+  useEffect(() => {
+    if (typeof window === "undefined") return
+    const hash = window.location.hash.replace(/^#/, "")
+    if (!hash) return
+    const el = document.getElementById(hash)
+    if (el) {
+      setTimeout(() => el.scrollIntoView({ behavior: "smooth", block: "start" }), 0)
+    }
+  }, [])
+  
+  // Auto-Expand: Wenn Parent- oder Child-Anker aktiv wird, Parent offen halten
+  useEffect(() => {
+    if (!activeId) return
+    // Parent mit Kindern aktiv -> expandieren
+    const isParent = navigationItems.some((i) => i.id === activeId && i.children)
+    if (isParent) {
+      setExpandedItems((prev) => (prev.includes(activeId) ? prev : [...prev, activeId]))
+    }
+    // Child aktiv -> zugehörigen Parent expandieren
+    const parent = childToParent[activeId]
+    if (parent) {
+      setExpandedItems((prev) => (prev.includes(parent) ? prev : [...prev, parent]))
+    }
+  }, [activeId, childToParent])
+
+  // URL-Hash anhand aktivem Abschnitt aktualisieren (beim Scrollen)
+  useEffect(() => {
+    if (!activeId) return
+    if (typeof window !== "undefined") {
+      const current = window.location.hash.replace(/^#/, "")
+      if (current !== activeId) {
+        try { history.replaceState(null, "", `#${activeId}`) } catch {}
+      }
+    }
+  }, [activeId])
+  
+  // Footer-Sentinel IntersectionObserver (10% Sichtbarkeit)
+  useEffect(() => {
+    const sentinel = document.getElementById("footer-sentinel")
+    if (!sentinel) return
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setFooterInView(entry.isIntersecting && entry.intersectionRatio > 0)
+      },
+      { root: null, threshold: [0, 0.1] }
+    )
+    observer.observe(sentinel)
+    return () => observer.disconnect()
+  }, [])
+
+  const effectiveActive = childToParent[activeId] ?? activeId
+  // Sidebar-Einblendung ab "Erste Schritte" (und alle nachfolgenden Kapitel)
+  const revealFrom = new Set(["first-steps","reporting","changelog","authentication","api-basics","experts","insurer"])
+  const showSidebar = revealFrom.has(effectiveActive) && !footerInView
+
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-white text-gray-900">
       <div className="flex">
         {/* Seiten-Navigation */}
         <aside
           className={cn(
-            "fixed inset-y-0 left-0 w-64 border-r border-border bg-sidebar transition-transform lg:translate-x-0",
+            "fixed inset-y-0 left-0 z-30 w-64 border-r border-border bg-sidebar transition-all duration-[400ms] ease-out",
             isMobileMenuOpen ? "translate-x-0" : "-translate-x-full",
+            showSidebar ? "lg:translate-x-0 lg:opacity-100" : "lg:-translate-x-full lg:opacity-0"
           )}
         >
           <div className="h-[calc(100vh-4rem)] overflow-y-auto py-6">
-            <nav className="space-y-1 px-3">
+            <div className="mb-2 flex items-center justify-between px-3 lg:hidden">
+              <span className="text-sm font-medium">Navigation</span>
+              <button
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="inline-flex items-center rounded-md border border-slate-200 bg-white/90 px-2 py-1 text-xs text-gray-900 shadow-sm hover:bg-white"
+              >
+                <X className="mr-1 h-4 w-4" /> Schließen
+              </button>
+            </div>
+            <nav className="space-y-1 px-3" role="navigation" aria-label="API Navigation">
               {navigationItems.map((item) => (
                 <div key={item.id}>
                   <button
@@ -135,10 +217,15 @@ export default function Page() {
                     }}
                     className={cn(
                       "flex w-full items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors",
-                      activeId === item.id
+                      activeId === item.id || (item.children && item.children.some((c) => c.id === activeId))
                         ? "bg-sidebar-accent text-sidebar-accent-foreground"
                         : "text-sidebar-foreground hover:bg-sidebar-accent/50",
                     )}
+                    aria-expanded={item.children ? expandedItems.includes(item.id) : undefined}
+                    aria-controls={item.children ? `subnav-${item.id}` : undefined}
+                    aria-current={
+                      activeId === item.id || (item.children && item.children.some((c) => c.id === activeId)) ? "page" : undefined
+                    }
                   >
                     <item.icon className="h-4 w-4 shrink-0" />
                     <span className="flex-1 text-left text-balance">{item.title}</span>
@@ -149,7 +236,7 @@ export default function Page() {
                     )}
                   </button>
                   {item.children && expandedItems.includes(item.id) && (
-                    <div className="ml-7 mt-1 space-y-1 border-l border-border pl-4">
+                    <div id={`subnav-${item.id}`} className="ml-7 mt-1 space-y-1 border-l border-border pl-4">
                       {item.children.map((child) => (
                         <button
                           key={child.id}
@@ -162,6 +249,7 @@ export default function Page() {
                               ? "font-medium text-sidebar-accent-foreground"
                               : "text-muted-foreground hover:text-sidebar-foreground",
                           )}
+                          aria-current={activeId === child.id ? "page" : undefined}
                         >
                           <span className="text-balance">{child.title}</span>
                         </button>
@@ -175,17 +263,58 @@ export default function Page() {
         </aside>
 
         {/* Hauptinhalt */}
-        <main className="flex-1 lg:pl-64">
-          <div className="mx-auto max-w-4xl px-6 py-12">
-            <Section id="overview"><OverviewSection /></Section>
-            <Section id="first-steps"><FirstStepsSection /></Section>
-            <Section id="reporting"><ReportingSection /></Section>
-            <Section id="changelog"><ChangeLogSection /></Section>
-            <Section id="authentication"><AuthenticationSection /></Section>
-            <Section id="api-basics"><ApiBasicsSection /></Section>
-            <Section id="experts"><ExpertsSection /></Section>
-            <Section id="insurer"><InsurerSection /></Section>
-          </div>
+        <main className="flex-1">
+          <section className="relative overflow-hidden">
+            <div className="pointer-events-none absolute inset-x-0 top-[-12rem] -z-10 transform-gpu overflow-hidden blur-3xl">
+              <div className="relative left-1/2 aspect-[1155/678] w-[72rem] -translate-x-1/2 bg-gradient-to-tr from-teal-500/20 via-cyan-400/15 to-sky-500/15" />
+            </div>
+
+            <div
+              className={cn(
+                "relative mx-auto max-w-7xl px-6 pb-16 pt-10 md:pb-20 md:pt-16 lg:pb-24 lg:pt-20 lg:grid lg:grid-cols-[16rem_1fr]",
+                "transition-[padding] duration-[400ms] ease-out"
+              )}
+            >
+              <div className="absolute right-6 top-6 z-10">
+                <LanguageSwitcher />
+              </div>
+              <div className="absolute left-6 top-6 z-10 lg:hidden">
+                <button
+                  onClick={() => setIsMobileMenuOpen((v) => !v)}
+                  className="inline-flex items-center rounded-md border border-slate-200 bg-white/90 px-3 py-2 text-sm text-gray-900 shadow-sm backdrop-blur hover:bg-white"
+                >
+                  <Menu className="mr-2 h-4 w-4" />
+                  Menü
+                </button>
+              </div>
+
+              {/* Hero */}
+              <div className="w-full lg:col-start-2">
+                <p className="inline-flex items-center rounded-full bg-teal-50 px-3 py-1 text-xs font-medium text-teal-700 ring-1 ring-teal-100">
+                  Claimity API
+                </p>
+                <h1 className="mt-4 text-3xl font-semibold tracking-tight text-gray-900 md:text-4xl lg:text-5xl">
+                  API Dokumentation
+                </h1>
+                <p className="mt-4 text-sm text-gray-600 md:text-base">
+                  Technische Referenz und Leitfäden für die Integration mit Claimity.
+                </p>
+              </div>
+
+              <div className="mx-auto mt-10 max-w-5xl lg:col-start-2">
+                <Section id="overview"><OverviewSection /></Section>
+                <Section id="first-steps"><FirstStepsSection /></Section>
+                <Section id="reporting"><ReportingSection /></Section>
+                <Section id="changelog"><ChangeLogSection /></Section>
+                <Section id="authentication"><AuthenticationSection /></Section>
+                <Section id="api-basics"><ApiBasicsSection /></Section>
+                <Section id="experts"><ExpertsSection /></Section>
+                <Section id="insurer"><InsurerSection /></Section>
+              </div>
+            </div>
+          </section>
+          <div id="footer-sentinel" className="h-px" aria-hidden="true" />
+          <Footer />
         </main>
       </div>
     </div>
@@ -354,7 +483,7 @@ function ChangeLogSection() {
         {[
           {
             date: "2025-01-15",
-            changes: "Neue Filteroptionen für Expert:innen- und Versicherer‑Endpoints",
+            changes: "Neue Filteroptionen für Experten- und Versicherer‑Endpoints",
           },
           {
             date: "2025-01-10",
@@ -387,7 +516,7 @@ function ChangeLogSection() {
 }
 
 const Section = ({ id, children }: { id: string; children: React.ReactNode }) => (
-  <section id={id} className="scroll-mt-24 py-2">
+  <section id={id} className="scroll-mt-24 py-20 md:py-24">
     {children}
   </section>
 )
@@ -402,7 +531,7 @@ function AuthenticationSection() {
         </p>
       </div>
 
-      <div id="auth-placeholder-1" className="api-anchor h-0 scroll-mt-24" />
+      <div id="auth-placeholder-1" className="api-anchor h-6 opacity-0 scroll-mt-24 pointer-events-none" aria-hidden="true" />
       <div className="rounded-lg border border-border bg-card p-6">
         <h3 className="mb-4 text-xl font-semibold">OAuth 2.0</h3>
         <p className="mb-4 leading-relaxed text-muted-foreground text-pretty">
@@ -414,7 +543,7 @@ function AuthenticationSection() {
         </div>
       </div>
 
-      <div id="auth-placeholder-2" className="api-anchor h-0 scroll-mt-24" />
+      <div id="auth-placeholder-2" className="api-anchor h-6 opacity-0 scroll-mt-24 pointer-events-none" aria-hidden="true" />
       <div className="rounded-lg border border-border bg-card p-6">
         <h3 className="mb-4 text-xl font-semibold">API‑Schlüssel</h3>
         <p className="leading-relaxed text-muted-foreground text-pretty">
@@ -441,8 +570,8 @@ function ApiBasicsSection() {
           Zentrale Konzepte und Konventionen, die in der gesamten API genutzt werden.
         </p>
       </div>
-      <div id="basics-placeholder-1" className="api-anchor h-0 scroll-mt-24" />
-      <div id="basics-placeholder-2" className="api-anchor h-0 scroll-mt-24" />
+      <div id="basics-placeholder-1" className="api-anchor h-6 opacity-0 scroll-mt-24 pointer-events-none" aria-hidden="true" />
+      <div id="basics-placeholder-2" className="api-anchor h-6 opacity-0 scroll-mt-24 pointer-events-none" aria-hidden="true" />
 
       <div className="grid gap-6 md:grid-cols-2">
         <div className="rounded-lg border border-border bg-card p-6">
@@ -504,13 +633,13 @@ function ExpertsSection() {
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="mb-4 text-3xl font-bold tracking-tight text-balance">Expert:innen</h2>
+        <h2 className="mb-4 text-3xl font-bold tracking-tight text-balance">Experten</h2>
         <p className="text-lg leading-relaxed text-muted-foreground text-pretty">
-          Der Endpoint „Expert:innen“ dient zur Verwaltung von Profilen und zugehörigen Daten.
+          Der Endpoint „Experten“ dient zur Verwaltung von Profilen und zugehörigen Daten.
         </p>
       </div>
 
-      <div id="experts-placeholder-1" className="api-anchor h-0 scroll-mt-24" />
+      <div id="experts-placeholder-1" className="api-anchor h-6 opacity-0 scroll-mt-24 pointer-events-none" aria-hidden="true" />
       <div className="rounded-lg border border-border bg-card p-6">
         <h3 className="mb-4 text-xl font-semibold">Überblick</h3>
         <p className="mb-6 leading-relaxed text-muted-foreground text-pretty">
@@ -524,7 +653,7 @@ function ExpertsSection() {
               <span className="font-mono text-sm font-semibold">GET /experts</span>
               <span className="rounded-full bg-primary/10 px-2 py-1 text-xs font-medium text-primary">List</span>
             </div>
-            <p className="text-sm text-muted-foreground text-pretty">Paginierte Liste aller Expert:innen abrufen</p>
+            <p className="text-sm text-muted-foreground text-pretty">Paginierte Liste aller Experten abrufen</p>
           </div>
 
           <div className="rounded-lg border border-border bg-muted/30 p-4">
@@ -532,7 +661,7 @@ function ExpertsSection() {
               <span className="font-mono text-sm font-semibold">POST /experts</span>
               <span className="rounded-full bg-accent/10 px-2 py-1 text-xs font-medium text-accent">Create</span>
             </div>
-            <p className="text-sm text-muted-foreground text-pretty">Neues Expert:innen‑Profil erstellen</p>
+            <p className="text-sm text-muted-foreground text-pretty">Neues Experten‑Profil erstellen</p>
           </div>
         </div>
       </div>
@@ -563,7 +692,7 @@ function InsurerSection() {
         </p>
       </div>
 
-      <div id="insurer-placeholder-1" className="api-anchor h-0 scroll-mt-24" />
+      <div id="insurer-placeholder-1" className="api-anchor h-6 opacity-0 scroll-mt-24 pointer-events-none" aria-hidden="true" />
       <div className="rounded-lg border border-border bg-card p-6">
         <h3 className="mb-4 text-xl font-semibold">Überblick</h3>
         <p className="mb-6 leading-relaxed text-muted-foreground text-pretty">
@@ -572,7 +701,7 @@ function InsurerSection() {
         </p>
 
         <div className="space-y-4">
-          <div id="experts-placeholder-2" className="api-anchor h-0 scroll-mt-24" />
+          <div id="experts-placeholder-2" className="api-anchor h-6 opacity-0 scroll-mt-24 pointer-events-none" aria-hidden="true" />
           <div className="rounded-lg border border-border bg-muted/30 p-4">
             <div className="mb-2 flex items-center justify-between">
               <span className="font-mono text-sm font-semibold">GET /insurers</span>
@@ -581,7 +710,7 @@ function InsurerSection() {
             <p className="text-sm text-muted-foreground text-pretty">Paginierte Liste aller Versicherer abrufen</p>
           </div>
 
-          <div id="insurer-placeholder-2" className="api-anchor h-0 scroll-mt-24" />
+          <div id="insurer-placeholder-2" className="api-anchor h-6 opacity-0 scroll-mt-24 pointer-events-none" aria-hidden="true" />
           <div className="rounded-lg border border-border bg-muted/30 p-4">
             <div className="mb-2 flex items-center justify-between">
               <span className="font-mono text-sm font-semibold">POST /insurers</span>
