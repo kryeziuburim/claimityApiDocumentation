@@ -2,10 +2,10 @@
 
 import { useState, useEffect, useCallback, useMemo, useRef, useLayoutEffect } from "react"
 import { Menu, X, ChevronRight, FileText, BookOpen, Bug, History, Lock, Code, Users, Shield } from "lucide-react"
-import { Button } from "@/components/simple-button"
 import { cn } from "@/lib/utils"
 import { Footer } from "@/components/footer"
 import { LanguageSwitcher } from "@/components/language-switcher"
+import LocalizedLink from "@/components/localized-link"
 
 interface NavItem {
   id: string
@@ -121,7 +121,7 @@ export default function Page() {
       ([entry]) => {
         setPastHero(!entry.isIntersecting)
       },
-      { root: null, threshold: [0], rootMargin: "-96px 0px 0px 0px" }
+      { root: null, threshold: [0], rootMargin: "-86px 0px 0px 0px" }
     )
     observer.observe(el)
     return () => observer.disconnect()
@@ -401,20 +401,24 @@ function OverviewSection() {
         <h3 className="mb-3 text-xl font-semibold">Erste Schritte</h3>
         <p className="leading-relaxed text-muted-foreground text-pretty">
           Diese API bietet umfassenden Zugriff auf zentrale Funktionen. Ob Integrationen, Automatisierung oder eigene
-          Anwendungen – die API liefert Flexibilität und Leistung.
+          Anwendungen – die API liefert Flexibilität für die Anbindung von Claimity an Ihre Systeme.
         </p>
       </div>
 
       <div className="rounded-lg border border-[#2a8289] p-6" style={{ backgroundColor: "#2a8289" }}>
-        <h3 className="mb-3 text-xl font-semibold text-white">Auf dem Laufenden bleiben</h3>
+        <h3 className="mb-3 text-xl font-semibold text-white">Erweiterung der Schnittstellen</h3>
         <ul className="space-y-2 text-white">
           <li className="flex gap-2">
             <span className="text-white">•</span>
-            <span className="text-pretty">Statusseite abonnieren, um über kurzfristige API‑Störungen informiert zu werden.</span>
+            <span className="text-pretty">Prüfen Sie regelmässig das Änderungsprotokoll um auf dem Laufenden zu bleiben.</span>
           </li>
           <li className="flex gap-2">
             <span className="text-white">•</span>
-            <span className="text-pretty">API‑Newsletter abonnieren, um Neuigkeiten und Updates zu erhalten.</span>
+            <span className="text-pretty">Kleinere Änderungen können ohne Änderung der API-Version eingeführt werden. Dazu können zusätzliche Felder in JSON-Datenstrukturen, optionale Parameter für API-Aufrufe, oder neue API-Aufrufe gehören.</span>
+          </li>
+          <li className="flex gap-2">
+            <span className="text-white">•</span>
+            <span className="text-pretty">Über wesentliche Änderungen werden Sie rechtzeitig informiert.</span>
           </li>
         </ul>
       </div>
@@ -434,25 +438,25 @@ function FirstStepsSection() {
         {[
           {
             step: "1",
-            title: "Konto anlegen",
+            title: "Schlüsselpaar erstellen",
             description:
-              "Erstellen Sie ein Claimity Konto (app.claimity.ch) und schliessen Sie die Einrichtung ab. Mit vorhandenem Konto können Sie fortfahren.",
+              "Als Organisationsadmin können Sie in den Organisationseinstellungen Ihres Claimity Kontos ein Schlüsselpaar erstellen. Laden Sie darauffolgend den Private Key herunter und bewahren Sie diesen sicher auf.",
           },
           {
             step: "2",
-            title: "API‑Zugangsdaten",
+            title: "Authentifizieren",
             description:
-              "Öffnen Sie das Developer‑Portal und erstellen Sie eine neue Applikation, um Client‑ID/Secret zu erhalten.",
+              "Mit Hilfe des erstellten Schlüsselpaars und Ihrer Client‑ID können Sie sich gegenüber der Claimity API authentifizieren und so einen Access Token für Ihre Requests erhalten.",
           },
           {
             step: "3",
-            title: "Authentifizieren",
-            description: "Nutzen Sie den Authentifizierungs‑Flow, um ein Access Token für Ihre Requests zu erhalten.",
+            title: "DPoP-Header vorbereiten",
+            description: "Zum Senden einer Anfrage an die API ist es notwendig, einen DPoP-Header zu erstellen. Dieser Header wird mit dem Private Key signiert und sichert die Anfrage gegen potentiellen Sichereheitsrisiken.",
           },
           {
             step: "4",
             title: "Erste Anfrage",
-            description: "Senden Sie mit Ihrem Access Token eine authentifizierte Anfrage an einen Endpoint.",
+            description: "Senden Sie mit Ihrem Access Token und dem DPoP-Header eine authentifizierte Anfrage an einen Endpoint.",
           },
         ].map((item) => (
           <div key={item.step} className="flex gap-4 rounded-lg border border-border bg-card p-5">
@@ -474,10 +478,28 @@ function FirstStepsSection() {
         <h3 className="mb-3 font-mono text-sm font-semibold">Beispiel‑Request</h3>
         <pre className="overflow-x-auto rounded bg-background p-4 text-sm">
           <code className="font-mono text-foreground">{`curl -X GET \\
-  https://api.example.com/v1/experts \\
+  https://api.example.com/v1/experts/cases \\
   -H 'Accept: application/json' \\
-  -H 'Authorization: Bearer {access-token}'`}</code>
+  -H 'Authorization: DPoP {access-token}' \\
+  -H 'DPoP: {dpop-header}`}</code>
         </pre>
+        <h3 className="mt-8 mb-3 font-mono text-sm font-semibold">Python Notebooks</h3>
+        <p className="mb-4 text-sm leading-relaxed text-pretty">
+          Für den schnellen Einstieg stellen wir Ihnen Python‑Notebooks zur Verfügung, mit denen Sie API‑Abfragen ausführen und die Responses direkt
+          einsehen können.
+        </p>
+        <a
+          href="https://github.com/Claimity-AG/v1-api"
+          target="_blank"
+          rel="noopener noreferrer"
+          className={cn(
+            "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50",
+            "h-9 px-4 py-2",
+            "bg-teal-600 text-white hover:bg-teal-700"
+          )}
+        >
+          Notebooks auf GitHub ansehen
+        </a>
       </div>
     </div>
   )
@@ -519,9 +541,19 @@ function ReportingSection() {
       <div className="rounded-lg border border-[#2a8289] p-6" style={{ backgroundColor: "#2a8289" }}>
         <h3 className="mb-3 text-lg font-semibold text-white">Report einreichen</h3>
         <p className="mb-4 text-sm leading-relaxed text-white text-pretty">
-          Bitte beschreiben Sie Schritte zur Reproduktion. Unser Support prüft den Fall zeitnah.
+          Bitte beschreiben Sie Schritte zur Reproduktion. Unser Support prüft den Fall zeitnah und meldet sich schnellstmöglich bei Ihnen.
         </p>
-        <Button className="bg-white text-black hover:bg-white/90">Problem melden</Button>
+        <LocalizedLink
+          href="/support"
+          className={cn(
+            // Button-Basestyles aus components/simple-button.tsx für Link-Nutzung
+            "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50",
+            "h-9 px-4 py-2",
+            "bg-white text-black hover:bg-white/90"
+          )}
+        >
+          Problem melden
+        </LocalizedLink>
       </div>
 
       <div className="rounded-lg bg-muted p-6">
@@ -547,20 +579,12 @@ function ChangeLogSection() {
       <div className="space-y-4">
         {[
           {
-            date: "2025-01-15",
-            changes: "Neue Filteroptionen für Experten- und Versicherer‑Endpoints",
+            date: "2025-12-30",
+            changes: "Ergänzung eines neuen Endpunkts zur Versicherer-API zum Validieren der Fallstruktur.",
           },
           {
-            date: "2025-01-10",
-            changes: "Verbesserte Fehlermeldungen bei Authentifizierungsfehlern",
-          },
-          {
-            date: "2024-12-20",
-            changes: "Paginierung für alle List‑Endpoints ergänzt",
-          },
-          {
-            date: "2024-12-15",
-            changes: "Erste API‑Version veröffentlicht",
+            date: "2025-12-28",
+            changes: "Erste API‑Version veröffentlicht.",
           },
         ].map((item, index) => (
           <div
@@ -585,7 +609,8 @@ const Section = ({ id, children }: { id: string; children: React.ReactNode }) =>
     id={id}
     className={cn(
       "scroll-mt-24",
-      id === "overview" ? "pt-8 pb-20 md:pt-10 md:pb-24" : "py-20 md:py-24",
+      // Reduzierter vertikaler Abstand zwischen den Abschnitten
+      id === "overview" ? "pt-8 pb-12 md:pt-10 md:pb-16" : "py-12 md:py-16",
     )}
   >
     {children}
