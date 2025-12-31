@@ -296,7 +296,7 @@ function FirstStepsSection() {
         <h3 className="mb-3 font-mono text-sm font-semibold">Example Request</h3>
         <pre className="overflow-x-auto rounded bg-background p-4 text-sm">
           <code className="font-mono text-foreground">{`curl -X GET \\
-  https://api.example.com/v1/experts \\
+  https://app.claimity.ch/v1/experts \\
   -H 'Accept: application/json' \\
   -H 'Authorization: Bearer {access-token}'`}</code>
         </pre>
@@ -459,7 +459,7 @@ function ApiBasicsSection() {
         <div className="rounded-lg border border-border bg-card p-6">
           <h3 className="mb-3 text-lg font-semibold">Base URL</h3>
           <code className="block rounded bg-muted px-3 py-2 font-mono text-sm">
-            https://api.example.com/v1
+            https://app.claimity.ch/v1
           </code>
         </div>
 

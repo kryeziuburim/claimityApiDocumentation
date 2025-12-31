@@ -2,7 +2,8 @@ import type { Metadata } from "next"
 import Link from "next/link"
 import { Footer } from "@/components/footer"
 import { LanguageSwitcher } from "@/components/language-switcher"
-import { FileDown, Users, ShieldCheck, Mail, Phone, ArrowRight, FormInput } from "lucide-react"
+import { Button } from "@/components/ui/button"
+import { FileDown, Users, ShieldCheck, Mail, FormInput } from "lucide-react"
 
 export const metadata: Metadata = {
   title: "Claimity - Bedienungsanleitung",
@@ -83,14 +84,15 @@ export default function ManualPage() {
                       </div>
                     </div>
 
-                    <a
-                      href="/assets/de/manual/Claimity_Bedienungsanleitung_Experten.pdf"
-                      download
-                      className="mt-5 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-teal-700 px-4 py-2.5 text-sm font-medium text-white shadow-sm transition-colors hover:bg-teal-800"
-                    >
-                      <FileDown className="h-4 w-4" aria-hidden="true" />
-                      PDF herunterladen
-                    </a>
+                    <Button asChild className="mt-5 w-full rounded-lg bg-teal-600 px-6 text-white hover:bg-teal-700">
+                      <a
+                        href="/assets/de/manual/Claimity_Bedienungsanleitung_Experten.pdf"
+                        download
+                      >
+                        <FileDown className="h-4 w-4" aria-hidden="true" />
+                        PDF herunterladen
+                      </a>
+                    </Button>
                   </div>
                 </div>
 
@@ -110,39 +112,38 @@ export default function ManualPage() {
                       </div>
                     </div>
 
-                    <a
-                      href="/assets/de/manual/Claimity_Bedienungsanleitung_Versicherungen.pdf"
-                      download
-                      className="mt-5 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-teal-700 px-4 py-2.5 text-sm font-medium text-white shadow-sm transition-colors hover:bg-teal-800"
-                    >
-                      <FileDown className="h-4 w-4" aria-hidden="true" />
-                      PDF herunterladen
-                    </a>
+                    <Button asChild className="mt-5 w-full rounded-lg bg-teal-600 px-6 text-white hover:bg-teal-700">
+                      <a
+                        href="/assets/de/manual/Claimity_Bedienungsanleitung_Versicherungen.pdf"
+                        download
+                      >
+                        <FileDown className="h-4 w-4" aria-hidden="true" />
+                        PDF herunterladen
+                      </a>
+                    </Button>
                   </div>
                 </div>
               </div>
-              <p className="mt-10 text-sm font-semibold text-gray-900 md:text-base">
-                Sie benötigen weitere Informationen oder zusätzliche Hilfe?
-              </p>
-              <div>
+              <div className="mt-10 border-t border-slate-200 pt-8">
+                <p className="text-sm font-semibold text-gray-900 md:text-base">
+                  Sie benötigen weitere Informationen oder zusätzliche Hilfe?
+                </p>
                 <p className="mt-2 text-sm text-gray-600">
                   Kontaktieren Sie uns oder vereinbaren Sie einen Termin – wir unterstützen Sie gerne.
                 </p>
                 <div className="mt-5 flex flex-wrap gap-3">
-                  <Link
-                    href="/de/support"
-                    className="inline-flex items-center justify-center gap-2 rounded-xl bg-teal-700 px-4 py-2.5 text-sm font-medium text-white shadow-sm transition-colors hover:bg-teal-800"
-                  >
-                    <FormInput className="h-4 w-4" aria-hidden="true" />
-                    Kontaktformular
-                  </Link>
-                  <a
-                    href="mailto:info@claimity.ch"
-                    className="inline-flex items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-medium text-gray-900 shadow-sm transition-colors hover:bg-slate-50"
-                  >
-                    <Mail className="h-4 w-4 text-slate-500" aria-hidden="true" />
-                    info@claimity.ch
-                  </a>
+                  <Button asChild className="rounded-lg bg-teal-600 px-6 text-white hover:bg-teal-700">
+                    <Link href="/de/support">
+                      <FormInput className="h-4 w-4" aria-hidden="true" />
+                      Kontaktformular
+                    </Link>
+                  </Button>
+                  <Button asChild variant="outline" className="rounded-lg">
+                    <a href="mailto:info@claimity.ch">
+                      <Mail className="h-4 w-4 text-slate-500" aria-hidden="true" />
+                      info@claimity.ch
+                    </a>
+                  </Button>
                 </div>
               </div>
             </div>
