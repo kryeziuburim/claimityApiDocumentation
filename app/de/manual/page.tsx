@@ -56,7 +56,7 @@ export default function ManualPage() {
           </div>
 
           <div className="mt-12">
-            <div className="rounded-2xl border border-teal-200/70 bg-gradient-to-br from-teal-50 via-white to-cyan-50 p-8 shadow-sm">
+            <div className="rounded-2xl border border-slate-200 bg-white/80 p-8 shadow-sm backdrop-blur-xl">
               <div className="flex items-start justify-between gap-6">
                 <div>
                   <h2 className="mt-3 text-xl font-semibold text-gray-900">Bedienungsanleitungen herunterladen</h2>
@@ -68,7 +68,7 @@ export default function ManualPage() {
 
               <div className="mt-6 grid gap-6 md:grid-cols-2">
                 {/* Experten */}
-                <div className="group relative overflow-hidden rounded-2xl border border-teal-200/70 bg-white/70 p-6 backdrop-blur">
+                <div className="group relative overflow-hidden rounded-2xl border border-slate-200 bg-white/70 p-6 backdrop-blur">
                   <div className="pointer-events-none absolute -right-20 -top-24 h-56 w-56 rounded-full bg-white" />
                   <div className="relative">
                     <div className="flex items-start gap-4">
@@ -95,12 +95,12 @@ export default function ManualPage() {
                 </div>
 
                 {/* Versicherer */}
-                <div className="group relative overflow-hidden rounded-2xl border border-teal-200/70 bg-white/70 p-6 backdrop-blur">
+                <div className="group relative overflow-hidden rounded-2xl border border-slate-200 bg-white/70 p-6 backdrop-blur">
                   <div className="pointer-events-none absolute -right-20 -top-24 h-56 w-56 rounded-full bg-white" />
                   <div className="relative">
                     <div className="flex items-start gap-4">
-                      <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-cyan-500/10 ring-1 ring-cyan-200/60">
-                        <ShieldCheck className="h-5 w-5 text-cyan-800" aria-hidden="true" />
+                      <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-teal-500/10 ring-1 ring-teal-200/60">
+                        <ShieldCheck className="h-5 w-5 text-teal-800" aria-hidden="true" />
                       </div>
                       <div className="min-w-0">
                         <h3 className="text-lg font-semibold text-gray-900">Für Versicherer</h3>

@@ -414,7 +414,7 @@ function OverviewSection() {
           </li>
           <li className="flex gap-2">
             <span className="text-white">•</span>
-            <span className="text-pretty">Kleinere Änderungen können ohne Änderung der API-Version eingeführt werden. Dazu können zusätzliche Felder in JSON-Datenstrukturen, optionale Parameter für API-Aufrufe, oder neue API-Aufrufe gehören.</span>
+            <span className="text-pretty">Nicht abwärtsinkompatible Änderungen können eingeführt werden, ohne die API-Version zu ändern.</span>
           </li>
           <li className="flex gap-2">
             <span className="text-white">•</span>
