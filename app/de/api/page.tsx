@@ -1040,100 +1040,102 @@ function ApiBasicsSection() {
         </p>
 
         <div className="space-y-4">
-          {/* Default policy */}
-          <div className="rounded-lg border border-border bg-muted/20 p-4">
-            <div className="mb-2 flex flex-wrap items-center justify-between gap-2">
-              <h4 className="text-sm font-semibold">
-                Standard für die Partner-API
-              </h4>
+          {/* Policies nebeneinander */}
+          <div className="grid gap-4 lg:grid-cols-3">
+            {/* Default policy */}
+            <div className="rounded-lg border border-border bg-muted/20 p-4">
+              <div className="mb-2 flex flex-wrap items-center justify-between gap-2">
+                <h4 className="text-sm font-semibold">Standard für die Partner-API</h4>
+              </div>
+
+              <p className="mb-2 text-sm text-muted-foreground text-pretty">
+                Für Standard-Endpunkte wird die Anzahl an Abfragen leicht limitiert.
+              </p>
+
+              <ul className="space-y-2 text-sm text-muted-foreground">
+                <li className="flex gap-2">
+                  <span className="text-primary">•</span>
+                  <span className="text-pretty">
+                    <strong>TokenBucket</strong>: ca. <strong>60 Requests/Minute</strong>, <strong>Burst</strong> bis <strong>20</strong>, <strong>Queue</strong> <strong>0</strong>
+                  </span>
+                </li>
+              </ul>
             </div>
 
-            <p className="mb-2 text-sm text-muted-foreground text-pretty">
-              Für Standard-Endpunkte wird die Anzahl an Abfragen leicht limitiert.
-            </p>
+            {/* Documents policy */}
+            <div className="rounded-lg border border-border bg-muted/20 p-4">
+              <div className="mb-2 flex flex-wrap items-center justify-between gap-2">
+                <h4 className="text-sm font-semibold">Dokument-Routen</h4>
+              </div>
 
-            <ul className="space-y-2 text-sm text-muted-foreground">
-              <li className="flex gap-2">
-                <span className="text-primary">•</span>
-                <span className="text-pretty">
-                  <strong>TokenBucket</strong>: ca. <strong>60 Requests/Minute</strong>, <strong>Burst</strong> bis <strong>20</strong>, <strong>Queue</strong> <strong>0</strong>
-                </span>
-              </li>
-            </ul>
-          </div>
+              <p className="mb-2 text-sm text-muted-foreground text-pretty">
+                Für Endpunkte mit <span className="font-mono">.../documents...</span> gelten strengere Limits (z. B. für Upload/Download).
+              </p>
 
-          {/* Documents policy */}
-          <div className="rounded-lg border border-border bg-muted/20 p-4">
-            <div className="mb-2 flex flex-wrap items-center justify-between gap-2">
-              <h4 className="text-sm font-semibold">Dokument-Routen</h4>
+              <ul className="space-y-2 text-sm text-muted-foreground">
+                <li className="flex gap-2">
+                  <span className="text-primary">•</span>
+                  <span className="text-pretty">
+                    <strong>TokenBucket</strong>: ca. <strong>20 Requests/Minute</strong>, <strong>Burst</strong> bis <strong>10</strong>, <strong>Queue</strong> <strong>0</strong>
+                  </span>
+                </li>
+              </ul>
             </div>
 
-            <p className="mb-2 text-sm text-muted-foreground text-pretty">
-              Für Endpunkte mit <span className="font-mono">.../documents...</span> gelten strengere Limits (z. B. für Upload/Download).
-            </p>
+            {/* Token policy */}
+            <div className="rounded-lg border border-border bg-muted/20 p-4">
+              <div className="mb-2 flex flex-wrap items-center justify-between gap-2">
+                <h4 className="text-sm font-semibold">Token-Endpunkt</h4>
+              </div>
 
-            <ul className="space-y-2 text-sm text-muted-foreground">
-              <li className="flex gap-2">
-                <span className="text-primary">•</span>
-                <span className="text-pretty">
-                  <strong>TokenBucket</strong>: ca. <strong>20 Requests/Minute</strong>, <strong>Burst</strong> bis <strong>10</strong>, <strong>Queue</strong> <strong>0</strong>
-                </span>
-              </li>
-            </ul>
-          </div>
+              <p className="mb-2 text-sm text-muted-foreground text-pretty">
+                Der Token-Endpunkt ist streng limitiert um mögliche Attacken zu verhindern.
+              </p>
 
-          {/* Token policy */}
-          <div className="rounded-lg border border-border bg-muted/20 p-4">
-            <div className="mb-2 flex flex-wrap items-center justify-between gap-2">
-              <h4 className="text-sm font-semibold">
-                Token-Endpunkt
-              </h4>
+              <ul className="space-y-2 text-sm text-muted-foreground">
+                <li className="flex gap-2">
+                  <span className="text-primary">•</span>
+                  <span className="text-pretty">
+                    <strong>Fixed Window</strong>: <strong>10 Requests/Minute</strong> je <strong>Client</strong>
+                  </span>
+                </li>
+              </ul>
             </div>
-
-            <p className="mb-2 text-sm text-muted-foreground text-pretty">
-              Der Token-Endpunkt ist streng limitiert um mögliche Attacken zu verhindern.
-            </p>
-
-            <ul className="space-y-2 text-sm text-muted-foreground">
-              <li className="flex gap-2">
-                <span className="text-primary">•</span>
-                <span className="text-pretty">
-                  <strong>Fixed Window</strong>: <strong>10 Requests/Minute</strong> je <strong>Client</strong>
-                </span>
-              </li>
-            </ul>
           </div>
 
-          {/* 429 behavior */}
-          <div className="rounded-lg border border-border bg-muted/20 p-4">
-            <h4 className="mb-2 text-sm font-semibold">Wenn ein Limit erreicht wird (HTTP 429)</h4>
-            <ul className="space-y-2 text-sm text-muted-foreground">
-              <li className="flex gap-2">
-                <span className="text-primary">•</span>
-                <span className="text-pretty">
-                  Response: <strong>429 Too Many Requests</strong> (Rejection Code 429)
-                </span>
-              </li>
-              <li className="flex gap-2">
-                <span className="text-primary">•</span>
-                <span className="text-pretty">
-                  Optionaler Header: <span className="font-mono">Retry-After</span>
-                </span>
-              </li>
-              <li className="flex gap-2">
-                <span className="text-primary">•</span>
-                <span className="text-pretty">
-                  Diagnose/Policy-Hinweis: <span className="font-mono">X-RateLimit-Policy</span>
-                </span>
-              </li>
-              <li className="flex gap-2">
-                <span className="text-primary">•</span>
-                <span className="text-pretty">
-                  Body: <strong>Problem-JSON</strong> (ProblemDetails-Struktur)
-                </span>
-              </li>
-            </ul>
-          </div>
+          {/* 429 behavior (aufklappbar) */}
+          <details className="rounded-lg border border-border bg-muted/20 p-4">
+            <summary className="cursor-pointer text-sm font-semibold">Wenn ein Limit erreicht wird (HTTP 429)</summary>
+
+            <div className="mt-3">
+              <ul className="space-y-2 text-sm text-muted-foreground">
+                <li className="flex gap-2">
+                  <span className="text-primary">•</span>
+                  <span className="text-pretty">
+                    Response: <strong>429 Too Many Requests</strong> (Rejection Code 429)
+                  </span>
+                </li>
+                <li className="flex gap-2">
+                  <span className="text-primary">•</span>
+                  <span className="text-pretty">
+                    Optionaler Header: <span className="font-mono">Retry-After</span>
+                  </span>
+                </li>
+                <li className="flex gap-2">
+                  <span className="text-primary">•</span>
+                  <span className="text-pretty">
+                    Diagnose/Policy-Hinweis: <span className="font-mono">X-RateLimit-Policy</span>
+                  </span>
+                </li>
+                <li className="flex gap-2">
+                  <span className="text-primary">•</span>
+                  <span className="text-pretty">
+                    Body: <strong>Problem-JSON</strong>
+                  </span>
+                </li>
+              </ul>
+            </div>
+          </details>
 
           {/* Best practices */}
           <div className="rounded-lg bg-muted p-4">
