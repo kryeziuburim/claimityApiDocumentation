@@ -883,7 +883,7 @@ function AuthenticationSection() {
               </p>
               <ul className="mt-3 space-y-2 text-sm text-muted-foreground">
                 <li className="flex gap-2"><span className="text-primary">•</span><span><span className="font-mono">iss</span>/<span className="font-mono">sub</span> = <span className="font-mono">client_id</span></span></li>
-                <li className="flex gap-2"><span className="text-primary">•</span><span><span className="font-mono">aud</span> = https://qua.claimity.ch/realms/claimity/protocol/openid-connect/token</span></li>
+                <li className="flex gap-2"><span className="text-primary">•</span><span><span className="font-mono">aud</span> = https://app.claimity.ch/realms/claimity/protocol/openid-connect/token</span></li>
                 <li className="flex gap-2"><span className="text-primary">•</span><span><span className="font-mono">jti</span> = UUID (einzigartig)</span></li>
                 <li className="flex gap-2"><span className="text-primary">•</span><span><span className="font-mono">iat</span>/<span className="font-mono">exp</span> = “now” / “now+90s”</span></li>
                 <li className="flex gap-2"><span className="text-primary">•</span><span><span className="font-mono">kid</span> (optional)</span></li>

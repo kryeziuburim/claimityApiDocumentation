@@ -167,7 +167,7 @@ export function AuthenticationSection() {
                 <li className="flex gap-2">
                   <span className="text-primary">•</span>
                   <span>
-                    <span className="font-mono">aud</span> = https://qua.claimity.ch/realms/claimity/protocol/openid-connect/token
+                    <span className="font-mono">aud</span> = https://app.claimity.ch/realms/claimity/protocol/openid-connect/token
                   </span>
                 </li>
                 <li className="flex gap-2">
