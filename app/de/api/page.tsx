@@ -1035,9 +1035,8 @@ function ApiBasicsSection() {
         <h3 className="mb-4 text-xl font-semibold">Rate Limiting</h3>
 
         <p className="mb-4 leading-relaxed text-muted-foreground text-pretty">
-          Die Partner-API (<span className="font-mono">/v1</span>) ist durch das .NET 8 Rate Limiting Middleware geschützt
-          (<span className="font-mono">AddRateLimiter()</span> / <span className="font-mono">UseRateLimiter()</span>), um faire Nutzung und Stabilität
-          sicherzustellen. Limits werden <strong>pro Client-Partition</strong> angewendet (nicht global für alle Nutzer).
+          Die Partner-API ist durch Rate Limiting geschützt,
+          um faire Nutzung und Stabilität sicherzustellen. Limits werden <strong>pro Client-Partition</strong> angewendet.
         </p>
 
         <div className="space-y-4">
@@ -1045,25 +1044,19 @@ function ApiBasicsSection() {
           <div className="rounded-lg border border-border bg-muted/20 p-4">
             <div className="mb-2 flex flex-wrap items-center justify-between gap-2">
               <h4 className="text-sm font-semibold">
-                Standard für <span className="font-mono">/v1/*</span> (außer Token & Dokumente)
+                Standard für die Partner-API
               </h4>
-              <span className="rounded-full bg-primary/10 px-2 py-1 text-xs font-medium text-primary">
-                Policy: partner-default
-              </span>
             </div>
+
+            <p className="mb-2 text-sm text-muted-foreground text-pretty">
+              Für Standard-Endpunkte wird die Anzahl an Abfragen leicht limitiert.
+            </p>
 
             <ul className="space-y-2 text-sm text-muted-foreground">
               <li className="flex gap-2">
                 <span className="text-primary">•</span>
                 <span className="text-pretty">
                   <strong>TokenBucket</strong>: ca. <strong>60 Requests/Minute</strong>, <strong>Burst</strong> bis <strong>20</strong>, <strong>Queue</strong> <strong>0</strong>
-                </span>
-              </li>
-              <li className="flex gap-2">
-                <span className="text-primary">•</span>
-                <span className="text-pretty">
-                  <strong>Partition Key</strong>: <span className="font-mono">azp</span> Claim (Keycloak) – falls nicht vorhanden: <strong>IP-Fallback</strong> (
-                  <span className="font-mono">GetAzpOrIp()</span>)
                 </span>
               </li>
             </ul>
@@ -1073,22 +1066,17 @@ function ApiBasicsSection() {
           <div className="rounded-lg border border-border bg-muted/20 p-4">
             <div className="mb-2 flex flex-wrap items-center justify-between gap-2">
               <h4 className="text-sm font-semibold">Dokument-Routen</h4>
-              <span className="rounded-full bg-accent/10 px-2 py-1 text-xs font-medium text-accent">
-                Policy: partner-docs
-              </span>
             </div>
 
             <p className="mb-2 text-sm text-muted-foreground text-pretty">
               Für Endpunkte mit <span className="font-mono">.../documents...</span> gelten strengere Limits (z. B. für Upload/Download).
-              Diese Policy wird explizit per Attribut aktiviert:
-              <span className="ml-1 font-mono">[EnableRateLimiting("partner-docs")]</span>
             </p>
 
             <ul className="space-y-2 text-sm text-muted-foreground">
               <li className="flex gap-2">
                 <span className="text-primary">•</span>
                 <span className="text-pretty">
-                  <strong>TokenBucket</strong>: ca. <strong>20 Requests/Minute</strong> (≈ <strong>1 Token / 3s</strong>), <strong>Burst</strong> bis <strong>10</strong>, <strong>Queue</strong> <strong>0</strong>
+                  <strong>TokenBucket</strong>: ca. <strong>20 Requests/Minute</strong>, <strong>Burst</strong> bis <strong>10</strong>, <strong>Queue</strong> <strong>0</strong>
                 </span>
               </li>
             </ul>
@@ -1098,31 +1086,19 @@ function ApiBasicsSection() {
           <div className="rounded-lg border border-border bg-muted/20 p-4">
             <div className="mb-2 flex flex-wrap items-center justify-between gap-2">
               <h4 className="text-sm font-semibold">
-                Token Proxy <span className="font-mono">POST /v1/oauth/token</span>
+                Token-Endpunkt
               </h4>
-              <span className="rounded-full bg-destructive/10 px-2 py-1 text-xs font-medium text-destructive">
-                Policy: token-per-client
-              </span>
             </div>
+
+            <p className="mb-2 text-sm text-muted-foreground text-pretty">
+              Der Token-Endpunkt ist streng limitiert um mögliche Attacken zu verhindern.
+            </p>
 
             <ul className="space-y-2 text-sm text-muted-foreground">
               <li className="flex gap-2">
                 <span className="text-primary">•</span>
                 <span className="text-pretty">
-                  <strong>FixedWindow</strong>: <strong>10 Requests/Minute</strong> pro <strong>client_id</strong>
-                </span>
-              </li>
-              <li className="flex gap-2">
-                <span className="text-primary">•</span>
-                <span className="text-pretty">
-                  <strong>Partition Key</strong>: <span className="font-mono">client_id</span> aus Basic Auth (Fallback: IP / anonym) (
-                  <span className="font-mono">ExtractClientIdFromBasicAuth()</span>)
-                </span>
-              </li>
-              <li className="flex gap-2">
-                <span className="text-primary">•</span>
-                <span className="text-pretty">
-                  Am Controller aktiviert via <span className="font-mono">[EnableRateLimiting("token-per-client")]</span> (AuthV1Controller)
+                  <strong>Fixed Window</strong>: <strong>10 Requests/Minute</strong> je <strong>Client</strong>
                 </span>
               </li>
             </ul>
@@ -1157,22 +1133,6 @@ function ApiBasicsSection() {
                 </span>
               </li>
             </ul>
-
-            <div className="mt-3 rounded-md bg-background p-3">
-              <div className="mb-2 text-xs font-medium text-muted-foreground">Beispiel (gekürzt)</div>
-              <pre className="overflow-x-auto text-xs">
-                <code className="font-mono">{`HTTP/1.1 429 Too Many Requests
-      Retry-After: 3
-      X-RateLimit-Policy: partner-docs
-
-      {
-        "type": "about:blank",
-        "title": "Too Many Requests",
-        "status": 429,
-        "detail": "Rate limit exceeded."
-      }`}</code>
-              </pre>
-            </div>
           </div>
 
           {/* Best practices */}
