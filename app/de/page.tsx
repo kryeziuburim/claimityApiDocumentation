@@ -6,9 +6,9 @@ import { LifeBuoy, BookOpen, Code, ArrowRight, MessageCircleCode, MailPlus } fro
 import { LanguageSwitcherDark } from "@/components/language-switcher-dark"
 
 export const metadata: Metadata = {
-  title: "Claimity – Dokumentation",
+  title: "Claimity – Hilfe-Center",
   description:
-    "Dokumentation der Claimity Plattform. Claimity vermittelt zertifizierte Experten automatisch – für schnellere Bearbeitung, weniger Aufwand und volle Transparenz.",
+    "Hilfe-Center der Claimity Plattform. Claimity vermittelt zertifizierte Experten automatisch – für schnellere Bearbeitung, weniger Aufwand und volle Transparenz.",
   alternates: {
     canonical: "/de/",
     languages: {
@@ -18,14 +18,14 @@ export const metadata: Metadata = {
     },
   },
   openGraph: {
-    title: "Claimity – Dokumentation",
-    description: "Dokumentation der Claimity Plattform.",
+    title: "Claimity – Hilfe-Center",
+    description: "Hilfe-Center der Claimity Plattform.",
     url: "/de/",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Claimity – Dokumentation",
-    description: "Dokumentation der Claimity Plattform.",
+    title: "Claimity – Hilfe-Center",
+    description: "Hilfe-Center der Claimity Plattform.",
   },
 }
 
