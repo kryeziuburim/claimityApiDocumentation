@@ -67,7 +67,6 @@ export function EndpointCard({
         <div className="min-w-0">
           <div className="flex flex-wrap items-center gap-2">
             <span className="font-mono text-sm font-semibold break-all">{codeLine}</span>
-            <span className={cn("rounded-full px-2 py-1 text-xs font-medium", pillClass)}>{label}</span>
           </div>
 
           {description ? (
@@ -83,20 +82,6 @@ export function EndpointCard({
 
         {/* Actions */}
         <div className="flex shrink-0 items-center gap-2">
-          <button
-            type="button"
-            onClick={onCopy}
-            className={cn(
-              "inline-flex items-center gap-1.5 rounded-md border border-border bg-background px-2.5 py-1.5 text-xs",
-              "hover:bg-muted focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
-            )}
-            aria-label="Endpoint kopieren"
-            title="Kopieren"
-          >
-            {copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
-            {copied ? "Kopiert" : "Copy"}
-          </button>
-
           {enableDetails ? (
             <button
               type="button"
