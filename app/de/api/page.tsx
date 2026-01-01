@@ -855,7 +855,7 @@ function AuthenticationSection() {
                     <span className="font-mono">client_assertion</span> = <span className="font-mono">&lt;JWT (RS256)&gt;</span>
                   </div>
                   <div>
-                    Optional: <span className="font-mono">scope</span>
+                    <span className="font-mono">scope</span> <span className="font-mono">(optional)</span>
                   </div>
                 </div>
               ),
@@ -863,25 +863,25 @@ function AuthenticationSection() {
           ]}
         />
 
-        <div className="grid gap-4 md:grid-cols-2">
-          <div className="rounded-lg border border-border bg-muted/20 p-4">
-            <h4 className="mb-2 text-sm font-semibold">JWT Client Assertion (RS256)</h4>
-            <p className="text-sm text-muted-foreground text-pretty">
-              Die Assertion ist ein kurzlebiges JWT (10 Minuten) und wird mit deinem <strong>RSA Private Key</strong> signiert.
-              Wichtige Claims:
-            </p>
-            <ul className="mt-3 space-y-2 text-sm text-muted-foreground">
-              <li className="flex gap-2"><span className="text-primary">•</span><span><span className="font-mono">iss</span>/<span className="font-mono">sub</span> = <span className="font-mono">client_id</span></span></li>
-              <li className="flex gap-2"><span className="text-primary">•</span><span><span className="font-mono">aud</span> = https://qua.claimity.ch/realms/claimity/protocol/openid-connect/token</span></li>
-              <li className="flex gap-2"><span className="text-primary">•</span><span><span className="font-mono">jti</span> = UUID (einzigartig)</span></li>
-              <li className="flex gap-2"><span className="text-primary">•</span><span><span className="font-mono">iat</span>/<span className="font-mono">exp</span> = “now” / “now+90s”</span></li>
-              <li className="flex gap-2"><span className="text-primary">•</span><span>Optional Header <span className="font-mono">kid</span></span></li>
-            </ul>
-          </div>
+        <details className="rounded-lg border border-border bg-muted/20 p-4">
+          <summary className="cursor-pointer text-sm font-semibold">JWT Client Assertion (RS256)</summary>
+          <div className="mt-3 grid gap-4 md:grid-cols-2 md:items-start">
+            <div>
+              <p className="text-sm text-muted-foreground text-pretty">
+                Die Assertion ist ein kurzlebiges JWT (10 Minuten) und wird mit deinem <strong>RSA Private Key</strong> signiert.
+              </p>
+              <ul className="mt-3 space-y-2 text-sm text-muted-foreground">
+                <li className="flex gap-2"><span className="text-primary">•</span><span><span className="font-mono">iss</span>/<span className="font-mono">sub</span> = <span className="font-mono">client_id</span></span></li>
+                <li className="flex gap-2"><span className="text-primary">•</span><span><span className="font-mono">aud</span> = https://qua.claimity.ch/realms/claimity/protocol/openid-connect/token</span></li>
+                <li className="flex gap-2"><span className="text-primary">•</span><span><span className="font-mono">jti</span> = UUID (einzigartig)</span></li>
+                <li className="flex gap-2"><span className="text-primary">•</span><span><span className="font-mono">iat</span>/<span className="font-mono">exp</span> = “now” / “now+90s”</span></li>
+                <li className="flex gap-2"><span className="text-primary">•</span><span><span className="font-mono">kid</span> (optional)</span></li>
+              </ul>
+            </div>
 
-          <CodeBlock
-            title="Beispiel: Token Request (cURL, Platzhalter)"
-            children={`curl -X POST \\
+            <CodeBlock
+              title="Beispiel: Token Request (cURL, Platzhalter)"
+              children={`curl -X POST \\
   'https://app.claimity.ch/v1/oauth/token' \\
   -H 'Content-Type: application/x-www-form-urlencoded' \\
   -d 'grant_type=client_credentials' \\
@@ -889,24 +889,25 @@ function AuthenticationSection() {
   -d 'client_assertion_type=urn:ietf:params:oauth:client-assertion-type:jwt-bearer' \\
   -d 'client_assertion=<RS256-JWT-CLIENT-ASSERTION>' \\
   -d 'scope=roles'`}
-          />
-        </div>
+            />
+          </div>
+        </details>
 
         <div className="rounded-lg bg-muted p-4">
           <h4 className="mb-2 text-sm font-semibold">Token Response</h4>
           <p className="text-sm text-muted-foreground text-pretty">
             Die Response enthält ein <span className="font-mono">access_token</span>. Wichtig: Für API-Aufrufe wird dieser Token als
-            <strong> DPoP Token</strong> verwendet (siehe nächster Schritt).
+            <strong> DPoP Token</strong> verwendet.
           </p>
         </div>
       </div>
 
       {/* Anchor 2 */}
       <div id="auth-dpop" className="rounded-lg border border-border bg-card p-6 space-y-4 scroll-mt-24">
-        <h3 className="text-xl font-semibold">API Requests senden (DPoP Proof-of-Possession)</h3>
+        <h3 className="text-xl font-semibold">API Requests senden</h3>
 
         <p className="leading-relaxed text-muted-foreground text-pretty">
-          Jede Anfrage an <span className="font-mono">/v1/…</span> benötigt zusätzlich einen <strong>DPoP Proof JWT</strong>.
+          Jede Anfrage benötigt zusätzlich einen <strong>DPoP Proof JWT</strong>.
           Dieser wird <strong>pro Request</strong> erzeugt und signiert (ES256) und bindet die Anfrage an Methode + URL.
         </p>
 
@@ -920,9 +921,9 @@ function AuthenticationSection() {
           ]}
         />
 
-        <div className="grid gap-4 md:grid-cols-2">
-          <div className="rounded-lg border border-border bg-muted/20 p-4">
-            <h4 className="mb-2 text-sm font-semibold">DPoP Proof Inhalt (wichtig)</h4>
+        <details className="rounded-lg border border-border bg-muted/20 p-4">
+          <summary className="cursor-pointer text-sm font-semibold">DPoP Proof Inhalt</summary>
+          <div className="mt-3 grid gap-4 md:grid-cols-2 md:items-start">
             <ul className="space-y-2 text-sm text-muted-foreground">
               <li className="flex gap-2">
                 <span className="text-primary">•</span>
@@ -955,22 +956,22 @@ function AuthenticationSection() {
                 </span>
               </li>
             </ul>
-          </div>
 
-          <CodeBlock
-            title="Beispiel: Authentifizierter API Call (cURL)"
-            children={`curl -X GET \\
+            <CodeBlock
+              title="Beispiel: Authentifizierter API Call (cURL)"
+              children={`curl -X GET \\
   'https://app.claimity.ch/v1/experts/cases?page=1&size=50' \\
   -H 'Accept: application/json' \\
   -H 'Authorization: DPoP {access_token}' \\
   -H 'DPoP: {dpop_proof_jwt}'`}
-          />
-        </div>
+            />
+          </div>
+        </details>
 
-        <div className="rounded-lg border border-border bg-muted/20 p-4">
-          <h4 className="mb-2 text-sm font-semibold">Troubleshooting: 401 invalid_dpop</h4>
-          <p className="text-sm text-muted-foreground text-pretty">
-            Häufige Ursachen (bitte zuerst prüfen):
+        <details className="rounded-lg border border-border bg-muted/20 p-4">
+          <summary className="cursor-pointer text-sm font-semibold">Troubleshooting: 401 invalid_dpop</summary>
+          <p className="mt-2 text-sm text-muted-foreground text-pretty">
+            Häufige Ursachen:
           </p>
           <ul className="mt-3 space-y-2 text-sm text-muted-foreground">
             <li className="flex gap-2"><span className="text-primary">•</span><span><strong>htu mismatch</strong>: URL muss exakt inkl. Query sein</span></li>
@@ -979,7 +980,7 @@ function AuthenticationSection() {
             <li className="flex gap-2"><span className="text-primary">•</span><span><strong>replay</strong>: <span className="font-mono">jti</span> muss pro Request neu sein</span></li>
             <li className="flex gap-2"><span className="text-primary">•</span><span><strong>ath mismatch</strong>: <span className="font-mono">SHA-256(access_token)</span> base64url</span></li>
           </ul>
-        </div>
+        </details>
       </div>
     </div>
   )
@@ -1187,7 +1188,7 @@ function ApiBasicsSection() {
               <li className="flex gap-2">
                 <span className="text-primary">•</span>
                 <span className="text-pretty">
-                  Dokument-Uploads/Downloads throttlen (parallelisieren nur moderat), da <span className="font-mono">partner-docs</span> bewusst strenger ist.
+                  Dokument-Uploads/Downloads throttlen.
                 </span>
               </li>
               <li className="flex gap-2">
