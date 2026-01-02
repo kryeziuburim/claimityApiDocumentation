@@ -15,7 +15,14 @@ import {
 } from "./openapi-utils"
 import { useOpenApi } from "./OpenApiProvider"
 
-const ACCENT_COLOR = "#2a8289"
+const METHOD_ACCENTS: Partial<Record<HttpMethod, string>> = {
+  GET: "#E1EDFF",
+  POST: "#E4F7EE",
+  PUT: "#FFF1DC",
+  PATCH: "#FFF1DC",
+  DELETE: "#FFE5E5",
+}
+const DEFAULT_ACCENT_COLOR = "#2a8289"
 const SCHEMA_EXPLORER_MAX_DEPTH = 6
 
 type HeaderRow = { k: string; v: string }
@@ -101,6 +108,7 @@ export function EndpointDetails({
   const [tab, setTab] = useState<"request" | "response" | "errors" | "examples">("request")
   const [activeResponse, setActiveResponse] = useState<string | null>(null)
   const [activeExample, setActiveExample] = useState<string | null>(() => (exampleBlocks[0] ? exampleBlocks[0].key : null))
+  const accentColor = METHOD_ACCENTS[method] ?? DEFAULT_ACCENT_COLOR
 
   useEffect(() => {
     if (responses.length === 0) {
@@ -149,16 +157,16 @@ export function EndpointDetails({
   return (
     <div className={cn("mt-3", className)}>
       <div className="mb-4 flex flex-wrap items-center gap-2">
-        <TabButton active={tab === "request"} onClick={() => setTab("request")}>
+        <TabButton active={tab === "request"} onClick={() => setTab("request")} accentColor={accentColor}>
           Request
         </TabButton>
-        <TabButton active={tab === "response"} onClick={() => setTab("response")}>
+        <TabButton active={tab === "response"} onClick={() => setTab("response")} accentColor={accentColor}>
           Response
         </TabButton>
-        <TabButton active={tab === "errors"} onClick={() => setTab("errors")}>
+        <TabButton active={tab === "errors"} onClick={() => setTab("errors")} accentColor={accentColor}>
           Errors
         </TabButton>
-        <TabButton active={tab === "examples"} onClick={() => setTab("examples")}>
+        <TabButton active={tab === "examples"} onClick={() => setTab("examples")} accentColor={accentColor}>
           Examples
         </TabButton>
       </div>
@@ -189,7 +197,9 @@ export function EndpointDetails({
                 title="Request Schema"
                 maxDepth={SCHEMA_EXPLORER_MAX_DEPTH}
               />
-              <CodeBlock title="Beispiel-Body">{reqExample ? prettyJson(reqExample) : null}</CodeBlock>
+               <CodeBlock title="Beispiel-Body" accentColor={accentColor}>
+                 {reqExample ? prettyJson(reqExample) : null}
+               </CodeBlock>
             </DetailBlock>
           )}
         </div>
@@ -229,7 +239,9 @@ export function EndpointDetails({
                           title="Response Schema"
                           maxDepth={SCHEMA_EXPLORER_MAX_DEPTH}
                         />
-                        <CodeBlock title="Beispiel-Response">{example ? prettyJson(example) : null}</CodeBlock>
+                        <CodeBlock title="Beispiel-Response" accentColor={accentColor}>
+                          {example ? prettyJson(example) : null}
+                        </CodeBlock>
                       </div>
                     ) : (
                       <div className="text-sm text-muted-foreground">Kein JSON-Schema dokumentiert.</div>
@@ -262,9 +274,9 @@ export function EndpointDetails({
                 <button
                   type="button"
                   onClick={() => setActiveExample(key)}
-                  className="flex w-full items-center justify-between gap-3 px-4 py-2 text-left text-xs font-semibold uppercase tracking-wide text-white"
+                  className="flex w-full items-center justify-between gap-3 px-4 py-2 text-left text-xs font-semibold uppercase tracking-wide text-foreground"
                   aria-expanded={isOpen}
-                  style={{ backgroundColor: ACCENT_COLOR }}
+                  style={{ backgroundColor: accentColor }}
                 >
                   <span>{title}</span>
                   <ChevronDown className={cn("h-4 w-4 transition-transform", isOpen && "rotate-180")} />
@@ -287,10 +299,12 @@ function TabButton({
   active,
   onClick,
   children,
+  accentColor,
 }: {
   active: boolean
   onClick: () => void
   children: React.ReactNode
+  accentColor: string
 }) {
   return (
     <button
@@ -298,9 +312,9 @@ function TabButton({
       onClick={onClick}
       className={cn(
         "rounded-md border border-border/60 px-4 py-1.5 text-xs font-semibold transition",
-        active ? "text-white shadow-sm" : "text-muted-foreground hover:text-foreground"
+        active ? "text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"
       )}
-      style={active ? { backgroundColor: ACCENT_COLOR, borderColor: ACCENT_COLOR } : undefined}
+      style={active ? { backgroundColor: accentColor, borderColor: accentColor } : undefined}
     >
       {children}
     </button>
@@ -377,14 +391,14 @@ function ParamTable({ params }: { params: any[] }) {
   )
 }
 
-function CodeBlock({ title, children }: { title: string; children: string | null }) {
+function CodeBlock({ title, children, accentColor }: { title: string; children: string | null; accentColor: string }) {
   if (!children) return null
 
   return (
     <div className="overflow-hidden rounded-2xl border border-border/70 bg-background/80">
       <div
-        className="px-4 py-2 text-xs font-semibold uppercase tracking-wide text-white"
-        style={{ backgroundColor: ACCENT_COLOR }}
+        className="px-4 py-2 text-xs font-semibold uppercase tracking-wide text-foreground"
+        style={{ backgroundColor: accentColor }}
       >
         {title}
       </div>

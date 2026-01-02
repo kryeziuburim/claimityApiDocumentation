@@ -11,7 +11,7 @@ export function ExpertsSection() {
       </div>
 
       {/* ========== CASES ========== */}
-      <div className="rounded-lg border border-border bg-card p-6">
+      <div>
         <h3 className="mb-4 text-xl font-semibold">Fälle</h3>
 
         <div className="space-y-4">
@@ -40,7 +40,7 @@ export function ExpertsSection() {
       </div>
 
       {/* ========== CASE DOCUMENTS ========== */}
-      <div className="rounded-lg border border-border bg-card p-6">
+      <div>
         <h3 className="mb-4 text-xl font-semibold">Falldokumente</h3>
 
         <div className="space-y-4">
@@ -65,7 +65,7 @@ export function ExpertsSection() {
       </div>
 
       {/* ========== REPORTS (DRAFT + LIST) ========== */}
-      <div className="rounded-lg border border-border bg-card p-6">
+      <div>
         <h3 className="mb-4 text-xl font-semibold">Reports & Submissions</h3>
 
         <div className="space-y-4">
@@ -103,7 +103,7 @@ export function ExpertsSection() {
       </div>
 
       {/* ========== SUBMISSION DOCUMENTS + SUBMIT ========== */}
-      <div className="rounded-lg border border-border bg-card p-6">
+      <div>
         <h3 className="mb-4 text-xl font-semibold">Submission-Dokumente</h3>
 
         <div className="space-y-4">
