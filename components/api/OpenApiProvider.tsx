@@ -33,7 +33,7 @@ export function OpenApiProvider({
       try {
         setLoading(true)
         setError(null)
-        const res = await fetch(url, { cache: "force-cache" })
+        const res = await fetch(url, { cache: "no-store" })
         if (!res.ok) throw new Error(`Failed to load OpenAPI spec: ${res.status} ${res.statusText}`)
         const json = await res.json()
         if (!cancelled) setSpec(json)

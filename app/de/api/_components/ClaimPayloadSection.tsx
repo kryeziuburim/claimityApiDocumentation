@@ -163,19 +163,6 @@ export function ClaimPayloadSection() {
                       </div>
                     ) : null}
 
-                    {objectFields.length ? (
-                      <div className="rounded-2xl border border-border/60 bg-muted/10 p-4">
-                        <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Wichtige Objekte</p>
-                        <div className="mt-2 flex flex-wrap gap-2">
-                          {objectFields.map((field) => (
-                            <span key={field} className="rounded-md bg-background/70 px-3 py-1 text-xs font-mono text-muted-foreground">
-                              {field}
-                            </span>
-                          ))}
-                        </div>
-                      </div>
-                    ) : null}
-
                     <div className="rounded-2xl border border-border/70 bg-muted/10 p-4">
                       <SchemaExplorer spec={schema} schema={schema} title="Payload Schema" maxDepth={6} />
                     </div>

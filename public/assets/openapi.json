@@ -27,14 +27,31 @@
             "name": "status",
             "in": "query",
             "schema": {
-              "type": "string"
+              "type": "string",
+              "enum": [
+                "Created",
+                "Assigned",
+                "Rejected",
+                "Accepted",
+                "InProgress",
+                "ExpertCompleted",
+                "AdminApproved",
+                "AdminReturned",
+                "AdminCancelled",
+                "Final"
+              ]
             }
           },
           {
             "name": "category",
             "in": "query",
             "schema": {
-              "type": "string"
+              "type": "string",
+              "enum": [
+                "vehicle",
+                "fraud",
+                "appraiser"
+              ]
             }
           },
           {
@@ -1320,14 +1337,31 @@
             "name": "category",
             "in": "query",
             "schema": {
-              "type": "string"
+              "type": "string",
+              "enum": [
+                "vehicle",
+                "fraud",
+                "appraiser"
+              ]
             }
           },
           {
             "name": "status",
             "in": "query",
             "schema": {
-              "type": "string"
+              "type": "string",
+              "enum": [
+                "Created",
+                "Assigned",
+                "Rejected",
+                "Accepted",
+                "InProgress",
+                "ExpertCompleted",
+                "AdminApproved",
+                "AdminReturned",
+                "AdminCancelled",
+                "Final"
+              ]
             }
           },
           {
@@ -1801,11 +1835,28 @@
           },
           "Category": {
             "type": "string",
-            "nullable": true
+            "nullable": true,
+            "enum": [
+              "vehicle",
+              "fraud",
+              "appraiser"
+            ]
           },
           "Status": {
             "type": "string",
-            "nullable": true
+            "nullable": true,
+            "enum": [
+              "Created",
+              "Assigned",
+              "Rejected",
+              "Accepted",
+              "InProgress",
+              "ExpertCompleted",
+              "AdminApproved",
+              "AdminReturned",
+              "AdminCancelled",
+              "Final"
+            ]
           },
           "CreatedAt": {
             "type": "string",
@@ -1845,11 +1896,28 @@
           },
           "Category": {
             "type": "string",
-            "nullable": true
+            "nullable": true,
+            "enum": [
+              "vehicle",
+              "fraud",
+              "appraiser"
+            ]
           },
           "Status": {
             "type": "string",
-            "nullable": true
+            "nullable": true,
+            "enum": [
+              "Created",
+              "Assigned",
+              "Rejected",
+              "Accepted",
+              "InProgress",
+              "ExpertCompleted",
+              "AdminApproved",
+              "AdminReturned",
+              "AdminCancelled",
+              "Final"
+            ]
           },
           "PayloadJson": {
             "type": "string",
@@ -1882,7 +1950,12 @@
         "properties": {
           "Category": {
             "type": "string",
-            "nullable": true
+            "nullable": true,
+            "enum": [
+              "vehicle",
+              "fraud",
+              "appraiser"
+            ]
           },
           "PayloadJson": {
             "type": "string",
@@ -2075,11 +2148,28 @@
           },
           "Category": {
             "type": "string",
-            "nullable": true
+            "nullable": true,
+            "enum": [
+              "vehicle",
+              "fraud",
+              "appraiser"
+            ]
           },
           "Status": {
             "type": "string",
-            "nullable": true
+            "nullable": true,
+            "enum": [
+              "Created",
+              "Assigned",
+              "Rejected",
+              "Accepted",
+              "InProgress",
+              "ExpertCompleted",
+              "AdminApproved",
+              "AdminReturned",
+              "AdminCancelled",
+              "Final"
+            ]
           },
           "CreatedAt": {
             "type": "string",
@@ -2119,11 +2209,28 @@
           },
           "Category": {
             "type": "string",
-            "nullable": true
+            "nullable": true,
+            "enum": [
+              "vehicle",
+              "fraud",
+              "appraiser"
+            ]
           },
           "Status": {
             "type": "string",
-            "nullable": true
+            "nullable": true,
+            "enum": [
+              "Created",
+              "Assigned",
+              "Rejected",
+              "Accepted",
+              "InProgress",
+              "ExpertCompleted",
+              "AdminApproved",
+              "AdminReturned",
+              "AdminCancelled",
+              "Final"
+            ]
           },
           "CreatedAt": {
             "type": "string",
@@ -2425,7 +2532,13 @@
           },
           "Status": {
             "type": "string",
-            "nullable": true
+            "nullable": true,
+            "enum": [
+              "Draft",
+              "Submitted",
+              "Approved",
+              "Returned"
+            ]
           },
           "Comment": {
             "type": "string",
@@ -2536,7 +2649,13 @@
           },
           "Status": {
             "type": "string",
-            "nullable": true
+            "nullable": true,
+            "enum": [
+              "Draft",
+              "Submitted",
+              "Approved",
+              "Returned"
+            ]
           },
           "Comment": {
             "type": "string",

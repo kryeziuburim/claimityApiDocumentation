@@ -65,7 +65,23 @@ export function SchemaExplorer({
       const isReq = currentRequired.includes(field)
       const nullable = !!fieldSchema?.nullable
       const enumVals = Array.isArray(fieldSchema?.enum) ? fieldSchema.enum : null
-      const desc = safeString(fieldSchema?.description)
+      const keyId = `${currentTitle}.${field}`
+      const descRaw = safeString(fieldSchema?.description)
+      const descNode = renderInlineLinks(descRaw)
+      const enumNode =
+        enumVals && enumVals.length ? (
+          <div className="flex justify-start">
+            <div className="flex flex-wrap gap-1 text-[11px] font-mono text-muted-foreground">
+              {enumVals.map((value: string, idx: number) => {
+                return (
+                  <span key={`${keyId}-enum-${idx}-${value}`} className="rounded border border-border/60 bg-muted/20 px-2 py-0.5">
+                    {value}
+                  </span>
+                )
+              })}
+            </div>
+          </div>
+        ) : null
 
       const canExpand =
         currentDepth < maxDepth &&
@@ -74,7 +90,6 @@ export function SchemaExplorer({
           Boolean(fieldSchema?.properties) ||
           (fieldSchema?.type === "array" && (fieldSchema?.items?.$ref || fieldSchema?.items?.properties)))
 
-      const keyId = `${currentTitle}.${field}`
       const open = !!expanded[keyId]
       const indentLevel = Math.max(0, currentDepth - depth)
 
@@ -101,8 +116,8 @@ export function SchemaExplorer({
             tabIndex={canExpand ? 0 : undefined}
             aria-expanded={canExpand ? open : undefined}
           >
-            <td className="pr-3 py-2 font-mono text-xs" style={{ paddingLeft: indentLevel * 16 }}>
-              <div className="flex items-center gap-2">
+             <td className="pr-3 py-2 font-mono text-xs align-top" style={{ paddingLeft: indentLevel * 16 }}>
+               <div className="flex items-center gap-2">
                 {canExpand ? (
                   <>
                     <ChevronRight
@@ -118,20 +133,10 @@ export function SchemaExplorer({
                 )}
               </div>
             </td>
-            <td className="pr-3 py-2 font-mono text-xs">{type}</td>
-            <td className="pr-3 py-2">{isReq ? "✓" : ""}</td>
-            <td className="pr-3 py-2">{nullable ? "✓" : ""}</td>
-            <td className="pr-3 py-2">
-              {enumVals ? (
-                <span className="text-xs text-muted-foreground">
-                  {enumVals.slice(0, 4).join(", ")}
-                  {enumVals.length > 4 ? "…" : ""}
-                </span>
-              ) : (
-                ""
-              )}
-            </td>
-            <td className="py-2 text-muted-foreground">{desc}</td>
+            <td className="pr-3 py-2 font-mono text-xs align-top">{type}</td>
+            <td className="pr-3 py-2 align-top text-center">{isReq ? "✓" : ""}</td>
+            <td className="pr-3 py-2 align-top text-center">{nullable ? "✓" : ""}</td>
+            <td className="pr-3 py-2 align-top text-left">{enumNode}</td>
           </tr>
 
           {canExpand && open ? renderChildRows(fieldSchema, childTitle(field, fieldSchema), currentDepth + 1) : null}
@@ -174,13 +179,20 @@ export function SchemaExplorer({
       </div>
 
       <div className={bodyWrapperClasses}>
-        <table className="w-full text-left text-sm">
+        <table className="w-full table-fixed text-left text-sm">
+          <colgroup>
+            <col className="w-[22%]" />
+            <col className="w-[18%]" />
+            <col className="w-[10%]" />
+            <col className="w-[10%]" />
+            <col className="w-[40%]" />
+          </colgroup>
           <thead className="text-xs text-muted-foreground">
-            <tr className="[&>th]:pb-2">
+            <tr className="[&>th]:pb-2 text-left">
               <th className="pr-3">Feld</th>
               <th className="pr-3">Typ</th>
-              <th className="pr-3">Required</th>
-              <th className="pr-3">Nullable</th>
+              <th className="pr-3 text-center">Required</th>
+              <th className="pr-3 text-center">Nullable</th>
               <th className="pr-3">Enum</th>
             </tr>
           </thead>
@@ -212,4 +224,27 @@ function normalizeSchemaWithRef(spec: any, schema: any) {
     return { ...resolved, __refName: refName(schema.$ref) }
   }
   return schema
+}
+
+function renderInlineLinks(text: string) {
+  if (!text) return null
+  const linkRegex = /\[([^\]]+)\]\(([^)]+)\)/g
+  const parts: React.ReactNode[] = []
+  let lastIndex = 0
+  let match: RegExpExecArray | null
+  while ((match = linkRegex.exec(text)) !== null) {
+    if (match.index > lastIndex) {
+      parts.push(text.slice(lastIndex, match.index))
+    }
+    parts.push(
+      <a key={`${match.index}-${match[2]}`} href={match[2]} className="text-primary underline underline-offset-2">
+        {match[1]}
+      </a>
+    )
+    lastIndex = linkRegex.lastIndex
+  }
+  if (lastIndex < text.length) {
+    parts.push(text.slice(lastIndex))
+  }
+  return parts.length ? parts : text
 }
