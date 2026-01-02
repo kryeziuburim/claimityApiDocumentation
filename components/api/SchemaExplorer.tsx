@@ -182,7 +182,6 @@ export function SchemaExplorer({
               <th className="pr-3">Required</th>
               <th className="pr-3">Nullable</th>
               <th className="pr-3">Enum</th>
-              <th>Beschreibung</th>
             </tr>
           </thead>
           <tbody>{renderPropertyRows(normalized, schemaTitle, depth)}</tbody>

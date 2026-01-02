@@ -367,7 +367,6 @@ function ParamTable({ params }: { params: any[] }) {
             <th>Typ</th>
             <th>Required</th>
             <th>Default</th>
-            <th>Beschreibung</th>
           </tr>
         </thead>
         <tbody>
@@ -382,7 +381,6 @@ function ParamTable({ params }: { params: any[] }) {
               <td className="px-3 py-2 font-mono text-xs text-muted-foreground">
                 {p.schema?.default != null ? String(p.schema.default) : ""}
               </td>
-              <td className="px-3 py-2 text-sm text-muted-foreground">{p.description ?? ""}</td>
             </tr>
           ))}
         </tbody>

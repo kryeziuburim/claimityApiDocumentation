@@ -9,10 +9,8 @@ export type ClaimPayloadMeta = {
   navTitle: string
   anchorId: string
   label: string
-  description: string
   schemaPath: string
   badgeLabel: string
-  badgeClass: string
 }
 
 type SchemaLoadState = {
@@ -33,30 +31,24 @@ export const CLAIM_PAYLOADS: ClaimPayloadMeta[] = [
     navTitle: "Fahrzeuggutachter",
     anchorId: "payloads-vehicle",
     label: "Fahrzeuggutachter",
-    description: "Struktur für Fahrzeuggutachter-Fälle inklusive Werkstatt- und Inspection-Daten.",
     schemaPath: "/assets/schemas/vehicle-claim.schema.json",
     badgeLabel: "Fahrzeuggutachter",
-    badgeClass: "bg-sky-100 text-sky-900",
   },
   {
     key: "appraiser",
     navTitle: "Sachverständiger",
     anchorId: "payloads-appraiser",
     label: "Sachverständiger",
-    description: "Payload für Sachverständige (Gebäude/Haushalt) mit inspectionType-abhängigen Pflichten.",
     schemaPath: "/assets/schemas/appraiser-claim.schema.json",
     badgeLabel: "Sachverständiger",
-    badgeClass: "bg-emerald-100 text-emerald-900",
   },
   {
     key: "fraud",
     navTitle: "Bekämpfung Versicherungsmissbrauch",
     anchorId: "payloads-fraud",
     label: "Bekämpfung Versicherungsmissbrauch",
-    description: "Komplexe Struktur für Fälle zur Bekämpfung von Versicherungsmissbrauch inklusive Personenlisten und Fahrerabhängigkeiten.",
     schemaPath: "/assets/schemas/fraud-claim.schema.json",
     badgeLabel: "Versicherungsmissbrauch",
-    badgeClass: "bg-rose-100 text-rose-900",
   },
 ]
 
@@ -134,10 +126,8 @@ export function ClaimPayloadSection() {
             <div key={payload.key} id={payload.anchorId} className="rounded-2xl border border-border/60 bg-muted/15">
               <div className="flex w-full items-center justify-between gap-3 px-4 py-3">
                 <div>
-                  <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">{payload.label}</p>
-                  <p className="text-sm text-muted-foreground">{payload.description}</p>
+                  <p className="text-md font-semibold uppercase tracking-wide text-foreground">{payload.label}</p>
                 </div>
-                <span className={cn("rounded-full px-3 py-1 text-xs font-semibold", payload.badgeClass)}>{payload.badgeLabel}</span>
               </div>
 
               <div className="border-t border-border/40 bg-card/80 p-5">
@@ -158,7 +148,6 @@ export function ClaimPayloadSection() {
                       >
                         Schema herunterladen
                       </a>
-                      <span className="text-xs text-muted-foreground">{schema.title ?? "JSON Schema"}</span>
                     </div>
 
                     {requiredFields.length ? (
