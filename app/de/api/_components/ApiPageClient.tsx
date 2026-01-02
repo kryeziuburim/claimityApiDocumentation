@@ -156,7 +156,9 @@ export default function ApiPageClient() {
       const top = sentinel.getBoundingClientRect().top
 
       // Sobald der Footer ins Viewport kommt, wird lift > 0
-      const lift = Math.max(0, vh - top)
+      const overlap = Math.max(0, vh - top)
+      const maxLift = Math.max(0, vh - 96)
+      const lift = Math.min(overlap, maxLift)
 
       setFooterLiftPx((prev) => (Math.abs(prev - lift) < 1 ? prev : lift))
     }
@@ -450,11 +452,15 @@ export default function ApiPageClient() {
           )}
           style={
             showSidebar && footerLiftPx > 0
-              ? { top: -footerLiftPx, bottom: footerLiftPx }
+              ? { bottom: footerLiftPx }
               : undefined
           }
         >
-          <div ref={sidebarScrollRef} className="api-sidebar-scroll h-[calc(100vh-4rem)] overflow-y-auto py-6">
+          <div
+            ref={sidebarScrollRef}
+            className="api-sidebar-scroll h-[calc(100vh-4rem)] overflow-y-auto py-6"
+            style={footerLiftPx > 0 ? { height: `calc(100vh - 4rem - ${footerLiftPx}px)` } : undefined}
+          >
             <div className="mb-2 flex items-center justify-between px-3 lg:hidden">
               <span className="text-sm font-medium">Navigation</span>
               <button

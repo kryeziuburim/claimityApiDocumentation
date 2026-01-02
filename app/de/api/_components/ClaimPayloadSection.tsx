@@ -321,7 +321,7 @@ export function ClaimPayloadSection({
                     </div>
 
                     <div className="rounded-3xl border border-border/60 bg-background/80">
-                      <Accordion type="multiple" defaultValue={["example", "schema"]}>
+                      <Accordion type="multiple" defaultValue={[]}>
                         <AccordionItem value="example" className="border-border/40 px-6">
                           <AccordionTrigger className="text-base font-semibold">
                             <span className="inline-flex items-center gap-2">
@@ -842,7 +842,7 @@ function describeDriverConflict(node: any): string | null {
 function getDriverConflict(node: any): DriverConflict | null {
   if (!Array.isArray(node?.allOf) || node.allOf.length !== 2) return null
   const segments = node.allOf.map((segment: any) => extractDriverSegment(segment))
-  if (segments.some((segment) => segment === null)) return null
+  if (segments.some((segment: DriverSegment | null) => segment === null)) return null
   const typedSegments = segments as DriverSegment[]
   const objectSegment = typedSegments.find((segment) => segment.kind === "object")
   const arraySegment = typedSegments.find((segment) => segment.kind === "array")
