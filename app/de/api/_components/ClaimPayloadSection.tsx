@@ -99,7 +99,7 @@ const PAYLOAD_ICONS: Record<string, LucideIcon> = {
 }
 
 const VALIDATION_ENDPOINT = "https://app.claimity.ch/v1/insurers/claims:validate"
-const VALIDATION_PROXY_PATH = "/api/claims/validate"
+const VALIDATION_PROXY_PATH = "/de/api/claims/validate"
 
 type ValidationResult = {
   valid: boolean
