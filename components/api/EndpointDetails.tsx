@@ -159,8 +159,8 @@ export function EndpointDetails({
   }
 
   return (
-    <div className={cn("mt-3", className)}>
-      <div className="mb-4 flex flex-wrap items-center gap-2">
+    <div className={cn("mt-2 sm:mt-3", className)}>
+      <div className="mb-3 flex flex-wrap items-center gap-1.5 sm:mb-4 sm:gap-2">
         <TabButton active={tab === "request"} onClick={() => setTab("request")} accentColor={accentColor}>
           Request
         </TabButton>
@@ -218,11 +218,11 @@ export function EndpointDetails({
             const isOpen = activeResponse === code
 
             return (
-              <div key={code} className="overflow-hidden rounded-2xl border border-border/60 bg-muted/15">
+              <div key={code} className="overflow-hidden rounded-xl border border-border/60 bg-muted/15 sm:rounded-2xl">
                 <button
                   type="button"
                   onClick={() => setActiveResponse((prev) => (prev === code ? null : code))}
-                  className="flex w-full items-center justify-between gap-3 px-4 py-3 text-left"
+                  className="flex w-full items-center justify-between gap-3 px-3 py-2.5 text-left sm:px-4 sm:py-3"
                   aria-expanded={isOpen}
                 >
                   <div>
@@ -235,7 +235,7 @@ export function EndpointDetails({
                 </button>
 
                 {isOpen ? (
-                  <div className="border-t border-border/40 bg-card/80 p-4">
+                  <div className="border-t border-border/40 bg-card/80 p-3 sm:p-4">
                     {schema && spec ? (
                       <div className="space-y-3">
                         <SchemaExplorer
@@ -276,11 +276,11 @@ export function EndpointDetails({
           {exampleBlocks.map(({ key, title, content }) => {
             const isOpen = activeExample === key
             return (
-              <div key={key} className="overflow-hidden rounded-2xl border border-border/60 bg-muted/15">
+              <div key={key} className="overflow-hidden rounded-xl border border-border/60 bg-muted/15 sm:rounded-2xl">
                 <button
                   type="button"
                   onClick={() => setActiveExample(key)}
-                  className="flex w-full items-center justify-between gap-3 px-4 py-2 text-left text-xs font-semibold uppercase tracking-wide text-foreground"
+                  className="flex w-full items-center justify-between gap-3 px-3 py-2 text-left text-[11px] font-semibold uppercase tracking-wide text-foreground sm:px-4 sm:text-xs"
                   aria-expanded={isOpen}
                   style={{ backgroundColor: accentColor }}
                 >
@@ -288,7 +288,7 @@ export function EndpointDetails({
                   <ChevronDown className={cn("h-4 w-4 transition-transform", isOpen && "rotate-180")} />
                 </button>
                 {isOpen ? (
-                  <pre className="border-t border-border/40 bg-background/90 p-4 text-xs leading-relaxed text-muted-foreground">
+                  <pre className="border-t border-border/40 bg-background/90 p-3 text-[11px] leading-relaxed text-muted-foreground sm:p-4 sm:text-xs">
                     <code className="font-mono text-foreground">{content}</code>
                   </pre>
                 ) : null}
@@ -317,7 +317,7 @@ function TabButton({
       type="button"
       onClick={onClick}
       className={cn(
-        "rounded-md border border-border/60 px-4 py-1.5 text-xs font-semibold transition",
+        "rounded-md border border-border/60 px-3 py-1.5 text-[11px] font-semibold transition sm:px-4 sm:text-xs",
         active ? "text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"
       )}
       style={active ? { backgroundColor: accentColor, borderColor: accentColor } : undefined}
@@ -337,10 +337,10 @@ function DetailBlock({
   children: React.ReactNode
 }) {
   return (
-    <div className="rounded-2xl border border-border/70 bg-muted/20 p-4">
-      <div className="mb-3 space-y-1">
-        <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">{title}</p>
-        {description ? <p className="text-xs text-muted-foreground">{description}</p> : null}
+    <div className="rounded-xl border border-border/70 bg-muted/20 p-3 sm:rounded-2xl sm:p-4">
+      <div className="mb-2 space-y-1 sm:mb-3">
+        <p className="text-[11px] font-semibold uppercase tracking-wide text-muted-foreground sm:text-xs">{title}</p>
+        {description ? <p className="text-[11px] text-muted-foreground sm:text-xs">{description}</p> : null}
       </div>
       <div className="space-y-3">{children}</div>
     </div>
@@ -349,14 +349,14 @@ function DetailBlock({
 
 function HeaderList({ rows }: { rows: HeaderRow[] }) {
   return (
-    <div className="grid gap-2">
+    <div className="grid gap-1.5 sm:gap-2">
       {rows.map((row) => (
         <div
           key={row.k}
-          className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-border/60 bg-background/70 px-3 py-2"
+          className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-border/60 bg-background/70 px-2.5 py-2 sm:px-3"
         >
-          <span className="font-mono text-xs text-muted-foreground">{row.k}</span>
-          <span className="font-mono text-xs text-foreground">{row.v}</span>
+          <span className="font-mono text-[11px] text-muted-foreground sm:text-xs">{row.k}</span>
+          <span className="font-mono text-[11px] text-foreground sm:text-xs">{row.v}</span>
         </div>
       ))}
     </div>
@@ -366,9 +366,9 @@ function HeaderList({ rows }: { rows: HeaderRow[] }) {
 function ParamTable({ params }: { params: any[] }) {
   return (
     <div className="overflow-x-auto rounded-xl border border-border/60 bg-background/80">
-      <table className="w-full text-left text-sm">
-        <thead className="text-xs uppercase tracking-wide text-muted-foreground">
-          <tr className="[&>th]:px-3 [&>th]:py-2">
+      <table className="w-full text-left text-xs sm:text-sm">
+        <thead className="text-[11px] uppercase tracking-wide text-muted-foreground sm:text-xs">
+          <tr className="[&>th]:px-2.5 [&>th]:py-2 sm:[&>th]:px-3">
             <th>Name</th>
             <th>Typ</th>
             <th>Required</th>
@@ -378,13 +378,13 @@ function ParamTable({ params }: { params: any[] }) {
         <tbody>
           {params.map((p) => (
             <tr key={`${p.in}-${p.name}`} className="border-t border-border/40">
-              <td className="px-3 py-2 font-mono text-xs">{p.name}</td>
-              <td className="px-3 py-2 font-mono text-xs">
+              <td className="px-2.5 py-2 font-mono text-[11px] sm:px-3 sm:text-xs">{p.name}</td>
+              <td className="px-2.5 py-2 font-mono text-[11px] sm:px-3 sm:text-xs">
                 {p.schema?.type}
                 {p.schema?.format ? ` (${p.schema.format})` : ""}
               </td>
-              <td className="px-3 py-2">{p.required ? "✓" : ""}</td>
-              <td className="px-3 py-2 font-mono text-xs text-muted-foreground">
+              <td className="px-2.5 py-2 text-center sm:px-3">{p.required ? "✓" : ""}</td>
+              <td className="px-2.5 py-2 font-mono text-[11px] text-muted-foreground sm:px-3 sm:text-xs">
                 {p.schema?.default != null ? String(p.schema.default) : ""}
               </td>
             </tr>
@@ -399,14 +399,14 @@ function CodeBlock({ title, children, accentColor }: { title: string; children: 
   if (!children) return null
 
   return (
-    <div className="overflow-hidden rounded-2xl border border-border/70 bg-background/80">
+    <div className="overflow-hidden rounded-xl border border-border/70 bg-background/80 sm:rounded-2xl">
       <div
-        className="px-4 py-2 text-xs font-semibold uppercase tracking-wide text-foreground"
+        className="px-3 py-2 text-[11px] font-semibold uppercase tracking-wide text-foreground sm:px-4 sm:text-xs"
         style={{ backgroundColor: accentColor }}
       >
         {title}
       </div>
-      <pre className="overflow-x-auto p-4 text-xs leading-relaxed text-muted-foreground">
+      <pre className="overflow-x-auto p-3 text-[11px] leading-relaxed text-muted-foreground sm:p-4 sm:text-xs">
         <code className="font-mono text-foreground">{children}</code>
       </pre>
     </div>
@@ -419,9 +419,9 @@ function ErrorMatrix({ responses }: { responses: [string, any][] }) {
 
   return (
     <div className="overflow-x-auto rounded-xl border border-border/60 bg-background/80">
-      <table className="w-full text-left text-sm">
-        <thead className="text-xs uppercase tracking-wide text-muted-foreground">
-          <tr className="[&>th]:px-3 [&>th]:py-2">
+      <table className="w-full text-left text-xs sm:text-sm">
+        <thead className="text-[11px] uppercase tracking-wide text-muted-foreground sm:text-xs">
+          <tr className="[&>th]:px-2.5 [&>th]:py-2 sm:[&>th]:px-3">
             <th>Status</th>
             <th>Beschreibung</th>
             <th>Schema</th>
@@ -433,9 +433,9 @@ function ErrorMatrix({ responses }: { responses: [string, any][] }) {
             const schemaLabel = schema?.$ref ? schema.$ref.split("/").pop() : schema?.type ?? ""
             return (
               <tr key={code} className="border-t border-border/40">
-                <td className="px-3 py-2 font-mono text-xs">{code}</td>
-                <td className="px-3 py-2 text-sm text-muted-foreground">{resp?.description ?? ""}</td>
-                <td className="px-3 py-2 font-mono text-xs text-muted-foreground">{schemaLabel}</td>
+                <td className="px-2.5 py-2 font-mono text-[11px] sm:px-3 sm:text-xs">{code}</td>
+                <td className="px-2.5 py-2 text-xs text-muted-foreground sm:px-3 sm:text-sm">{resp?.description ?? ""}</td>
+                <td className="px-2.5 py-2 font-mono text-[11px] text-muted-foreground sm:px-3 sm:text-xs">{schemaLabel}</td>
               </tr>
             )
           })}

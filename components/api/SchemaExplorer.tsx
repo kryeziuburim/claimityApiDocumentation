@@ -48,11 +48,13 @@ export function SchemaExplorer({
   const isRoot = depth === 0
   const containerClasses = cn(
     "space-y-3",
-    isRoot ? "rounded-lg border border-border bg-muted/30 p-4" : "rounded-md border border-border/50 bg-muted/15 p-3"
+    isRoot
+      ? "rounded-md border border-border bg-muted/30 p-3 sm:rounded-lg sm:p-4"
+      : "rounded-md border border-border/50 bg-muted/15 p-2.5 sm:p-3"
   )
   const headerClasses = cn(
     "flex items-center justify-between gap-3",
-    isRoot ? "mb-3" : "mb-2 text-xs text-muted-foreground"
+    isRoot ? "mb-2 sm:mb-3" : "mb-2 text-[11px] text-muted-foreground sm:text-xs"
   )
   const bodyWrapperClasses = "overflow-x-auto"
 
@@ -127,7 +129,10 @@ export function SchemaExplorer({
             tabIndex={canExpand ? 0 : undefined}
             aria-expanded={canExpand ? open : undefined}
            >
-            <td className="pr-3 py-2 font-mono text-xs align-top" style={{ paddingLeft: indentLevel * 16 }}>
+            <td
+              className="pr-2.5 py-1.5 font-mono text-[11px] align-top sm:pr-3 sm:py-2 sm:text-xs"
+              style={{ paddingLeft: indentLevel * 16 }}
+            >
               <div className="flex items-center gap-2">
                 {canExpand ? (
                   <>
@@ -162,10 +167,10 @@ export function SchemaExplorer({
                 )}
               </div>
             </td>
-            <td className="pr-3 py-2 font-mono text-xs align-top">{type}</td>
-            <td className="pr-3 py-2 align-top text-center">{isReq ? "✓" : ""}</td>
-            <td className="pr-3 py-2 align-top text-center">{nullable ? "✓" : ""}</td>
-            <td className="pr-3 py-2 align-top text-left">{enumNode}</td>
+            <td className="pr-2.5 py-1.5 font-mono text-[11px] align-top sm:pr-3 sm:py-2 sm:text-xs">{type}</td>
+            <td className="pr-2.5 py-1.5 align-top text-center sm:pr-3 sm:py-2">{isReq ? "✓" : ""}</td>
+            <td className="pr-2.5 py-1.5 align-top text-center sm:pr-3 sm:py-2">{nullable ? "✓" : ""}</td>
+            <td className="pr-2.5 py-1.5 align-top text-left sm:pr-3 sm:py-2">{enumNode}</td>
           </tr>
 
           {canExpand && open
@@ -215,7 +220,7 @@ export function SchemaExplorer({
       </div>
 
       <div className={bodyWrapperClasses}>
-        <table className="w-full min-w-[640px] table-auto text-left text-sm">
+        <table className="w-full min-w-[640px] table-auto text-left text-xs sm:text-sm">
           <colgroup>
             <col className="w-[22%]" />
             <col className="w-[18%]" />
@@ -223,7 +228,7 @@ export function SchemaExplorer({
             <col className="w-[10%]" />
             <col className="w-[40%]" />
           </colgroup>
-          <thead className="text-xs text-muted-foreground">
+          <thead className="text-[11px] text-muted-foreground sm:text-xs">
             <tr className="[&>th]:pb-2 text-left">
               <th className="pr-3">Feld</th>
               <th className="pr-3">Typ</th>
