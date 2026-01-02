@@ -2,12 +2,13 @@
 
 import { useCallback, useMemo, useState } from "react"
 import { z } from "zod"
-import { useForm } from "react-hook-form"
+import { Controller, useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import emailjs from "@emailjs/browser"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Button } from "@/components/ui/button"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 
 type Lang = "de" | "en" | "fr"
 
@@ -200,11 +201,13 @@ export function SupportTicketForm({ locale = "de" }: { locale?: Lang }) {
   const { serviceId, templateId, publicKey } = useMemo(getEmailJsEnv, [])
   const [status, setStatus] = useState<"idle" | "sending" | "success" | "error">("idle")
   const [errorMsg, setErrorMsg] = useState<string | null>(null)
+  const fieldTextSizing = "bg-white text-sm placeholder:text-sm"
 
   const {
     register,
     handleSubmit,
     reset,
+    control,
     formState: { errors, isSubmitting },
   } = useForm<TicketValues>({
     resolver: zodResolver(schema),
@@ -263,7 +266,7 @@ export function SupportTicketForm({ locale = "de" }: { locale?: Lang }) {
             placeholder={t.placeholders.name}
             aria-invalid={!!errors.name}
             {...register("name")}
-            className="bg-white"
+            className={fieldTextSizing}
           />
           {errors.name && (
             <p className="text-sm text-red-600">{errors.name.message}</p>
@@ -280,7 +283,7 @@ export function SupportTicketForm({ locale = "de" }: { locale?: Lang }) {
             placeholder={t.placeholders.email}
             aria-invalid={!!errors.email}
             {...register("email")}
-            className="bg-white"
+            className={fieldTextSizing}
           />
           {errors.email && (
             <p className="text-sm text-red-600">{errors.email.message}</p>
@@ -298,7 +301,7 @@ export function SupportTicketForm({ locale = "de" }: { locale?: Lang }) {
             placeholder={t.placeholders.subject}
             aria-invalid={!!errors.subject}
             {...register("subject")}
-            className="bg-white"
+            className={fieldTextSizing}
           />
           {errors.subject && (
             <p className="text-sm text-red-600">{errors.subject.message}</p>
@@ -309,17 +312,30 @@ export function SupportTicketForm({ locale = "de" }: { locale?: Lang }) {
           <label className="text-sm font-medium text-gray-900" htmlFor="category">
             {t.labels.category}
           </label>
-          <select
-            id="category"
-            className="h-9 w-full rounded-md border border-gray-300 bg-white px-3 text-sm font-sans shadow-xs outline-none appearance-none focus-visible:ring-[3px] focus-visible:ring-teal-500/20 focus-visible:border-teal-500"
-            {...register("category")}
-            defaultValue="general"
-          >
-            <option value="general">{t.categories.general}</option>
-            <option value="technical">{t.categories.technical}</option>
-            <option value="billing">{t.categories.billing}</option>
-            <option value="other">{t.categories.other}</option>
-          </select>
+          <Controller
+            control={control}
+            name="category"
+            render={({ field }) => (
+              <Select
+                onValueChange={field.onChange}
+                value={field.value ?? "general"}
+              >
+                <SelectTrigger
+                  id="category"
+                  onBlur={field.onBlur}
+                  className="w-full bg-white text-sm"
+                >
+                  <SelectValue aria-label={t.labels.category} placeholder={t.labels.category} />
+                </SelectTrigger>
+                <SelectContent className="bg-white text-sm">
+                  <SelectItem value="general">{t.categories.general}</SelectItem>
+                  <SelectItem value="technical">{t.categories.technical}</SelectItem>
+                  <SelectItem value="billing">{t.categories.billing}</SelectItem>
+                  <SelectItem value="other">{t.categories.other}</SelectItem>
+                </SelectContent>
+              </Select>
+            )}
+          />
         </div>
       </div>
 
@@ -333,7 +349,7 @@ export function SupportTicketForm({ locale = "de" }: { locale?: Lang }) {
           placeholder={t.placeholders.message}
           aria-invalid={!!errors.message}
           {...register("message")}
-          className="bg-white"
+          className={fieldTextSizing}
         />
         {errors.message && (
           <p className="text-sm text-red-600">{errors.message.message}</p>

@@ -56,12 +56,12 @@ export default function ManualPage() {
             </p>
           </div>
 
-          <div className="mt-12">
+          <div className="mt-8 md:mt-12">
             <div className="rounded-2xl border border-slate-200 bg-white/80 p-8 shadow-sm backdrop-blur-xl">
               <div className="flex items-start justify-between gap-6">
                 <div>
-                  <h2 className="mt-3 text-xl font-semibold text-gray-900">Bedienungsanleitungen herunterladen</h2>
-                  <p className="mt-2 text-sm text-gray-600 md:text-base">
+                  <h2 className="mt-1 text-xl font-semibold text-gray-900 md:mt-3">Bedienungsanleitungen herunterladen</h2>
+                  <p className="mt-1 text-sm text-gray-600 md:mt-2 md:text-base">
                     Hier finden Sie die vollständigen PDF-Handbücher für Experten und Versicherer.
                   </p>
                 </div>
@@ -73,7 +73,7 @@ export default function ManualPage() {
                   <div className="pointer-events-none absolute -right-20 -top-24 h-56 w-56 rounded-full bg-white" />
                   <div className="relative">
                     <div className="flex items-start gap-4">
-                      <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-teal-500/10 ring-1 ring-teal-200/60">
+                      <div className="hidden h-11 w-11 items-center justify-center rounded-xl bg-teal-500/10 ring-1 ring-teal-200/60 sm:flex">
                         <Users className="h-5 w-5 text-teal-800" aria-hidden="true" />
                       </div>
                       <div className="min-w-0">
@@ -101,7 +101,7 @@ export default function ManualPage() {
                   <div className="pointer-events-none absolute -right-20 -top-24 h-56 w-56 rounded-full bg-white" />
                   <div className="relative">
                     <div className="flex items-start gap-4">
-                      <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-teal-500/10 ring-1 ring-teal-200/60">
+                      <div className="hidden h-11 w-11 items-center justify-center rounded-xl bg-teal-500/10 ring-1 ring-teal-200/60 sm:flex">
                         <ShieldCheck className="h-5 w-5 text-teal-800" aria-hidden="true" />
                       </div>
                       <div className="min-w-0">

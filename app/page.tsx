@@ -13,7 +13,11 @@ export default function RootRedirect() {
 
   return (
     <>
-      <ModernLoader variant="dark" message="Daten werden geladen …" />
+      <ModernLoader
+        variant="dark"
+        message="Daten werden geladen …"
+        className="px-6"
+      />
       <noscript>
         <main className="min-h-screen flex items-center justify-center bg-slate-950 p-8 text-slate-50">
           <div className="text-center text-sm text-slate-200/80">
