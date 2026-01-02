@@ -622,7 +622,7 @@ export default function ApiPageClient() {
             </div>
           </section>
           <div id="footer-sentinel" className="h-px" aria-hidden="true" />
-          <div className="relative z-40 lg:-ml-64 lg:w-[calc(100%+16rem)]">
+          <div className="relative z-40 bg-[#1a1f2e]">
             <Footer />
           </div>
         </main>
