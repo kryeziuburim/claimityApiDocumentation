@@ -477,7 +477,7 @@ export function ClaimPayloadSection({
       </div>
 
       <Tabs value={resolvedActive} onValueChange={handleTabChange} className="space-y-6">
-        <div className="sticky top-14 z-10 rounded-2xl border border-border/60 bg-background/85 p-2 backdrop-blur-sm sm:top-16 sm:p-3">
+        <div className="sticky top-[4.25rem] z-10 mb-4 rounded-2xl border border-border/60 bg-background/90 p-2 shadow-sm backdrop-blur-sm sm:top-16 sm:mb-6 sm:p-3">
           <TabsList className="grid w-full grid-cols-1 gap-2 bg-transparent p-0 sm:grid-cols-2 lg:flex lg:flex-wrap">
             {CLAIM_PAYLOADS.map((payload) => {
               const Icon = PAYLOAD_ICONS[payload.key] ?? SquareStack
@@ -510,8 +510,8 @@ export function ClaimPayloadSection({
                 id={payload.anchorId}
                 className="space-y-6 rounded-3xl border border-border/60 bg-card/80 p-4 shadow-sm sm:p-6"
               >
-                <div className="flex flex-wrap items-start justify-between gap-4">
-                  <div>
+                <div className="space-y-2 sm:flex sm:flex-wrap sm:items-start sm:justify-between sm:gap-4">
+                  <div className="sm:max-w-[75%]">
                     <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Kategorie</p>
                     <h3 className="text-2xl font-semibold tracking-tight text-balance">{payload.label}</h3>
                     <p className="mt-2 text-sm text-muted-foreground">
@@ -676,14 +676,15 @@ export function ClaimPayloadSection({
                           </AccordionContent>
                         </AccordionItem>
 
-                        <AccordionItem value="schema" className="px-4 sm:px-6">
-                          <AccordionTrigger className="text-base font-semibold">
-                            <span className="inline-flex items-center gap-2">
-                              <SquareStack className="h-4 w-4 text-primary" />
-                              Schema Explorer
-                            </span>
-                          </AccordionTrigger>
-                          <AccordionContent className="px-1">
+                      <AccordionItem value="schema" className="px-4 sm:px-6">
+                        <AccordionTrigger className="text-base font-semibold">
+                          <span className="inline-flex items-center gap-2">
+                            <SquareStack className="h-4 w-4 text-primary" />
+                            Schema Explorer
+                          </span>
+                        </AccordionTrigger>
+                        <AccordionContent className="px-1">
+                          <div className="overflow-x-auto rounded-xl border border-border/40">
                             <SchemaExplorer
                               spec={schema}
                               schema={schema}
@@ -691,8 +692,9 @@ export function ClaimPayloadSection({
                               maxDepth={6}
                               fieldLinks={PAYLOAD_FIELD_LINKS}
                             />
-                          </AccordionContent>
-                        </AccordionItem>
+                          </div>
+                        </AccordionContent>
+                      </AccordionItem>
                       </Accordion>
                     </div>
                   </div>

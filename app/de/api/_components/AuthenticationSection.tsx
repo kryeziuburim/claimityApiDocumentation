@@ -49,7 +49,7 @@ export function AuthenticationSection() {
       </div>
 
       {/* Auth Flow (Sequence) */}
-      <div id="auth-flow" className="rounded-lg border border-border bg-card p-4 scroll-mt-24 sm:space-y-4 sm:p-6">
+      <div id="auth-flow" className="space-y-4 rounded-lg border border-border bg-card p-4 scroll-mt-24 sm:space-y-5 sm:p-6">
         <h3 className="text-lg font-semibold sm:text-xl">Authentication Flow</h3>
         <p className="text-sm leading-relaxed text-muted-foreground text-pretty">So funktioniert der OAuth2 Client-Credentials Flow.</p>
 
@@ -102,7 +102,7 @@ export function AuthenticationSection() {
       </div>
 
       {/* Anchor 1 */}
-      <div id="auth-access-token" className="rounded-lg border border-border bg-card p-4 scroll-mt-24 sm:space-y-4 sm:p-6">
+      <div id="auth-access-token" className="space-y-4 rounded-lg border border-border bg-card p-4 scroll-mt-24 sm:space-y-5 sm:p-6">
         <h3 className="text-lg font-semibold sm:text-xl">Access Token auslesen</h3>
 
         <p className="leading-relaxed text-muted-foreground text-pretty">
@@ -161,11 +161,11 @@ export function AuthenticationSection() {
         <details className="rounded-lg border border-border bg-muted/20 p-4">
           <summary className="cursor-pointer text-sm font-semibold">JWT Client Assertion (RS256)</summary>
           <div className="mt-3 grid gap-4 md:grid-cols-2 md:items-start">
-            <div>
-              <p className="text-sm text-muted-foreground text-pretty">
+            <div className="space-y-3 break-words text-sm text-muted-foreground">
+              <p className="text-pretty">
                 Die Assertion ist ein kurzlebiges JWT (10 Minuten) und wird mit deinem <strong>RSA Private Key</strong> signiert.
               </p>
-              <ul className="mt-3 space-y-2 text-sm text-muted-foreground">
+              <ul className="space-y-2">
                 <li className="flex gap-2">
                   <span className="text-primary">•</span>
                   <span>
@@ -199,9 +199,10 @@ export function AuthenticationSection() {
               </ul>
             </div>
 
-            <CodeBlock
-              title="Beispiel: Token Request (cURL, Platzhalter)"
-              children={`curl -X POST \\
+            <div className="overflow-x-auto">
+              <CodeBlock
+                title="Beispiel: Token Request (cURL, Platzhalter)"
+                children={`curl -X POST \\
   'https://app.claimity.ch/v1/oauth/token' \\
   -H 'Content-Type: application/x-www-form-urlencoded' \\
   -d 'grant_type=client_credentials' \\
@@ -209,7 +210,8 @@ export function AuthenticationSection() {
   -d 'client_assertion_type=urn:ietf:params:oauth:client-assertion-type:jwt-bearer' \\
   -d 'client_assertion=<RS256-JWT-CLIENT-ASSERTION>' \\
   -d 'scope=roles'`}
-            />
+              />
+            </div>
           </div>
         </details>
 
@@ -223,7 +225,7 @@ export function AuthenticationSection() {
       </div>
 
       {/* Anchor 2 */}
-      <div id="auth-dpop" className="rounded-lg border border-border bg-card p-4 scroll-mt-24 sm:space-y-4 sm:p-6">
+      <div id="auth-dpop" className="space-y-4 rounded-lg border border-border bg-card p-4 scroll-mt-24 sm:space-y-5 sm:p-6">
         <h3 className="text-lg font-semibold sm:text-xl">API Requests senden</h3>
 
         <p className="leading-relaxed text-muted-foreground text-pretty">
@@ -244,7 +246,7 @@ export function AuthenticationSection() {
         <details className="rounded-lg border border-border bg-muted/20 p-4">
           <summary className="cursor-pointer text-sm font-semibold">DPoP Proof Inhalt</summary>
           <div className="mt-3 grid gap-4 md:grid-cols-2 md:items-start">
-            <ul className="space-y-2 text-sm text-muted-foreground">
+            <ul className="space-y-2 break-words text-sm text-muted-foreground">
               <li className="flex gap-2">
                 <span className="text-primary">•</span>
                 <span className="text-pretty">
@@ -277,14 +279,16 @@ export function AuthenticationSection() {
               </li>
             </ul>
 
-            <CodeBlock
-              title="Beispiel: Authentifizierter API Call (cURL)"
-              children={`curl -X GET \\
+            <div className="overflow-x-auto">
+              <CodeBlock
+                title="Beispiel: Authentifizierter API Call (cURL)"
+                children={`curl -X GET \\
   'https://app.claimity.ch/v1/experts/cases?page=1&size=50' \\
   -H 'Accept: application/json' \\
   -H 'Authorization: DPoP {access_token}' \\
   -H 'DPoP: {dpop_proof_jwt}'`}
-            />
+              />
+            </div>
           </div>
         </details>
 

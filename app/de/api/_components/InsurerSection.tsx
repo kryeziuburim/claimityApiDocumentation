@@ -10,7 +10,7 @@ export function InsurerSection() {
         </p>
       </div>
 
-      <div>
+      <div className="rounded-2xl border border-border bg-card/80 p-4 sm:p-5">
         <h3 className="mb-4 text-lg font-semibold sm:text-xl">Schäden</h3>
 
         <div className="space-y-4">
@@ -42,7 +42,7 @@ export function InsurerSection() {
         </div>
       </div>
 
-      <div>
+      <div className="rounded-2xl border border-border bg-card/80 p-4 sm:p-5">
         <h3 className="mb-4 text-lg font-semibold sm:text-xl">Schadendokumente</h3>
 
         <div className="space-y-4">
@@ -70,7 +70,7 @@ export function InsurerSection() {
         </div>
       </div>
 
-      <div>
+      <div className="rounded-2xl border border-border bg-card/80 p-4 sm:p-5">
         <h3 className="mb-4 text-lg font-semibold sm:text-xl">Reports zu Claims</h3>
 
         <div className="space-y-4">

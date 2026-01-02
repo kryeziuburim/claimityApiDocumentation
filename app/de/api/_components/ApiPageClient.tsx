@@ -472,7 +472,7 @@ export default function ApiPageClient() {
         {/* Seiten-Navigation */}
         <aside
           className={cn(
-            "fixed inset-y-0 left-0 z-30 w-full max-w-sm border-r border-border bg-sidebar transition-[transform,opacity] duration-[350ms] ease-out lg:max-w-none lg:w-64",
+            "fixed inset-y-0 left-0 z-30 w-full max-w-[18rem] border-r border-border bg-sidebar transition-[transform,opacity] duration-[350ms] ease-out lg:max-w-none lg:w-64",
             isMobileMenuOpen ? "translate-x-0" : "-translate-x-full",
             showSidebar ? "lg:translate-x-0 lg:opacity-100" : "lg:-translate-x-full lg:opacity-0"
           )}
@@ -491,15 +491,6 @@ export default function ApiPageClient() {
                 : undefined
             }
           >
-            <div className="mb-2 flex items-center justify-between px-4 lg:hidden">
-              <span className="text-sm font-medium">Navigation</span>
-              <button
-                onClick={() => setIsMobileMenuOpen(false)}
-                className="inline-flex items-center rounded-md border border-slate-200 bg-white/90 px-2 py-1 text-xs text-gray-900 shadow-sm hover:bg-white"
-              >
-                <X className="mr-1 h-4 w-4" /> Schliessen
-              </button>
-            </div>
             <nav className="space-y-1 px-4" role="navigation" aria-label="API Navigation">
               {navigationItems.map((item) => (
                 <div key={item.id}>
@@ -601,19 +592,15 @@ export default function ApiPageClient() {
               <div className="absolute right-4 top-6 hidden lg:block xl:right-6">
                 <LanguageSwitcher />
               </div>
-              <div className="mb-6 flex flex-wrap items-center justify-between gap-3 lg:hidden">
-                <div className="flex w-full justify-end sm:w-auto">
-                  <LanguageSwitcher />
-                </div>
-                <div className="flex w-full justify-start sm:w-auto">
-                  <button
-                    onClick={() => setIsMobileMenuOpen((v) => !v)}
-                    className="inline-flex w-full items-center justify-center rounded-md bg-white/90 px-3 py-2 text-sm text-gray-900 shadow-sm hover:bg-white sm:w-auto"
-                  >
-                    <Menu className="mr-2 h-4 w-4" />
-                    Menü
-                  </button>
-                </div>
+              <div className="mb-4 flex items-center justify-between gap-3 lg:hidden">
+                <button
+                  onClick={() => setIsMobileMenuOpen((v) => !v)}
+                  className="inline-flex items-center gap-2 rounded-md border border-border bg-white/90 px-3 py-1.5 text-xs font-medium text-gray-900 hover:bg-white"
+                >
+                  <Menu className="h-4 w-4" />
+                  Menü
+                </button>
+                <LanguageSwitcher />
               </div>
 
               {/* Hero */}
