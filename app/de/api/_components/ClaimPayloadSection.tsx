@@ -109,7 +109,7 @@ type ValidationResult = {
 type ValidationState =
   | { status: "idle" }
   | { status: "running" }
-  | { status: "error"; message: string; statusCode?: number }
+  | { status: "error"; message: string; statusCode?: number; errors?: Record<string, string[]> | null }
   | { status: "success"; statusCode: number; data: ValidationResult }
 
 type ClaimPayloadSectionProps = {
@@ -326,6 +326,7 @@ export function ClaimPayloadSection({
           status: "error",
           statusCode: response.status,
           message: detail ? String(detail) : `Request fehlgeschlagen (HTTP ${response.status}).`,
+          errors: normalizeValidationErrors(body?.Errors ?? body?.errors),
         })
         return
       }
@@ -340,11 +341,47 @@ export function ClaimPayloadSection({
       setValidationState({
         status: "error",
         message: error instanceof Error ? error.message : "Netzwerkfehler bei der Validierung.",
+        errors: null,
       })
     }
   }, [payloadInput, testCategory])
 
   const validationIsLoading = validationState.status === "running"
+  const renderErrorDetails = (errors?: Record<string, string[]> | null) => {
+    if (!errors) return null
+    const entries = Object.entries(errors)
+      .map<[string, string[]] | null>(([field, raw]) => {
+        const normalized = Array.isArray(raw)
+          ? raw
+          : raw === undefined || raw === null
+            ? []
+            : [raw]
+        const cleaned = normalized
+          .map((msg) => String(msg).trim())
+          .filter((msg) => msg.length)
+        return cleaned.length ? [field, cleaned] : null
+      })
+      .filter((entry): entry is [string, string[]] => entry !== null)
+    if (!entries.length) return null
+    return (
+      <div className="space-y-3">
+        {entries.map(([field, messages]) => (
+          <div key={field} className="rounded-2xl border border-border/40 bg-background/80 p-3">
+            <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">{field}</p>
+            <ul className="mt-2 space-y-1 text-sm text-foreground">
+              {messages.map((message, index) => (
+                <li key={`${field}-${index}`} className="flex gap-2 text-pretty">
+                  <span className="text-primary">•</span>
+                  <span>{message}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))}
+      </div>
+    )
+  }
+
   const responseStatusLabel =
     validationState.status === "idle"
       ? "Bereit"
@@ -353,6 +390,12 @@ export function ClaimPayloadSection({
         : typeof validationState.statusCode === "number"
           ? `HTTP ${validationState.statusCode}`
           : "--"
+
+  const isValidSuccess = validationState.status === "success" ? validationState.data.valid : false
+  const responseCardClassName = cn(
+    "space-y-4 rounded-3xl border p-4",
+    isValidSuccess ? "border-emerald-200 bg-emerald-50" : "border-border/60 bg-background/70"
+  )
 
   const validationPanel = (() => {
     if (validationState.status === "running") {
@@ -365,28 +408,31 @@ export function ClaimPayloadSection({
     }
     if (validationState.status === "error") {
       return (
-        <Alert variant="destructive" className="border-destructive/50 bg-destructive/10">
-          <ShieldAlert className="h-4 w-4" />
-          <AlertTitle>Validierung fehlgeschlagen</AlertTitle>
-          <AlertDescription className="space-y-2 text-sm">
-            <p>{validationState.message}</p>
-            {typeof validationState.statusCode === "number" ? (
-              <p className="text-xs uppercase tracking-wide text-muted-foreground">
-                HTTP {validationState.statusCode}
-              </p>
-            ) : null}
-          </AlertDescription>
-        </Alert>
+        <div className="space-y-4">
+          <Alert variant="destructive" className="border-destructive/50 bg-destructive/10">
+            <ShieldAlert className="h-4 w-4" />
+            <AlertTitle>Validierung fehlgeschlagen</AlertTitle>
+            <AlertDescription className="space-y-2 text-sm">
+              <p>{validationState.message}</p>
+              {typeof validationState.statusCode === "number" ? (
+                <p className="text-xs uppercase tracking-wide text-muted-foreground">
+                  HTTP {validationState.statusCode}
+                </p>
+              ) : null}
+            </AlertDescription>
+          </Alert>
+          {renderErrorDetails(validationState.errors)}
+        </div>
       )
     }
     if (validationState.status === "success") {
       const { data, statusCode } = validationState
-      const errorEntries = Object.entries(data.errors ?? {})
+      const errorDetails = renderErrorDetails(data.errors)
       return (
         <div className="space-y-4">
           <Alert
             variant={data.valid ? "default" : "destructive"}
-            className={data.valid ? "border-primary/40 bg-primary/10" : "border-destructive/50 bg-destructive/10"}
+            className={data.valid ? "border-green-500/70 bg-green-500/10" : "border-destructive/50 bg-destructive/10"}
           >
             {data.valid ? <ShieldCheck className="h-4 w-4 text-primary" /> : <ShieldAlert className="h-4 w-4" />}
             <AlertTitle>{data.valid ? "Payload ist valide" : "Payload verletzt Validierungsregeln"}</AlertTitle>
@@ -399,27 +445,11 @@ export function ClaimPayloadSection({
               <p className="text-xs uppercase tracking-wide text-muted-foreground">HTTP {statusCode}</p>
             </AlertDescription>
           </Alert>
-          {errorEntries.length ? (
-            <div className="space-y-3">
-              {errorEntries.map(([field, messages]) => (
-                <div key={field} className="rounded-2xl border border-border/40 bg-background/80 p-3">
-                  <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">{field}</p>
-                  <ul className="mt-2 space-y-1 text-sm text-foreground">
-                    {messages.map((message, index) => (
-                      <li key={`${field}-${index}`} className="flex gap-2 text-pretty">
-                        <span className="text-primary">•</span>
-                        <span>{message}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              ))}
-            </div>
-          ) : !data.valid ? (
+          {errorDetails ?? (!data.valid ? (
             <p className="rounded-2xl border border-border/60 bg-muted/20 p-3 text-sm text-muted-foreground">
               Die API meldete eine ungültige Payload, lieferte aber keine Fehlereinträge zurück.
             </p>
-          ) : null}
+          ) : null)}
         </div>
       )
     }
