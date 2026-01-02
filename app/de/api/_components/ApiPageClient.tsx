@@ -133,6 +133,49 @@ export default function ApiPageClient() {
     activePayloadKeyRef.current = activePayloadKey
   }, [activePayloadKey])
 
+  const [footerLiftPx, setFooterLiftPx] = useState(0)
+
+  useEffect(() => {
+    if (typeof window === "undefined") return
+
+    const sentinel = document.getElementById("footer-sentinel")
+    if (!sentinel) return
+
+    let raf = 0
+
+    const update = () => {
+      raf = 0
+
+      // nur Desktop; auf Mobile ist es off-canvas und meist zu
+      if (window.innerWidth < 1024) {
+        setFooterLiftPx(0)
+        return
+      }
+
+      const vh = window.innerHeight
+      const top = sentinel.getBoundingClientRect().top
+
+      // Sobald der Footer ins Viewport kommt, wird lift > 0
+      const lift = Math.max(0, vh - top)
+
+      setFooterLiftPx((prev) => (Math.abs(prev - lift) < 1 ? prev : lift))
+    }
+
+    const onScroll = () => {
+      if (!raf) raf = requestAnimationFrame(update)
+    }
+
+    update()
+    window.addEventListener("scroll", onScroll, { passive: true })
+    window.addEventListener("resize", onScroll)
+
+    return () => {
+      window.removeEventListener("scroll", onScroll)
+      window.removeEventListener("resize", onScroll)
+      if (raf) cancelAnimationFrame(raf)
+    }
+  }, [])
+
   // Layout-Shift nur dann, wenn die Sidebar (w-64) den Content tatsächlich überlappen würde.
   // Auf sehr großen Screens bleibt der Content unverändert.
   useLayoutEffect(() => {
@@ -393,7 +436,7 @@ export default function ApiPageClient() {
     "insurer",
     "payloads",
   ])
-  const showSidebar = pastHero && revealFrom.has(effectiveActive) && !footerInView
+  const showSidebar = pastHero && revealFrom.has(effectiveActive)
 
   return (
     <div className="min-h-screen bg-white text-gray-900">
@@ -401,10 +444,15 @@ export default function ApiPageClient() {
         {/* Seiten-Navigation */}
         <aside
           className={cn(
-            "fixed inset-y-0 left-0 z-30 w-64 border-r border-border bg-sidebar transition-all duration-[400ms] ease-out",
+            "fixed inset-y-0 left-0 z-30 w-64 border-r border-border bg-sidebar transition-[transform,opacity] duration-[400ms] ease-out",
             isMobileMenuOpen ? "translate-x-0" : "-translate-x-full",
             showSidebar ? "lg:translate-x-0 lg:opacity-100" : "lg:-translate-x-full lg:opacity-0"
           )}
+          style={
+            showSidebar && footerLiftPx > 0
+              ? { top: -footerLiftPx, bottom: footerLiftPx }
+              : undefined
+          }
         >
           <div ref={sidebarScrollRef} className="api-sidebar-scroll h-[calc(100vh-4rem)] overflow-y-auto py-6">
             <div className="mb-2 flex items-center justify-between px-3 lg:hidden">
@@ -568,7 +616,9 @@ export default function ApiPageClient() {
             </div>
           </section>
           <div id="footer-sentinel" className="h-px" aria-hidden="true" />
-          <Footer />
+          <div className="relative z-40 lg:-ml-64 lg:w-[calc(100%+16rem)]">
+            <Footer />
+          </div>
         </main>
       </div>
     </div>
