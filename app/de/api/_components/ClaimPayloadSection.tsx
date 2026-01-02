@@ -10,6 +10,7 @@ import {
   Download,
   FileJson,
   Info,
+  Loader2,
   ShieldAlert,
   ShieldCheck,
   SquareStack,
@@ -25,6 +26,9 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { Skeleton } from "@/components/ui/skeleton"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Textarea } from "@/components/ui/textarea"
+import { Label } from "@/components/ui/label"
 import { useToast } from "@/hooks/use-toast"
 import { cn } from "@/lib/utils"
 
@@ -94,6 +98,20 @@ const PAYLOAD_ICONS: Record<string, LucideIcon> = {
   fraud: ShieldAlert,
 }
 
+const VALIDATION_ENDPOINT = "https://app.claimity.ch/v1/insurers/claims:validate"
+const VALIDATION_PROXY_PATH = "/api/claims/validate"
+
+type ValidationResult = {
+  valid: boolean
+  errors: Record<string, string[]> | null
+}
+
+type ValidationState =
+  | { status: "idle" }
+  | { status: "running" }
+  | { status: "error"; message: string; statusCode?: number }
+  | { status: "success"; statusCode: number; data: ValidationResult }
+
 type ClaimPayloadSectionProps = {
   activePayloadKey?: string
   onActivePayloadChange?: (key: string) => void
@@ -113,6 +131,13 @@ export function ClaimPayloadSection({
   })
   const { toast } = useToast()
   const [copiedExample, setCopiedExample] = useState<string | null>(null)
+  const [testCategory, setTestCategory] = useState<string>(CLAIM_PAYLOADS[0]?.key ?? "")
+  const [payloadInput, setPayloadInput] = useState<string>("")
+  const [validationState, setValidationState] = useState<ValidationState>({ status: "idle" })
+
+  const resetValidationState = useCallback(() => {
+    setValidationState((previous) => (previous.status === "idle" ? previous : { status: "idle" }))
+  }, [])
 
   const isControlled = activePayloadKey !== undefined && activePayloadKey !== null
   const resolvedActive = (isControlled ? (activePayloadKey as string) : internalActive) ?? ""
@@ -207,6 +232,208 @@ export function ClaimPayloadSection({
       }
     }
   }
+
+  const handleTestCategoryChange = useCallback(
+    (value: string) => {
+      resetValidationState()
+      setTestCategory(value)
+    },
+    [resetValidationState]
+  )
+
+  const handleInsertExample = useCallback(() => {
+    const schema = schemas[testCategory]?.schema
+    const meta = CLAIM_PAYLOADS.find((item) => item.key === testCategory)
+    if (!schema) {
+      toast({
+        title: "Schema nicht verfügbar",
+        description: "Für diese Kategorie konnte das Schema noch nicht geladen werden.",
+        variant: "destructive",
+      })
+      return
+    }
+    const example = buildExamplePayload(schema)
+    if (!example) {
+      toast({
+        title: "Kein Beispiel gefunden",
+        description: "Das Schema enthält kein Beispiel-JSON für diese Kategorie.",
+        variant: "destructive",
+      })
+      return
+    }
+    setPayloadInput(JSON.stringify(example, null, 2))
+    resetValidationState()
+    toast({
+      title: "Beispiel übernommen",
+      description: `${meta?.label ?? "Kategorie"} Beispiel wurde in das Eingabefeld kopiert.`,
+    })
+  }, [schemas, testCategory, toast, resetValidationState])
+
+  const handleResetPayload = useCallback(() => {
+    setPayloadInput("")
+    resetValidationState()
+  }, [resetValidationState])
+
+  const handleValidatePayload = useCallback(async () => {
+    const trimmed = payloadInput.trim()
+    if (!trimmed) {
+      setValidationState({ status: "error", message: "Bitte geben Sie ein Payload JSON ein." })
+      return
+    }
+
+    let parsed: unknown
+    try {
+      parsed = JSON.parse(trimmed)
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : "Unbekannter Parserfehler"
+      setValidationState({
+        status: "error",
+        message: `JSON konnte nicht geparst werden: ${errorMessage}`,
+      })
+      return
+    }
+
+    const formatted = JSON.stringify(parsed, null, 2)
+    if (formatted !== payloadInput) {
+      setPayloadInput(formatted)
+    }
+
+    setValidationState({ status: "running" })
+
+    try {
+      const response = await fetch(VALIDATION_PROXY_PATH, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        body: JSON.stringify({
+          Category: testCategory,
+          PayloadJson: formatted,
+        }),
+      })
+
+      let body: any = null
+      try {
+        body = await response.json()
+      } catch {
+        body = null
+      }
+
+      if (!response.ok) {
+        const detail = body?.detail ?? body?.title ?? body?.message ?? body?.error
+        setValidationState({
+          status: "error",
+          statusCode: response.status,
+          message: detail ? String(detail) : `Request fehlgeschlagen (HTTP ${response.status}).`,
+        })
+        return
+      }
+
+      const normalized = normalizeValidationResponse(body)
+      setValidationState({
+        status: "success",
+        statusCode: response.status,
+        data: normalized,
+      })
+    } catch (error) {
+      setValidationState({
+        status: "error",
+        message: error instanceof Error ? error.message : "Netzwerkfehler bei der Validierung.",
+      })
+    }
+  }, [payloadInput, testCategory])
+
+  const validationIsLoading = validationState.status === "running"
+  const responseStatusLabel =
+    validationState.status === "idle"
+      ? "Bereit"
+      : validationState.status === "running"
+        ? "lädt …"
+        : typeof validationState.statusCode === "number"
+          ? `HTTP ${validationState.statusCode}`
+          : "--"
+
+  const validationPanel = (() => {
+    if (validationState.status === "running") {
+      return (
+        <div className="flex items-center gap-3 rounded-2xl border border-border/60 bg-background/80 px-4 py-3 text-sm font-medium">
+          <Loader2 className="h-4 w-4 animate-spin text-primary" />
+          <span>Validierung läuft …</span>
+        </div>
+      )
+    }
+    if (validationState.status === "error") {
+      return (
+        <Alert variant="destructive" className="border-destructive/50 bg-destructive/10">
+          <ShieldAlert className="h-4 w-4" />
+          <AlertTitle>Validierung fehlgeschlagen</AlertTitle>
+          <AlertDescription className="space-y-2 text-sm">
+            <p>{validationState.message}</p>
+            {typeof validationState.statusCode === "number" ? (
+              <p className="text-xs uppercase tracking-wide text-muted-foreground">
+                HTTP {validationState.statusCode}
+              </p>
+            ) : null}
+          </AlertDescription>
+        </Alert>
+      )
+    }
+    if (validationState.status === "success") {
+      const { data, statusCode } = validationState
+      const errorEntries = Object.entries(data.errors ?? {})
+      return (
+        <div className="space-y-4">
+          <Alert
+            variant={data.valid ? "default" : "destructive"}
+            className={data.valid ? "border-primary/40 bg-primary/10" : "border-destructive/50 bg-destructive/10"}
+          >
+            {data.valid ? <ShieldCheck className="h-4 w-4 text-primary" /> : <ShieldAlert className="h-4 w-4" />}
+            <AlertTitle>{data.valid ? "Payload ist valide" : "Payload verletzt Validierungsregeln"}</AlertTitle>
+            <AlertDescription className="space-y-2 text-sm">
+              <p>
+                {data.valid
+                  ? "Der Validator hat keine Schemaabweichungen gefunden."
+                  : "Mindestens eine Regel des Schemas wurde verletzt. Die Details finden Sie unten."}
+              </p>
+              <p className="text-xs uppercase tracking-wide text-muted-foreground">HTTP {statusCode}</p>
+            </AlertDescription>
+          </Alert>
+          {errorEntries.length ? (
+            <div className="space-y-3">
+              {errorEntries.map(([field, messages]) => (
+                <div key={field} className="rounded-2xl border border-border/40 bg-background/80 p-3">
+                  <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">{field}</p>
+                  <ul className="mt-2 space-y-1 text-sm text-foreground">
+                    {messages.map((message, index) => (
+                      <li key={`${field}-${index}`} className="flex gap-2 text-pretty">
+                        <span className="text-primary">•</span>
+                        <span>{message}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ))}
+            </div>
+          ) : !data.valid ? (
+            <p className="rounded-2xl border border-border/60 bg-muted/20 p-3 text-sm text-muted-foreground">
+              Die API meldete eine ungültige Payload, lieferte aber keine Fehlereinträge zurück.
+            </p>
+          ) : null}
+        </div>
+      )
+    }
+    return (
+      <div className="space-y-3 text-sm text-muted-foreground">
+        <p>Die Antwort der Validierungs-API erscheint hier.</p>
+        <ol className="list-decimal space-y-1 pl-4 text-xs">
+          <li>Kategorie wählen</li>
+          <li>Payload JSON einfügen oder Beispiel übernehmen</li>
+          <li>Payload validieren</li>
+        </ol>
+      </div>
+    )
+  })()
 
   if (!CLAIM_PAYLOADS.length) return null
 
@@ -445,6 +672,103 @@ export function ClaimPayloadSection({
           )
         })}
       </Tabs>
+
+      <section
+        id="claim-payload-validation"
+        className="space-y-6 rounded-3xl border border-border/60 bg-card/80 p-6 shadow-sm"
+      >
+        <div className="space-y-2">
+          <h3 className="text-2xl font-semibold tracking-tight">PayloadJson direkt testen</h3>
+          <p className="text-sm text-muted-foreground">
+            Senden Sie eine Anfrage an die Claimity Validierungs-API und erhalten Sie sofortiges Feedback zu Ihrem Payload.
+          </p>
+        </div>
+
+        <div className="grid gap-6 lg:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)]">
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="payload-category-select">Kategorie</Label>
+              <Select value={testCategory} onValueChange={handleTestCategoryChange}>
+                <SelectTrigger id="payload-category-select" className="h-11 rounded-2xl border-border/70">
+                  <SelectValue placeholder="Kategorie wählen" />
+                </SelectTrigger>
+                <SelectContent className="rounded-2xl">
+                  {CLAIM_PAYLOADS.map((option) => (
+                    <SelectItem key={option.key} value={option.key}>
+                      {option.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="payload-json-editor">Payload JSON</Label>
+              <Textarea
+                id="payload-json-editor"
+                value={payloadInput}
+                onChange={(event) => {
+                  resetValidationState()
+                  setPayloadInput(event.currentTarget.value)
+                }}
+                spellCheck={false}
+                rows={16}
+                className="rounded-2xl border-border/70 font-mono text-[13px] leading-relaxed"
+                placeholder='{}'
+              />
+              <p className="text-xs text-muted-foreground">
+                Erwartet eine gültige JSON-Struktur.
+              </p>
+            </div>
+
+            <div className="flex flex-wrap gap-3">
+              <Button type="button" className="gap-2" onClick={() => void handleValidatePayload()} disabled={validationIsLoading}>
+                {validationIsLoading ? (
+                  <>
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                    <span>Validierung läuft …</span>
+                  </>
+                ) : (
+                  <>
+                    <ShieldCheck className="h-4 w-4" />
+                    <span>Payload validieren</span>
+                  </>
+                )}
+              </Button>
+              <Button
+                type="button"
+                variant="outline"
+                className="gap-2"
+                onClick={handleInsertExample}
+                disabled={!schemas[testCategory]?.schema || validationIsLoading}
+              >
+                <FileJson className="h-4 w-4" />
+                Beispiel übernehmen
+              </Button>
+              <Button
+                type="button"
+                variant="ghost"
+                className="gap-2"
+                onClick={handleResetPayload}
+                disabled={!payloadInput || validationIsLoading}
+              >
+                <SquareStack className="h-4 w-4" />
+                Eingabe leeren
+              </Button>
+            </div>
+          </div>
+
+          <div className="space-y-4 rounded-3xl border border-border/60 bg-background/70 p-4">
+            <div className="flex items-center justify-between gap-2">
+              <p className="text-sm font-semibold text-foreground">Antwort</p>
+              <Badge variant="outline" className="rounded-full border-border/60 text-xs">
+                {responseStatusLabel}
+              </Badge>
+            </div>
+            {validationPanel}
+          </div>
+        </div>
+      </section>
     </div>
   )
 }
@@ -911,6 +1235,33 @@ function collectSchemaStats(node: any, stats: SchemaStats, visited: WeakSet<obje
   if (node.then) collectSchemaStats(node.then, stats, visited)
   if (node.else) collectSchemaStats(node.else, stats, visited)
   if (node.if) collectSchemaStats(node.if, stats, visited)
+}
+
+function normalizeValidationResponse(payload: any): ValidationResult {
+  const validValue = typeof payload?.Valid === "boolean" ? payload.Valid : Boolean(payload?.valid)
+  const errors = normalizeValidationErrors(payload?.Errors ?? payload?.errors)
+  return {
+    valid: validValue,
+    errors,
+  }
+}
+
+function normalizeValidationErrors(errors: any): Record<string, string[]> | null {
+  if (!errors || typeof errors !== "object") {
+    return null
+  }
+  const normalized: Record<string, string[]> = {}
+  Object.entries(errors).forEach(([key, value]) => {
+    if (Array.isArray(value)) {
+      normalized[key] = value.map((entry) => String(entry))
+      return
+    }
+    if (value === undefined || value === null) {
+      return
+    }
+    normalized[key] = [String(value)]
+  })
+  return Object.keys(normalized).length ? normalized : null
 }
 
 async function copyJsonToClipboard(json: string): Promise<boolean> {

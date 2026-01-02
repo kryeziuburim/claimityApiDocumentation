@@ -99,7 +99,10 @@ const navigationItems: NavItem[] = [
     id: "payloads",
     title: "Fall-Struktur",
     icon: FileJson,
-    children: CLAIM_PAYLOADS.map((payload) => ({ id: payload.anchorId, title: payload.navTitle })),
+    children: [
+      ...CLAIM_PAYLOADS.map((payload) => ({ id: payload.anchorId, title: payload.navTitle })),
+      { id: "claim-payload-validation", title: "Payload validieren" },
+    ],
   },
 ]
 
