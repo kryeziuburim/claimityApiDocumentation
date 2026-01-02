@@ -24,6 +24,10 @@ const METHOD_ACCENTS: Partial<Record<HttpMethod, string>> = {
 }
 const DEFAULT_ACCENT_COLOR = "#2a8289"
 const SCHEMA_EXPLORER_MAX_DEPTH = 6
+const PAYLOAD_FIELD_LINKS = {
+  PayloadJson: "#claim-payloads",
+  payloadJson: "#claim-payloads",
+}
 
 type HeaderRow = { k: string; v: string }
 
@@ -196,10 +200,11 @@ export function EndpointDetails({
                 schema={requestSchema}
                 title="Request Schema"
                 maxDepth={SCHEMA_EXPLORER_MAX_DEPTH}
+                fieldLinks={PAYLOAD_FIELD_LINKS}
               />
-               <CodeBlock title="Beispiel-Body" accentColor={accentColor}>
-                 {reqExample ? prettyJson(reqExample) : null}
-               </CodeBlock>
+              <CodeBlock title="Beispiel-Body" accentColor={accentColor}>
+                {reqExample ? prettyJson(reqExample) : null}
+              </CodeBlock>
             </DetailBlock>
           )}
         </div>
@@ -238,6 +243,7 @@ export function EndpointDetails({
                           schema={schema}
                           title="Response Schema"
                           maxDepth={SCHEMA_EXPLORER_MAX_DEPTH}
+                          fieldLinks={PAYLOAD_FIELD_LINKS}
                         />
                         <CodeBlock title="Beispiel-Response" accentColor={accentColor}>
                           {example ? prettyJson(example) : null}

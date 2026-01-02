@@ -11,6 +11,7 @@ type SchemaExplorerProps = {
   title?: string
   depth?: number
   maxDepth?: number
+  fieldLinks?: Record<string, string>
 }
 
 export function SchemaExplorer({
@@ -19,6 +20,7 @@ export function SchemaExplorer({
   title,
   depth = 0,
   maxDepth = 6,
+  fieldLinks,
 }: SchemaExplorerProps) {
   const [expanded, setExpanded] = useState<Record<string, boolean>>({})
 
@@ -54,7 +56,12 @@ export function SchemaExplorer({
   )
   const bodyWrapperClasses = "overflow-x-auto"
 
-  const renderPropertyRows = (currentSchema: any, currentTitle: string, currentDepth: number): React.ReactNode => {
+  const renderPropertyRows = (
+    currentSchema: any,
+    currentTitle: string,
+    currentDepth: number,
+    parentPath: string
+  ): React.ReactNode => {
     const currentProps = currentSchema.properties ?? {}
     const currentRequired: string[] = Array.isArray(currentSchema.required) ? currentSchema.required : []
     const propKeys = Object.keys(currentProps)
@@ -65,7 +72,7 @@ export function SchemaExplorer({
       const isReq = currentRequired.includes(field)
       const nullable = !!fieldSchema?.nullable
       const enumVals = Array.isArray(fieldSchema?.enum) ? fieldSchema.enum : null
-      const keyId = `${currentTitle}.${field}`
+      const fieldPath = parentPath ? `${parentPath}.${field}` : field
       const descRaw = safeString(fieldSchema?.description)
       const descNode = renderInlineLinks(descRaw)
       const enumNode =
@@ -74,7 +81,10 @@ export function SchemaExplorer({
             <div className="flex flex-wrap gap-1 text-[11px] font-mono text-muted-foreground">
               {enumVals.map((value: string, idx: number) => {
                 return (
-                  <span key={`${keyId}-enum-${idx}-${value}`} className="rounded border border-border/60 bg-muted/20 px-2 py-0.5">
+                  <span
+                    key={`${fieldPath}-enum-${idx}-${value}`}
+                    className="rounded border border-border/60 bg-muted/20 px-2 py-0.5"
+                  >
                     {value}
                   </span>
                 )
@@ -90,13 +100,14 @@ export function SchemaExplorer({
           Boolean(fieldSchema?.properties) ||
           (fieldSchema?.type === "array" && (fieldSchema?.items?.$ref || fieldSchema?.items?.properties)))
 
-      const open = !!expanded[keyId]
+      const open = !!expanded[fieldPath]
       const indentLevel = Math.max(0, currentDepth - depth)
 
-      const toggleRow = () => setExpanded((p) => ({ ...p, [keyId]: !p[keyId] }))
+      const toggleRow = () => setExpanded((p) => ({ ...p, [fieldPath]: !p[fieldPath] }))
+      const linkHref = fieldLinks?.[fieldPath] ?? fieldLinks?.[field]
 
       return (
-        <React.Fragment key={keyId}>
+        <React.Fragment key={fieldPath}>
           <tr
             className={cn(
               "border-t border-border/60 align-top",
@@ -115,9 +126,9 @@ export function SchemaExplorer({
             }
             tabIndex={canExpand ? 0 : undefined}
             aria-expanded={canExpand ? open : undefined}
-          >
-             <td className="pr-3 py-2 font-mono text-xs align-top" style={{ paddingLeft: indentLevel * 16 }}>
-               <div className="flex items-center gap-2">
+           >
+            <td className="pr-3 py-2 font-mono text-xs align-top" style={{ paddingLeft: indentLevel * 16 }}>
+              <div className="flex items-center gap-2">
                 {canExpand ? (
                   <>
                     <ChevronRight
@@ -126,10 +137,28 @@ export function SchemaExplorer({
                         open && "rotate-90"
                       )}
                     />
-                    <span>{field}</span>
+                    {linkHref ? (
+                      <a
+                        href={linkHref}
+                        className="text-primary underline underline-offset-2"
+                        onClick={(event) => event.stopPropagation()}
+                      >
+                        {field}
+                      </a>
+                    ) : (
+                      <span>{field}</span>
+                    )}
                   </>
                 ) : (
-                  <span>{field}</span>
+                  <>
+                    {linkHref ? (
+                      <a href={linkHref} className="text-primary underline underline-offset-2">
+                        {field}
+                      </a>
+                    ) : (
+                      <span>{field}</span>
+                    )}
+                  </>
                 )}
               </div>
             </td>
@@ -139,13 +168,20 @@ export function SchemaExplorer({
             <td className="pr-3 py-2 align-top text-left">{enumNode}</td>
           </tr>
 
-          {canExpand && open ? renderChildRows(fieldSchema, childTitle(field, fieldSchema), currentDepth + 1) : null}
+          {canExpand && open
+            ? renderChildRows(fieldSchema, childTitle(field, fieldSchema), currentDepth + 1, fieldPath)
+            : null}
         </React.Fragment>
       )
     })
   }
 
-  const renderChildRows = (childSchema: any, childLabel: string, nextDepth: number): React.ReactNode => {
+  const renderChildRows = (
+    childSchema: any,
+    childLabel: string,
+    nextDepth: number,
+    parentPath: string
+  ): React.ReactNode => {
     const expandedSchema = expandChildSchema(childSchema, spec)
     const normalizedChild = normalizeSchemaWithRef(spec, expandedSchema)
     if (!normalizedChild) {
@@ -168,7 +204,7 @@ export function SchemaExplorer({
       )
     }
 
-    return renderPropertyRows(normalizedChild, childLabel, nextDepth)
+    return renderPropertyRows(normalizedChild, childLabel, nextDepth, parentPath)
   }
 
   return (
@@ -196,7 +232,7 @@ export function SchemaExplorer({
               <th className="pr-3">Enum</th>
             </tr>
           </thead>
-          <tbody>{renderPropertyRows(normalized, schemaTitle, depth)}</tbody>
+          <tbody>{renderPropertyRows(normalized, schemaTitle, depth, "")}</tbody>
         </table>
       </div>
     </div>

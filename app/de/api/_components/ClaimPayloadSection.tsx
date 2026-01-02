@@ -52,6 +52,11 @@ export const CLAIM_PAYLOADS: ClaimPayloadMeta[] = [
   },
 ]
 
+const PAYLOAD_FIELD_LINKS = {
+  payloadJson: "#claim-payloads",
+  PayloadJson: "#claim-payloads",
+}
+
 export function ClaimPayloadSection() {
   const [active, setActive] = useState<string>(CLAIM_PAYLOADS[0]?.key ?? "")
   const [schemas, setSchemas] = useState<Record<string, SchemaLoadState>>(() => {
@@ -105,7 +110,7 @@ export function ClaimPayloadSection() {
   if (!CLAIM_PAYLOADS.length) return null
 
   return (
-    <div className="space-y-6">
+    <div id="claim-payloads" className="space-y-6">
       <div>
         <h2 className="mb-4 text-3xl font-bold tracking-tight text-balance">Fall-Struktur</h2>
         <p className="text-sm leading-relaxed text-muted-foreground text-pretty md:text-base">
@@ -164,7 +169,13 @@ export function ClaimPayloadSection() {
                     ) : null}
 
                     <div className="rounded-2xl border border-border/70 bg-muted/10 p-4">
-                      <SchemaExplorer spec={schema} schema={schema} title="Payload Schema" maxDepth={6} />
+                      <SchemaExplorer
+                        spec={schema}
+                        schema={schema}
+                        title="Payload Schema"
+                        maxDepth={6}
+                        fieldLinks={PAYLOAD_FIELD_LINKS}
+                      />
                     </div>
 
                     {rules.length ? (
