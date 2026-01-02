@@ -1,0 +1,269 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://claimity/api/schemas/claims/vehicle-claim.schema.json",
+  "title": "Vehicle Claim Payload",
+  "type": "object",
+  "additionalProperties": true,
+  "required": [
+    "policyNumber",
+    "claimInsurance",
+    "claimType",
+    "location",
+    "incidentDate",
+    "damageDescription",
+    "estimatedAmount",
+    "estimatedCurrency",
+    "inspectionType"
+  ],
+  "properties": {
+    "policyNumber": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 200
+    },
+    "claimInsurance": {
+      "type": "string",
+      "enum": ["liability", "partial", "comprehensive"]
+    },
+    "claimType": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 200
+    },
+
+    "insured": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {
+        "name": { "type": "string" },
+        "address": { "type": "string" },
+        "postalCode": { "type": "string" },
+        "city": { "type": "string" },
+        "phone": { "type": "string" },
+        "email": { "type": "string" },
+        "note": { "type": "string" },
+        "deductible": { "type": "string" },
+        "licensePlate": { "type": "string" },
+        "carMake": { "type": "string" },
+        "carModel": { "type": "string" },
+        "vin": { "type": "string" },
+        "firstRegistration": {
+          "oneOf": [
+            { "type": "string", "format": "date" },
+            { "type": "string", "maxLength": 0 },
+            { "type": "null" }
+          ]
+        }
+      }
+    },
+
+    "counterparty": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {
+        "name": { "type": "string" },
+        "address": { "type": "string" },
+        "postalCode": { "type": "string" },
+        "city": { "type": "string" },
+        "phone": { "type": "string" },
+        "email": { "type": "string" },
+        "note": { "type": "string" },
+        "licensePlate": { "type": "string" },
+        "carMake": { "type": "string" },
+        "carModel": { "type": "string" },
+        "vin": { "type": "string" },
+        "firstRegistration": {
+          "oneOf": [
+            { "type": "string", "format": "date" },
+            { "type": "string", "maxLength": 0 },
+            { "type": "null" }
+          ]
+        }
+      }
+    },
+
+    "location": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {
+        "address": { "type": "string" },
+        "postalCode": { "type": "string" },
+        "city": { "type": "string", "minLength": 1 }
+      },
+      "required": ["city"]
+    },
+
+    "incidentDate": {
+      "type": "string",
+      "format": "date"
+    },
+
+    "damageDescription": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 4000
+    },
+
+    "estimatedAmount": {
+      "oneOf": [
+        { "type": "number", "minimum": 0 },
+        { "type": "string", "pattern": "^-?\\d+(\\.\\d+)?$" }
+      ]
+    },
+
+    "estimatedCurrency": {
+      "type": "string",
+      "enum": ["CHF", "EUR", "USD"]
+    },
+
+    "inspectionType": {
+      "type": "string",
+      "enum": ["workshop", "private", "live_expertise", "estimate_review", "invoice_review"]
+    },
+
+    "workshop": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {
+        "name": { "type": "string" },
+        "phone": { "type": "string" },
+        "email": { "type": "string" },
+        "address": { "type": "string" },
+        "postalCode": { "type": "string" },
+        "city": { "type": "string" }
+      }
+    },
+
+    "inspectionContact": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {
+        "name": { "type": "string" },
+        "phone": { "type": "string" },
+        "email": { "type": "string" },
+        "address": { "type": "string" },
+        "postalCode": { "type": "string" },
+        "city": { "type": "string" }
+      }
+    },
+
+    "inspectionDate": {
+      "oneOf": [
+        { "type": "string", "format": "date" },
+        { "type": "null" }
+      ]
+    },
+
+    "remarks": { "type": "string", "maxLength": 4000 }
+  },
+  "allOf": [
+    {
+      "if": { "properties": { "claimInsurance": { "const": "liability" } } },
+      "then": {
+        "required": ["counterparty"],
+        "properties": {
+          "counterparty": {
+            "type": "object",
+            "properties": {
+              "name": { "type": "string", "minLength": 1 },
+              "phone": { "type": "string", "minLength": 1 },
+              "licensePlate": { "type": "string", "minLength": 1 },
+              "city": { "type": "string", "minLength": 1 },
+              "carMake": { "type": "string", "minLength": 1 }
+            },
+            "required": ["name", "phone", "licensePlate", "city", "carMake"]
+          }
+        }
+      }
+    },
+    {
+      "if": { "properties": { "claimInsurance": { "enum": ["partial", "comprehensive"] } } },
+      "then": {
+        "required": ["insured"],
+        "properties": {
+          "insured": {
+            "type": "object",
+            "properties": {
+              "name": { "type": "string", "minLength": 1 },
+              "phone": { "type": "string", "minLength": 1 },
+              "licensePlate": { "type": "string", "minLength": 1 },
+              "address": { "type": "string", "minLength": 1 },
+              "postalCode": { "type": "string", "minLength": 1 },
+              "city": { "type": "string", "minLength": 1 },
+              "carMake": { "type": "string", "minLength": 1 }
+            },
+            "required": ["name", "phone", "licensePlate", "address", "postalCode", "city", "carMake"]
+          }
+        }
+      }
+    },
+    {
+      "if": { "properties": { "inspectionType": { "const": "workshop" } } },
+      "then": {
+        "required": ["inspectionDate", "workshop"],
+        "properties": {
+          "inspectionDate": { "type": "string", "format": "date" },
+          "workshop": {
+            "type": "object",
+            "required": ["name", "phone", "city"]
+          }
+        }
+      }
+    },
+    {
+      "if": { "properties": { "inspectionType": { "enum": ["estimate_review", "invoice_review"] } } },
+      "then": {
+        "required": ["workshop"],
+        "properties": {
+          "workshop": {
+            "type": "object",
+            "required": ["name", "phone"]
+          }
+        }
+      }
+    },
+    {
+      "if": { "properties": { "inspectionType": { "enum": ["private", "live_expertise"] } } },
+      "then": {
+        "required": ["inspectionDate", "inspectionContact"],
+        "properties": {
+          "inspectionDate": { "type": "string", "format": "date" }
+        }
+      }
+    },
+    {
+      "if": { "required": ["inspectionContact"] },
+      "then": {
+        "properties": {
+          "inspectionContact": {
+            "type": "object",
+            "required": ["name", "address", "postalCode", "city", "phone"]
+          }
+        }
+      }
+    },
+    {
+      "if": { "properties": { "claimInsurance": { "const": "partial" } } },
+      "then": {
+        "properties": {
+          "claimType": {
+            "type": "string",
+            "enum": [
+              "fire",
+              "natural_hazard",
+              "snow_slide",
+              "theft",
+              "animal_collision",
+              "marten_damage",
+              "glass_breakage",
+              "vandalism",
+              "assistance",
+              "falling_objects",
+              "parking_damage"
+            ]
+          }
+        }
+      }
+    }
+  ]
+}

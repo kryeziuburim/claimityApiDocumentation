@@ -1,0 +1,241 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://claimity/api/schemas/claims/fraud-claim.schema.json",
+  "title": "Fraud Claim Payload",
+  "type": "object",
+  "additionalProperties": true,
+  "required": [
+    "policyNumber",
+    "claimInsurance",
+    "claimType",
+    "insured",
+    "location",
+    "incidentDate",
+    "damageDescription",
+    "estimatedAmount",
+    "estimatedCurrency",
+    "supportRequest"
+  ],
+  "properties": {
+    "policyNumber": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 80
+    },
+    "claimInsurance": {
+      "type": "string",
+      "enum": ["liability", "partial", "comprehensive"]
+    },
+    "claimType": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 200
+    },
+
+    "insured": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {
+        "name": { "type": "string", "minLength": 1 },
+        "address": { "type": "string", "minLength": 1 },
+        "postalCode": { "type": "string", "minLength": 1 },
+        "city": { "type": "string", "minLength": 1 },
+        "phone": { "type": "string", "minLength": 1 },
+        "email": { "type": "string", "minLength": 1 },
+        "note": { "type": "string" },
+        "birthPostalCode": { "type": "string" },
+        "birthCity": { "type": "string" },
+        "birthDate": {
+          "oneOf": [
+            { "type": "string", "format": "date" },
+            { "type": "string", "maxLength": 0 },
+            { "type": "null" }
+          ]
+        },
+        "driverAtIncident": { "type": "string", "enum": ["unknown", "yes", "no"] },
+        "licensePlate": { "type": "string" },
+        "carMake": { "type": "string" },
+        "carModel": { "type": "string" },
+        "vin": { "type": "string" }
+      },
+      "required": ["name", "address", "postalCode", "city", "phone", "email"]
+    },
+
+    "counterparty": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {
+        "name": { "type": "string", "minLength": 1 },
+        "address": { "type": "string", "minLength": 1 },
+        "postalCode": { "type": "string", "minLength": 1 },
+        "city": { "type": "string", "minLength": 1 },
+        "phone": { "type": "string", "minLength": 1 },
+        "email": { "type": "string", "minLength": 1 },
+        "note": { "type": "string" },
+        "birthPostalCode": { "type": "string" },
+        "birthCity": { "type": "string" },
+        "birthDate": {
+          "oneOf": [
+            { "type": "string", "format": "date" },
+            { "type": "string", "maxLength": 0 },
+            { "type": "null" }
+          ]
+        },
+        "driverAtIncident": { "type": "string", "enum": ["unknown", "yes", "no"] },
+        "licensePlate": { "type": "string" },
+        "carMake": { "type": "string" },
+        "carModel": { "type": "string" },
+        "vin": { "type": "string" }
+      },
+      "required": ["name", "address", "postalCode", "city", "phone", "email"]
+    },
+
+    "insuredPersons": {
+      "type": "array",
+      "maxItems": 25,
+      "items": {
+        "type": "object",
+        "additionalProperties": true,
+        "properties": {
+          "name": { "type": "string" },
+          "address": { "type": "string" },
+          "postalCode": { "type": "string" },
+          "city": { "type": "string" },
+          "phone": { "type": "string" },
+          "email": { "type": "string" },
+          "birthPostalCode": { "type": "string" },
+          "birthCity": { "type": "string" },
+          "birthDate": {
+            "oneOf": [
+              { "type": "string", "format": "date" },
+              { "type": "string", "maxLength": 0 },
+              { "type": "null" }
+            ]
+          },
+          "driverAtIncident": { "type": "string", "enum": ["unknown", "yes", "no"] }
+        }
+      },
+      "contains": {
+        "type": "object",
+        "properties": { "driverAtIncident": { "const": "yes" } },
+        "required": ["driverAtIncident"]
+      },
+      "minContains": 0,
+      "maxContains": 1
+    },
+
+    "counterpartyPersons": {
+      "type": "array",
+      "maxItems": 25,
+      "items": {
+        "type": "object",
+        "additionalProperties": true,
+        "properties": {
+          "name": { "type": "string" },
+          "address": { "type": "string" },
+          "postalCode": { "type": "string" },
+          "city": { "type": "string" },
+          "phone": { "type": "string" },
+          "email": { "type": "string" },
+          "birthPostalCode": { "type": "string" },
+          "birthCity": { "type": "string" },
+          "birthDate": {
+            "oneOf": [
+              { "type": "string", "format": "date" },
+              { "type": "string", "maxLength": 0 },
+              { "type": "null" }
+            ]
+          },
+          "driverAtIncident": { "type": "string", "enum": ["unknown", "yes", "no"] }
+        }
+      },
+      "contains": {
+        "type": "object",
+        "properties": { "driverAtIncident": { "const": "yes" } },
+        "required": ["driverAtIncident"]
+      },
+      "minContains": 0,
+      "maxContains": 1
+    },
+
+    "location": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {
+        "address": { "type": "string" },
+        "postalCode": { "type": "string" },
+        "city": { "type": "string", "minLength": 1 }
+      },
+      "required": ["city"]
+    },
+
+    "incidentDate": {
+      "type": "string",
+      "format": "date"
+    },
+    "incidentTime": {
+      "oneOf": [
+        { "type": "string", "pattern": "^([01]\\d|2[0-3]):([0-5]\\d)$" },
+        { "type": "null" }
+      ]
+    },
+
+    "damageDescription": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 4000
+    },
+
+    "estimatedAmount": {
+      "oneOf": [
+        { "type": "number", "minimum": 0 },
+        { "type": "string", "pattern": "^-?\\d+(\\.\\d+)?$" }
+      ]
+    },
+
+    "estimatedCurrency": { "type": "string", "enum": ["CHF", "EUR", "USD"] },
+
+    "supportRequest": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 10000
+    },
+
+    "remarks": {
+      "oneOf": [
+        { "type": "string", "maxLength": 4000 },
+        { "type": "null" }
+      ]
+    }
+  },
+  "allOf": [
+    {
+      "if": { "properties": { "claimInsurance": { "const": "liability" } } },
+      "then": {
+        "required": ["counterparty"],
+        "properties": {
+          "counterparty": {
+            "type": "object",
+            "required": ["name", "address", "postalCode", "city", "phone", "email"]
+          }
+        }
+      }
+    },
+    {
+      "not": {
+        "allOf": [
+          { "properties": { "insured": { "type": "object", "properties": { "driverAtIncident": { "const": "yes" } }, "required": ["driverAtIncident"] } } },
+          { "properties": { "insuredPersons": { "contains": { "type": "object", "properties": { "driverAtIncident": { "const": "yes" } }, "required": ["driverAtIncident"] } } } }
+        ]
+      }
+    },
+    {
+      "not": {
+        "allOf": [
+          { "properties": { "counterparty": { "type": "object", "properties": { "driverAtIncident": { "const": "yes" } }, "required": ["driverAtIncident"] } } },
+          { "properties": { "counterpartyPersons": { "contains": { "type": "object", "properties": { "driverAtIncident": { "const": "yes" } }, "required": ["driverAtIncident"] } } } }
+        ]
+      }
+    }
+  ]
+}

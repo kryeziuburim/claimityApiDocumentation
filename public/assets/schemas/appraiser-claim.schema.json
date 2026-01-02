@@ -1,0 +1,203 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://claimity/api/schemas/claims/appraiser-claim.schema.json",
+  "title": "Appraiser Claim Payload",
+  "type": "object",
+  "additionalProperties": true,
+  "required": [
+    "policyNumber",
+    "claimInsurance",
+    "claimType",
+    "insured",
+    "location",
+    "incidentDate",
+    "damageDescription",
+    "estimatedAmount",
+    "estimatedCurrency",
+    "inspectionType"
+  ],
+  "properties": {
+    "policyNumber": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 80
+    },
+    "claimInsurance": {
+      "type": "string",
+      "enum": ["liability", "own"]
+    },
+    "claimType": {
+      "type": "string",
+      "enum": ["building", "infrastructure", "household"]
+    },
+
+    "insured": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {
+        "name": { "type": "string" },
+        "address": { "type": "string" },
+        "postalCode": { "type": "string" },
+        "city": { "type": "string" },
+        "phone": { "type": "string" },
+        "email": { "type": "string" },
+        "note": { "type": "string" }
+      }
+    },
+
+    "counterparty": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {
+        "name": { "type": "string" },
+        "address": { "type": "string" },
+        "postalCode": { "type": "string" },
+        "city": { "type": "string" },
+        "phone": { "type": "string" },
+        "email": { "type": "string" },
+        "note": { "type": "string" }
+      }
+    },
+
+    "location": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {
+        "address": { "type": "string" },
+        "postalCode": { "type": "string" },
+        "city": { "type": "string", "minLength": 1 }
+      },
+      "required": ["city"]
+    },
+
+    "incidentDate": {
+      "type": "string",
+      "format": "date"
+    },
+
+    "damageDescription": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 4000
+    },
+
+    "estimatedAmount": {
+      "oneOf": [
+        { "type": "number", "minimum": 0 },
+        { "type": "string", "pattern": "^-?\\d+(\\.\\d+)?$" }
+      ]
+    },
+
+    "estimatedCurrency": {
+      "type": "string",
+      "enum": ["CHF", "EUR", "USD"]
+    },
+
+    "inspectionType": {
+      "type": "string",
+      "enum": ["onsite", "estimate_review", "invoice_review"]
+    },
+
+    "inspectionDate": {
+      "oneOf": [
+        { "type": "string", "format": "date" },
+        { "type": "null" }
+      ]
+    },
+
+    "inspectionContact": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {
+        "name": { "type": "string" },
+        "phone": { "type": "string" },
+        "email": { "type": "string" },
+        "address": { "type": "string" },
+        "postalCode": { "type": "string" },
+        "city": { "type": "string" }
+      }
+    },
+
+    "remarks": {
+      "oneOf": [
+        { "type": "string", "maxLength": 4000 },
+        { "type": "null" }
+      ]
+    }
+  },
+  "allOf": [
+    {
+      "if": { "properties": { "claimInsurance": { "const": "liability" } } },
+      "then": {
+        "properties": {
+          "insured": {
+            "type": "object",
+            "properties": {
+              "name": { "type": "string", "minLength": 1 }
+            },
+            "required": ["name"]
+          },
+          "counterparty": {
+            "type": "object",
+            "properties": {
+              "name": { "type": "string", "minLength": 1 },
+              "phone": { "type": "string", "minLength": 1 },
+              "city": { "type": "string", "minLength": 1 }
+            },
+            "required": ["name", "phone", "city"]
+          }
+        }
+      }
+    },
+    {
+      "if": { "properties": { "claimInsurance": { "const": "own" } } },
+      "then": {
+        "properties": {
+          "insured": {
+            "type": "object",
+            "properties": {
+              "name": { "type": "string", "minLength": 1 },
+              "phone": { "type": "string", "minLength": 1 },
+              "city": { "type": "string", "minLength": 1 }
+            },
+            "required": ["name", "phone", "city"]
+          }
+        }
+      }
+    },
+    {
+      "if": { "properties": { "inspectionType": { "const": "onsite" } } },
+      "then": {
+        "required": ["inspectionDate", "inspectionContact"],
+        "properties": {
+          "inspectionDate": { "type": "string", "format": "date" },
+          "inspectionContact": {
+            "type": "object",
+            "properties": {
+              "name": { "type": "string", "minLength": 1 },
+              "city": { "type": "string", "minLength": 1 },
+              "phone": { "type": "string", "minLength": 1 }
+            },
+            "required": ["name", "city", "phone"]
+          }
+        }
+      }
+    },
+    {
+      "if": { "required": ["inspectionContact"] },
+      "then": {
+        "properties": {
+          "inspectionContact": {
+            "type": "object",
+            "properties": {
+              "name": { "type": "string", "minLength": 1 },
+              "city": { "type": "string", "minLength": 1 },
+              "phone": { "type": "string", "minLength": 1 }
+            },
+            "required": ["name", "city", "phone"]
+          }
+        }
+      }
+    }
+  ]
+}
