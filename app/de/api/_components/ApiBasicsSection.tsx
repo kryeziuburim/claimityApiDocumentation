@@ -8,7 +8,7 @@ export function ApiBasicsSection() {
 
   const MethodBadge = ({ method }: { method: keyof typeof METHOD_COLORS }) => (
     <span
-      className="inline-flex h-7 w-20 items-center justify-center rounded-md font-mono text-xs font-semibold text-white"
+      className="inline-flex h-7 w-14 items-center justify-center rounded-md font-mono text-[11px] font-semibold text-white sm:w-20 sm:text-xs"
       style={{ backgroundColor: METHOD_COLORS[method] }}
     >
       {method}
@@ -18,14 +18,14 @@ export function ApiBasicsSection() {
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="mb-4 text-3xl font-bold tracking-tight text-balance">API‑Grundlagen</h2>
+        <h2 className="mb-4 text-2xl font-bold tracking-tight text-balance sm:text-3xl">API‑Grundlagen</h2>
         <p className="text-sm leading-relaxed text-muted-foreground text-pretty md:text-base">
           Zentrale Konzepte und Konventionen, die in der gesamten API genutzt werden.
         </p>
       </div>
 
-      <div id="basics-request-format" className="rounded-lg border border-border bg-card p-6 scroll-mt-24">
-        <h3 className="mb-3 text-xl font-semibold">Request‑Format</h3>
+      <div id="basics-request-format" className="rounded-lg border border-border bg-card p-4 scroll-mt-24 sm:p-6">
+        <h3 className="mb-3 text-lg font-semibold sm:text-xl">Request‑Format</h3>
         <p className="mb-4 leading-relaxed text-muted-foreground text-pretty">
           Jeder Request besteht aus <strong>Methode</strong>, <strong>URL</strong>, optionalen <strong>Query‑Parametern</strong>, <strong>Headers </strong>
           und (bei <span className="font-mono">POST</span>/<span className="font-mono">PUT</span>) einem{" "}
@@ -109,8 +109,8 @@ export function ApiBasicsSection() {
         </div>
       </div>
 
-      <div id="basics-response-format" className="rounded-lg border border-border bg-card p-6 scroll-mt-24">
-        <h3 className="mb-4 text-xl font-semibold">Response‑Format</h3>
+      <div id="basics-response-format" className="rounded-lg border border-border bg-card p-4 scroll-mt-24 sm:p-6">
+        <h3 className="mb-4 text-lg font-semibold sm:text-xl">Response‑Format</h3>
 
         <p className="mb-4 leading-relaxed text-muted-foreground text-pretty">
           Responses sind grundsätzlich <strong>JSON</strong> (<span className="font-mono">Content-Type: application/json</span>) und verwenden
@@ -180,8 +180,8 @@ Content-Type: application/json
         </div>
       </div>
 
-      <div id="basics-rate-limiting" className="rounded-lg border border-border bg-card p-6 scroll-mt-24">
-        <h3 className="mb-4 text-xl font-semibold">Rate Limiting</h3>
+      <div id="basics-rate-limiting" className="rounded-lg border border-border bg-card p-4 scroll-mt-24 sm:p-6">
+        <h3 className="mb-4 text-lg font-semibold sm:text-xl">Rate Limiting</h3>
 
         <p className="mb-4 leading-relaxed text-muted-foreground text-pretty">
           Die Partner-API ist durch Rate Limiting geschützt, um faire Nutzung und Stabilität sicherzustellen. Limits werden{" "}

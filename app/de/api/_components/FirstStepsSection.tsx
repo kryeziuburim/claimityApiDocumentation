@@ -4,7 +4,7 @@ export function FirstStepsSection() {
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="mb-4 text-3xl font-bold tracking-tight text-balance">Erste Schritte</h2>
+        <h2 className="mb-4 text-2xl font-bold tracking-tight text-balance sm:text-3xl">Erste Schritte</h2>
         <p className="text-sm leading-relaxed text-muted-foreground text-pretty md:text-base">So starten Sie mit der API:</p>
       </div>
 
@@ -34,24 +34,24 @@ export function FirstStepsSection() {
             description: "Senden Sie mit Ihrem Access Token und dem DPoP-Header eine authentifizierte Anfrage an einen Endpoint.",
           },
         ].map((item) => (
-          <div key={item.step} className="flex gap-4 rounded-lg border border-border bg-card p-5">
+          <div key={item.step} className="flex flex-col gap-3 rounded-lg border border-border bg-card p-4 sm:flex-row sm:gap-4 sm:p-5">
             <div
-              className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-lg font-bold text-white"
+              className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-base font-bold text-white sm:h-10 sm:w-10 sm:text-lg"
               style={{ backgroundColor: "#2a8289" }}
             >
               {item.step}
             </div>
             <div className="space-y-1">
-              <h3 className="font-semibold text-balance">{item.title}</h3>
+              <h3 className="text-base font-semibold text-balance sm:text-lg">{item.title}</h3>
               <p className="text-sm leading-relaxed text-muted-foreground text-pretty">{item.description}</p>
             </div>
           </div>
         ))}
       </div>
 
-      <div className="rounded-lg bg-muted p-6">
+      <div className="rounded-lg bg-muted p-4 sm:p-6">
         <h3 className="mb-3 font-mono text-sm font-semibold">Beispiel‑Request</h3>
-        <pre className="overflow-x-auto rounded bg-background p-4 text-sm">
+        <pre className="overflow-x-auto rounded bg-background p-4 text-xs sm:text-sm">
           <code className="font-mono text-foreground">{`curl -X GET \\
   https://app.claimity.ch/v1/experts/cases \\
   -H 'Accept: application/json' \\

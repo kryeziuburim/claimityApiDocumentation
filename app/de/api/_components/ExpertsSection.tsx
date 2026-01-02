@@ -4,7 +4,7 @@ export function ExpertsSection() {
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="mb-4 text-3xl font-bold tracking-tight text-balance">Experten</h2>
+        <h2 className="mb-4 text-2xl font-bold tracking-tight text-balance sm:text-3xl">Experten</h2>
         <p className="text-sm leading-relaxed text-muted-foreground text-pretty md:text-base">
           Endpoints für Experten zum Arbeiten mit Fällen, Dokumenten und Gutachten-/Report-Submissions.
         </p>
@@ -12,7 +12,7 @@ export function ExpertsSection() {
 
       {/* ========== CASES ========== */}
       <div>
-        <h3 className="mb-4 text-xl font-semibold">Fälle</h3>
+        <h3 className="mb-4 text-lg font-semibold sm:text-xl">Fälle</h3>
 
         <div className="space-y-4">
           <div id="experts-cases-list" className="scroll-mt-24">
@@ -41,7 +41,7 @@ export function ExpertsSection() {
 
       {/* ========== CASE DOCUMENTS ========== */}
       <div>
-        <h3 className="mb-4 text-xl font-semibold">Falldokumente</h3>
+        <h3 className="mb-4 text-lg font-semibold sm:text-xl">Falldokumente</h3>
 
         <div className="space-y-4">
           <div id="experts-cases-docs-list" className="scroll-mt-24">
@@ -66,7 +66,7 @@ export function ExpertsSection() {
 
       {/* ========== REPORTS (DRAFT + LIST) ========== */}
       <div>
-        <h3 className="mb-4 text-xl font-semibold">Reports & Submissions</h3>
+        <h3 className="mb-4 text-lg font-semibold sm:text-xl">Reports & Submissions</h3>
 
         <div className="space-y-4">
           <div id="experts-reports-draft-create" className="scroll-mt-24">
@@ -104,7 +104,7 @@ export function ExpertsSection() {
 
       {/* ========== SUBMISSION DOCUMENTS + SUBMIT ========== */}
       <div>
-        <h3 className="mb-4 text-xl font-semibold">Submission-Dokumente</h3>
+        <h3 className="mb-4 text-lg font-semibold sm:text-xl">Submission-Dokumente</h3>
 
         <div className="space-y-4">
           <div id="experts-submission-docs-list" className="scroll-mt-24">

@@ -43,9 +43,9 @@ export function EndpointCard({
 
   const headerContent = (
     <div className="flex flex-col gap-3">
-      <div className="flex w-full items-center gap-3">
+      <div className="flex w-full items-center gap-2 sm:gap-3">
         <span
-          className="flex h-8 w-16 items-center justify-center rounded-md font-mono text-xs font-semibold uppercase tracking-wide text-white"
+          className="flex h-8 w-16 items-center justify-center rounded-md font-mono text-[11px] font-semibold uppercase tracking-wide text-white sm:w-20 sm:text-xs"
           style={{ backgroundColor: methodColor }}
         >
           {method}
@@ -53,10 +53,10 @@ export function EndpointCard({
 
         <div className="min-w-0 flex-1">
           <div className="flex flex-wrap items-center gap-2">
-            <span className="font-mono text-sm font-semibold text-foreground">{path}</span>
+            <span className="font-mono text-xs font-semibold text-foreground sm:text-sm">{path}</span>
           </div>
 
-          {description ? <p className="mt-2 text-sm text-muted-foreground text-pretty">{description}</p> : null}
+          {description ? <p className="mt-2 text-xs text-muted-foreground text-pretty sm:text-sm">{description}</p> : null}
 
           {note ? (
             <div className="mt-2 text-xs text-muted-foreground">
@@ -83,17 +83,17 @@ export function EndpointCard({
         <button
           type="button"
           onClick={() => setOpen((v) => !v)}
-          className="w-full rounded-2xl bg-transparent p-4 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2a8289]"
+          className="w-full rounded-2xl bg-transparent p-4 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2a8289] sm:p-5"
           aria-expanded={open}
         >
           {headerContent}
         </button>
       ) : (
-        <div className="p-4">{headerContent}</div>
+        <div className="p-4 sm:p-5">{headerContent}</div>
       )}
 
       {hasDetails && open ? (
-        <div className="border-t border-border bg-card/80 px-4 pb-4 pt-3">
+        <div className="border-t border-border bg-card/80 px-4 pb-4 pt-3 sm:px-5">
           <EndpointDetails method={method} path={path} className="mt-2" />
         </div>
       ) : null}

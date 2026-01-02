@@ -15,8 +15,8 @@ export function AuthenticationSection() {
   )
 
   const KvpTable = ({ rows }: { rows: { k: string; v: React.ReactNode }[] }) => (
-    <div className="overflow-x-auto rounded-lg border border-border bg-muted/20">
-      <table className="w-full text-left text-sm">
+    <div className="rounded-lg border border-border bg-muted/20">
+      <table className="hidden w-full text-left text-sm sm:table">
         <tbody>
           {rows.map((r) => (
             <tr key={r.k} className="border-t border-border/60 first:border-t-0 align-top">
@@ -26,13 +26,21 @@ export function AuthenticationSection() {
           ))}
         </tbody>
       </table>
+      <div className="space-y-3 p-3 text-sm text-muted-foreground sm:hidden">
+        {rows.map((r) => (
+          <div key={`${r.k}-mobile`} className="rounded-lg border border-border/60 bg-background/80 p-3">
+            <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">{r.k}</p>
+            <div className="mt-2 text-sm text-foreground">{r.v}</div>
+          </div>
+        ))}
+      </div>
     </div>
   )
 
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="mb-4 text-3xl font-bold tracking-tight text-balance">Authentifizierung</h2>
+        <h2 className="mb-4 text-2xl font-bold tracking-tight text-balance sm:text-3xl">Authentifizierung</h2>
         <p className="text-sm leading-relaxed text-muted-foreground text-pretty md:text-base">
           Die Claimity Partner API nutzt <strong>OAuth 2.0 Client Credentials</strong> mit <strong>JWT Client Assertion (RS256) </strong>
           und sichert jede Anfrage zusätzlich mit <strong>DPoP Proof-of-Possession (ES256)</strong>. Dadurch ist der Access Token an die
@@ -41,11 +49,11 @@ export function AuthenticationSection() {
       </div>
 
       {/* Auth Flow (Sequence) */}
-      <div id="auth-flow" className="rounded-lg border border-border bg-card p-6 space-y-4 scroll-mt-24">
-        <h3 className="text-xl font-semibold">Authentication Flow</h3>
-        <p className="leading-relaxed text-muted-foreground text-pretty">So funktioniert der OAuth2 Client-Credentials Flow.</p>
+      <div id="auth-flow" className="rounded-lg border border-border bg-card p-4 scroll-mt-24 sm:space-y-4 sm:p-6">
+        <h3 className="text-lg font-semibold sm:text-xl">Authentication Flow</h3>
+        <p className="text-sm leading-relaxed text-muted-foreground text-pretty">So funktioniert der OAuth2 Client-Credentials Flow.</p>
 
-        <div className="grid gap-6 md:grid-cols-[440px_1fr] md:items-start">
+        <div className="grid gap-4 md:grid-cols-[440px_1fr] md:items-start md:gap-6">
           <div className="overflow-hidden rounded-lg bg-background">
             <Image
               src="/assets/Auth_Sqeuence.png"
@@ -58,9 +66,9 @@ export function AuthenticationSection() {
             />
           </div>
 
-          <div className="space-y-3">
-            <h4 className="text-sm font-semibold">Ablauf</h4>
-            <ol className="list-decimal space-y-2 pl-5 text-sm text-muted-foreground">
+            <div className="space-y-3">
+              <h4 className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Ablauf</h4>
+              <ol className="list-decimal space-y-2 pl-5 text-sm text-muted-foreground">
               <li>
                 <strong className="text-foreground">Key Pair</strong>: Organisation erstellt RSA Key Pair in Claimity (Private Key wird sicher
                 gespeichert).
@@ -94,8 +102,8 @@ export function AuthenticationSection() {
       </div>
 
       {/* Anchor 1 */}
-      <div id="auth-access-token" className="rounded-lg border border-border bg-card p-6 space-y-4 scroll-mt-24">
-        <h3 className="text-xl font-semibold">Access Token auslesen</h3>
+      <div id="auth-access-token" className="rounded-lg border border-border bg-card p-4 scroll-mt-24 sm:space-y-4 sm:p-6">
+        <h3 className="text-lg font-semibold sm:text-xl">Access Token auslesen</h3>
 
         <p className="leading-relaxed text-muted-foreground text-pretty">
           Für Partner-Integrationen authentifiziert sich Ihre Organisation über eine <strong>signierte JWT Client Assertion</strong>.
@@ -215,8 +223,8 @@ export function AuthenticationSection() {
       </div>
 
       {/* Anchor 2 */}
-      <div id="auth-dpop" className="rounded-lg border border-border bg-card p-6 space-y-4 scroll-mt-24">
-        <h3 className="text-xl font-semibold">API Requests senden</h3>
+      <div id="auth-dpop" className="rounded-lg border border-border bg-card p-4 scroll-mt-24 sm:space-y-4 sm:p-6">
+        <h3 className="text-lg font-semibold sm:text-xl">API Requests senden</h3>
 
         <p className="leading-relaxed text-muted-foreground text-pretty">
           Jede Anfrage benötigt zusätzlich einen <strong>DPoP Proof JWT</strong>. Dieser wird <strong>pro Request</strong> erzeugt und signiert

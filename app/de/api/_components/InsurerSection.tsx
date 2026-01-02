@@ -4,14 +4,14 @@ export function InsurerSection() {
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="mb-4 text-3xl font-bold tracking-tight text-balance">Versicherer</h2>
+        <h2 className="mb-4 text-2xl font-bold tracking-tight text-balance sm:text-3xl">Versicherer</h2>
         <p className="text-sm leading-relaxed text-muted-foreground text-pretty md:text-base">
           Endpoints für Versicherer zum Erstellen/Validieren/Abrufen von Schäden, Dokumenten und Report-Übersichten.
         </p>
       </div>
 
       <div>
-        <h3 className="mb-4 text-xl font-semibold">Schäden</h3>
+        <h3 className="mb-4 text-lg font-semibold sm:text-xl">Schäden</h3>
 
         <div className="space-y-4">
           <div id="insurer-claims-list" className="scroll-mt-24">
@@ -43,7 +43,7 @@ export function InsurerSection() {
       </div>
 
       <div>
-        <h3 className="mb-4 text-xl font-semibold">Schadendokumente</h3>
+        <h3 className="mb-4 text-lg font-semibold sm:text-xl">Schadendokumente</h3>
 
         <div className="space-y-4">
           <div id="insurer-claim-docs-list" className="scroll-mt-24">
@@ -71,7 +71,7 @@ export function InsurerSection() {
       </div>
 
       <div>
-        <h3 className="mb-4 text-xl font-semibold">Reports zu Claims</h3>
+        <h3 className="mb-4 text-lg font-semibold sm:text-xl">Reports zu Claims</h3>
 
         <div className="space-y-4">
           <div id="insurer-claim-reports-list" className="scroll-mt-24">
