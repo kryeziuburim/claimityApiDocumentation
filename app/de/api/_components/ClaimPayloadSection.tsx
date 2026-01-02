@@ -1,8 +1,31 @@
 "use client"
 
-import { useEffect, useState, type Dispatch, type SetStateAction } from "react"
+import { useEffect, useState } from "react"
+import {
+  Anchor,
+  BadgeCheck,
+  Car,
+  ClipboardCheck,
+  Download,
+  FileJson,
+  Info,
+  ListTree,
+  ShieldAlert,
+  ShieldCheck,
+  SquareStack,
+  type LucideIcon,
+} from "lucide-react"
 import { SchemaExplorer } from "@/components/api/SchemaExplorer"
 import { Button } from "@/components/ui/button"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Badge } from "@/components/ui/badge"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
+import { ScrollArea } from "@/components/ui/scroll-area"
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
+import { Skeleton } from "@/components/ui/skeleton"
+import { useToast } from "@/hooks/use-toast"
 
 export type ClaimPayloadMeta = {
   key: string
@@ -17,6 +40,13 @@ type SchemaLoadState = {
   loading: boolean
   schema: any | null
   error: string | null
+}
+
+type SchemaStats = {
+  totalFields: number
+  requiredFields: number
+  objectNodes: number
+  arrayNodes: number
 }
 
 type ClaimRule = {
@@ -57,6 +87,12 @@ const PAYLOAD_FIELD_LINKS = {
   PayloadJson: "#claim-payloads",
 }
 
+const PAYLOAD_ICONS: Record<string, LucideIcon> = {
+  vehicle: Car,
+  appraiser: BadgeCheck,
+  fraud: ShieldAlert,
+}
+
 export function ClaimPayloadSection() {
   const [active, setActive] = useState<string>(CLAIM_PAYLOADS[0]?.key ?? "")
   const [schemas, setSchemas] = useState<Record<string, SchemaLoadState>>(() => {
@@ -66,7 +102,7 @@ export function ClaimPayloadSection() {
     })
     return base
   })
-  const [copiedKey, setCopiedKey] = useState<string | null>(null)
+  const { toast } = useToast()
 
   useEffect(() => {
     let cancelled = false
@@ -108,18 +144,51 @@ export function ClaimPayloadSection() {
     return () => window.removeEventListener("hashchange", syncFromHash)
   }, [])
 
+  const handleTabChange = (value: string) => {
+    setActive(value)
+    if (typeof window === "undefined") return
+    const target = CLAIM_PAYLOADS.find((item) => item.key === value)
+    if (!target) return
+    const hash = `#${target.anchorId}`
+    window.history.replaceState(null, "", hash)
+    if (typeof document !== "undefined") {
+      const node = document.getElementById(target.anchorId)
+      if (node) {
+        node.scrollIntoView({ behavior: "smooth", block: "start" })
+      }
+    }
+  }
+
   if (!CLAIM_PAYLOADS.length) return null
 
   return (
     <div id="claim-payloads" className="space-y-6">
       <div>
-        <h2 className="mb-4 text-3xl font-bold tracking-tight text-balance">Fall-Struktur</h2>
+        <h2 className="mb-4 text-3xl font-bold tracking-tight text-balance">Fall-Struktur & Validierung</h2>
         <p className="text-sm leading-relaxed text-muted-foreground text-pretty md:text-base">
-          Die hier aufgeführten Definitionen beschreiben die erlaubten Felder für <span className="font-mono">payloadJson</span> der Fälle je Kategorie.
+          Jede Kategorie beschreibt präzise, welche Felder das payloadJson enthalten darf.
         </p>
       </div>
 
-      <div className="space-y-4">
+      <Tabs value={active} onValueChange={handleTabChange} className="space-y-6">
+        <div className="sticky top-16 z-10 rounded-2xl border border-border/60 bg-background/80 p-3 backdrop-blur">
+          <TabsList className="flex w-full flex-wrap gap-2 bg-transparent p-0">
+            {CLAIM_PAYLOADS.map((payload) => {
+              const Icon = PAYLOAD_ICONS[payload.key] ?? SquareStack
+              return (
+                <TabsTrigger
+                  key={payload.key}
+                  value={payload.key}
+                  className="min-w-[160px] rounded-2xl border border-transparent bg-transparent data-[state=active]:border-primary/30 data-[state=active]:bg-primary/10 data-[state=active]:text-primary"
+                >
+                  <Icon className="h-4 w-4" />
+                  <span>{payload.navTitle}</span>
+                </TabsTrigger>
+              )
+            })}
+          </TabsList>
+        </div>
+
         {CLAIM_PAYLOADS.map((payload) => {
           const state = schemas[payload.key]
           const schema = state?.schema
@@ -127,97 +196,247 @@ export function ClaimPayloadSection() {
           const examplePayload = schema ? buildExamplePayload(schema) : null
           const exampleJson = examplePayload ? JSON.stringify(examplePayload, null, 2) : ""
           const formatHints = schema ? extractFormatHints(schema) : []
+          const stats = schema ? buildSchemaStats(schema) : null
+          const keyObjects = stats ? Math.max(stats.objectNodes - 1, 0) : 0
 
           return (
-            <div key={payload.key} id={payload.anchorId} className="rounded-2xl border border-border/60 bg-muted/15">
-              <div className="flex w-full items-center justify-between gap-3 px-4 py-3">
-                <div>
-                  <p className="text-md font-semibold uppercase tracking-wide text-foreground">{payload.label}</p>
-                </div>
-              </div>
-
-              <div className="border-t border-border/40 bg-card/80 p-5">
-                {state.loading ? (
-                  <p className="text-sm text-muted-foreground">Schema wird geladen…</p>
-                ) : state.error ? (
-                  <div className="rounded-md border border-destructive/40 bg-destructive/10 p-3 text-sm text-destructive">
-                    {state.error}
+            <TabsContent key={payload.key} value={payload.key} className="space-y-6">
+              <section
+                id={payload.anchorId}
+                className="space-y-6 rounded-3xl border border-border/60 bg-card/80 p-6 shadow-sm"
+              >
+                <div className="flex flex-wrap items-start justify-between gap-4">
+                  <div>
+                    <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Kategorie</p>
+                    <h3 className="text-2xl font-semibold tracking-tight text-balance">{payload.label}</h3>
+                    <p className="mt-2 text-sm text-muted-foreground">
+                      Diese Struktur richtet sich an Payloads für die Kategorie {payload.badgeLabel}.
+                    </p>
                   </div>
+                </div>
+
+                {state.loading ? (
+                  <PayloadLoadingSkeleton label={payload.label} />
+                ) : state.error ? (
+                  <Alert variant="destructive" className="border-destructive/30 bg-destructive/10">
+                    <ShieldAlert className="h-5 w-5" />
+                    <AlertTitle>Schema konnte nicht geladen werden</AlertTitle>
+                    <AlertDescription>{state.error}</AlertDescription>
+                  </Alert>
                 ) : schema ? (
-                  <div className="space-y-5">
-                    {exampleJson ? (
-                      <div className="rounded-2xl border border-border/60 bg-muted/10 p-4">
-                        <div className="flex flex-wrap items-center gap-3">
-                          <Button
-                            variant="secondary"
-                            size="sm"
-                            onClick={() => handleCopyJson(payload.key, exampleJson, setCopiedKey)}
+                  <div className="space-y-6">
+                    {stats ? (
+                      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+                        {[
+                          {
+                            label: "Felder",
+                            value: stats.totalFields,
+                            description: "Gesamtzahl dokumentierter Felder",
+                            icon: ListTree,
+                          },
+                          {
+                            label: "Pflichtfelder",
+                            value: stats.requiredFields,
+                            description: "Muss in jedem Payload vorhanden sein",
+                            icon: ShieldCheck,
+                          },
+                          {
+                            label: "Schlüsselobjekte",
+                            value: keyObjects,
+                            description: "Verschachtelte Objektstrukturen",
+                            icon: SquareStack,
+                          },
+                        ].map((card) => (
+                          <Card
+                            key={`${payload.key}-${card.label}`}
+                            className="border-border/60 bg-gradient-to-br from-background to-muted/40"
                           >
-                            {copiedKey === payload.key ? "Kopiert" : "JSON kopieren"}
-                          </Button>
-                          <p className="text-xs text-muted-foreground">
-                            Enthält alle Felder dieser Kategorie in der korrekten Struktur.
+                            <CardHeader className="px-6">
+                              <CardTitle className="text-sm font-medium text-muted-foreground">
+                                {card.label}
+                              </CardTitle>
+                            </CardHeader>
+                            <CardContent className="flex items-center justify-between gap-4 px-6">
+                              <div>
+                                <p className="text-3xl font-semibold">{card.value}</p>
+                                <p className="text-sm text-muted-foreground">{card.description}</p>
+                              </div>
+                              <div className="rounded-2xl border border-border/60 bg-background/80 p-3 text-primary">
+                                <card.icon className="h-5 w-5" />
+                              </div>
+                            </CardContent>
+                          </Card>
+                        ))}
+                      </div>
+                    ) : null}
+
+                    <div className="grid gap-6 lg:grid-cols-[minmax(0,2fr)_minmax(0,1.1fr)]">
+                      <Card className="border-border/60">
+                        <CardHeader>
+                          <CardTitle className="text-base font-semibold">Kontext & Hinweise</CardTitle>
+                        </CardHeader>
+                        <CardContent className="space-y-4 text-sm text-muted-foreground">
+                          <p>
+                            Die Payload-Kategorie <span className="font-medium text-foreground">{payload.label}</span> umfasst
+                            {" "}
+                            {stats?.totalFields ?? 0} dokumentierte Felder sowie {stats?.requiredFields ?? 0} Pflichtfelder.
                           </p>
-                        </div>
-                        <pre className="mt-4 max-h-[360px] overflow-auto rounded-xl bg-background/80 p-4 text-xs leading-relaxed">
-                          {exampleJson}
-                        </pre>
-                      </div>
-                    ) : null}
+                          <div className="grid gap-3">
+                            <InlineHint icon={Info} label="Formatvorgaben" value={formatHints.length ? `${formatHints.length} Besonderheiten` : "Keine speziellen Vorgaben"} />
+                            <InlineHint icon={ShieldCheck} label="Regeln & Abhängigkeiten" value={rules.length ? `${rules.length} definierte Regeln` : "Keine zusätzlichen Regeln"} />
+                          </div>
+                        </CardContent>
+                      </Card>
 
-                    {formatHints.length ? (
-                      <div className="rounded-2xl border border-border/60 bg-muted/10 p-4">
-                        <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Formatvorgaben</p>
-                        <div className="mt-3 space-y-2">
-                          {formatHints.map((hint) => (
-                            <div key={`${payload.key}-${hint.path}`} className="rounded-lg bg-background/70 p-3">
-                              <p className="font-mono text-xs text-primary">{hint.path}</p>
-                              <p className="text-sm text-muted-foreground">{hint.description}</p>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                    ) : null}
-
-                    <div className="rounded-2xl border border-border/70 bg-muted/10 p-4">
-                      <SchemaExplorer
-                        spec={schema}
-                        schema={schema}
-                        title="Payload Schema"
-                        maxDepth={6}
-                        fieldLinks={PAYLOAD_FIELD_LINKS}
-                      />
+                      <Card className="border-border/60 bg-muted/40">
+                        <CardHeader>
+                          <CardTitle className="text-base font-semibold">Aktionen & Links</CardTitle>
+                        </CardHeader>
+                        <CardContent className="space-y-4">
+                          <div className="flex flex-wrap gap-2">
+                            <Button
+                              size="sm"
+                              className="gap-2"
+                              onClick={async () => {
+                                const success = await copyJsonToClipboard(exampleJson)
+                                toast({
+                                  title: success ? "JSON kopiert" : "Kopieren fehlgeschlagen",
+                                  description: success
+                                    ? `${payload.label} Payload wurde in die Zwischenablage gelegt.`
+                                    : "Bitte kopieren Sie den JSON-Inhalt manuell.",
+                                  variant: success ? "default" : "destructive",
+                                })
+                              }}
+                              disabled={!exampleJson}
+                            >
+                              <ClipboardCheck className="h-4 w-4" />
+                              JSON kopieren
+                            </Button>
+                            <Button variant="outline" size="sm" className="gap-2" asChild>
+                              <a href={payload.schemaPath} download>
+                                <Download className="h-4 w-4" />
+                                Schema herunterladen
+                              </a>
+                            </Button>
+                          </div>
+                          <p className="text-sm text-muted-foreground">
+                            Alle Schemas liegen als JSON-Dateien vor und können direkt in Validierungswerkzeuge importiert werden.
+                          </p>
+                        </CardContent>
+                      </Card>
                     </div>
 
-                    {rules.length ? (
-                      <div className="rounded-2xl border border-border/70 bg-muted/10 p-4">
-                        <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Regeln & Abhängigkeiten</p>
-                        <div className="mt-3 space-y-3">
-                          {rules.map((rule, index) => (
-                            <div key={`${payload.key}-rule-${index}`} className="rounded-lg border border-border/50 bg-background/80 p-3">
-                              <p className="text-sm font-semibold text-foreground">
-                                {rule.type === "if" ? `Wenn ${rule.condition}` : rule.condition}
-                              </p>
-                              <ul className="mt-2 space-y-1 text-sm text-muted-foreground">
-                                {rule.details.map((detail, detailIndex) => (
-                                  <li key={`${payload.key}-rule-${index}-${detailIndex}`} className="flex gap-2 text-pretty">
-                                    <span className="text-primary">•</span>
-                                    <span>{detail}</span>
-                                  </li>
-                                ))}
-                              </ul>
+                    <div className="rounded-3xl border border-border/60 bg-background/80">
+                      <Accordion type="multiple" defaultValue={["example", "schema"]}>
+                        <AccordionItem value="example" className="border-border/40 px-6">
+                          <AccordionTrigger className="text-base font-semibold">
+                            <span className="inline-flex items-center gap-2">
+                              <FileJson className="h-4 w-4 text-primary" />
+                              Beispiel-JSON
+                            </span>
+                          </AccordionTrigger>
+                          <AccordionContent className="px-1">
+                            {exampleJson ? (
+                              <ScrollArea className="max-h-[360px] rounded-2xl border border-border/60">
+                                <pre className="min-w-full whitespace-pre rounded-2xl bg-background/90 p-4 text-xs leading-relaxed text-foreground">
+                                  {exampleJson}
+                                </pre>
+                              </ScrollArea>
+                            ) : (
+                              <p className="text-sm text-muted-foreground">Kein Beispiel verfügbar.</p>
+                            )}
+                          </AccordionContent>
+                        </AccordionItem>
+
+                        <AccordionItem value="formats" className="border-border/40 px-6">
+                          <AccordionTrigger className="text-base font-semibold">
+                            <span className="inline-flex items-center gap-2">
+                              <Info className="h-4 w-4 text-primary" />
+                              Formatvorgaben
+                            </span>
+                          </AccordionTrigger>
+                          <AccordionContent className="space-y-3 px-1">
+                            {formatHints.length ? (
+                              formatHints.map((hint) => (
+                                <div
+                                  key={`${payload.key}-${hint.path}`}
+                                  className="rounded-2xl border border-border/40 bg-muted/30 p-4"
+                                >
+                                  <p className="font-mono text-xs text-primary">{hint.path}</p>
+                                  <p className="text-sm text-muted-foreground">{hint.description}</p>
+                                </div>
+                              ))
+                            ) : (
+                              <p className="text-sm text-muted-foreground">Keine speziellen Formatbeschränkungen dokumentiert.</p>
+                            )}
+                          </AccordionContent>
+                        </AccordionItem>
+
+                        <AccordionItem value="rules" className="border-border/40 px-6">
+                          <AccordionTrigger className="text-base font-semibold">
+                            <span className="inline-flex items-center gap-2">
+                              <ShieldCheck className="h-4 w-4 text-primary" />
+                              Regeln & Abhängigkeiten
+                            </span>
+                          </AccordionTrigger>
+                          <AccordionContent className="space-y-4 px-1">
+                            {rules.length ? (
+                              rules.map((rule, index) => (
+                                <div
+                                  key={`${payload.key}-rule-${index}`}
+                                  className="rounded-2xl border border-border/40 bg-muted/30 p-4"
+                                >
+                                  <p className="text-sm font-semibold text-foreground">
+                                    {rule.type === "if" ? `Wenn ${rule.condition}` : rule.condition}
+                                  </p>
+                                  <ul className="mt-3 space-y-2 text-sm text-muted-foreground">
+                                    {rule.details.map((detail, detailIndex) => (
+                                      <li key={`${payload.key}-rule-${index}-${detailIndex}`} className="flex gap-2">
+                                        <span className="text-primary">•</span>
+                                        <span className="text-pretty">{detail}</span>
+                                      </li>
+                                    ))}
+                                  </ul>
+                                </div>
+                              ))
+                            ) : (
+                              <p className="text-sm text-muted-foreground">Für dieses Schema sind keine zusätzlichen Validierungsregeln hinterlegt.</p>
+                            )}
+                          </AccordionContent>
+                        </AccordionItem>
+
+                        <AccordionItem value="schema" className="px-6">
+                          <AccordionTrigger className="text-base font-semibold">
+                            <span className="inline-flex items-center gap-2">
+                              <SquareStack className="h-4 w-4 text-primary" />
+                              Schema Explorer
+                            </span>
+                          </AccordionTrigger>
+                          <AccordionContent className="px-1">
+                            <div className="rounded-2xl border border-border/60 bg-muted/20 p-2">
+                              <ScrollArea className="max-h-[520px]">
+                                <div className="pr-4">
+                                  <SchemaExplorer
+                                    spec={schema}
+                                    schema={schema}
+                                    title="Payload Schema"
+                                    maxDepth={6}
+                                    fieldLinks={PAYLOAD_FIELD_LINKS}
+                                  />
+                                </div>
+                              </ScrollArea>
                             </div>
-                          ))}
-                        </div>
-                      </div>
-                    ) : null}
+                          </AccordionContent>
+                        </AccordionItem>
+                      </Accordion>
+                    </div>
                   </div>
                 ) : null}
-              </div>
-            </div>
+              </section>
+            </TabsContent>
           )
         })}
-      </div>
+      </Tabs>
     </div>
   )
 }
@@ -241,33 +460,6 @@ function buildClaimRules(schema: any): ClaimRule[] {
     }
   })
   return rules
-}
-
-function handleCopyJson(
-  payloadKey: string,
-  json: string,
-  setCopiedKey: Dispatch<SetStateAction<string | null>>,
-) {
-  if (!json) return
-  const fallbackCopy = () => {
-    const textarea = document.createElement("textarea")
-    textarea.value = json
-    textarea.style.position = "fixed"
-    textarea.style.left = "-9999px"
-    document.body.appendChild(textarea)
-    textarea.select()
-    document.execCommand("copy")
-    document.body.removeChild(textarea)
-  }
-
-  const copyOperation = navigator?.clipboard?.writeText
-    ? navigator.clipboard.writeText(json).catch(() => fallbackCopy())
-    : Promise.resolve(fallbackCopy())
-
-  copyOperation.finally(() => {
-    setCopiedKey(payloadKey)
-    window.setTimeout(() => setCopiedKey(null), 2000)
-  })
 }
 
 function buildExamplePayload(schema: any): any {
@@ -499,4 +691,115 @@ function describeRuleNot(node: any): string {
     return describeRuleCondition(node)
   }
   return "Kombination nicht zulässig"
+}
+
+function buildSchemaStats(schema: any): SchemaStats {
+  const stats: SchemaStats = {
+    totalFields: 0,
+    requiredFields: 0,
+    objectNodes: 0,
+    arrayNodes: 0,
+  }
+  const visited = new WeakSet<object>()
+  collectSchemaStats(schema, stats, visited)
+  return stats
+}
+
+function collectSchemaStats(node: any, stats: SchemaStats, visited: WeakSet<object>) {
+  if (!node || typeof node !== "object") return
+  if (visited.has(node)) return
+  visited.add(node)
+
+  const type = Array.isArray(node.type) ? node.type[0] : node.type
+  if (type === "object" || node.properties) {
+    stats.objectNodes += 1
+  }
+  if (type === "array" || node.items) {
+    stats.arrayNodes += 1
+  }
+
+  if (Array.isArray(node.required)) {
+    stats.requiredFields += node.required.length
+  }
+
+  const props = node.properties ?? {}
+  stats.totalFields += Object.keys(props).length
+
+  Object.values(props).forEach((child) => collectSchemaStats(child, stats, visited))
+
+  const itemSchema = Array.isArray(node.items) ? node.items[0] : node.items
+  if (itemSchema) collectSchemaStats(itemSchema, stats, visited)
+
+  const combos = [...(node.oneOf ?? []), ...(node.anyOf ?? []), ...(node.allOf ?? [])]
+  combos.forEach((combo) => collectSchemaStats(combo, stats, visited))
+
+  if (node.then) collectSchemaStats(node.then, stats, visited)
+  if (node.else) collectSchemaStats(node.else, stats, visited)
+  if (node.if) collectSchemaStats(node.if, stats, visited)
+}
+
+async function copyJsonToClipboard(json: string): Promise<boolean> {
+  if (!json) return false
+  const fallbackCopy = () => {
+    const textarea = document.createElement("textarea")
+    textarea.value = json
+    textarea.style.position = "fixed"
+    textarea.style.left = "-9999px"
+    document.body.appendChild(textarea)
+    textarea.select()
+    document.execCommand("copy")
+    document.body.removeChild(textarea)
+  }
+
+  try {
+    if (navigator?.clipboard?.writeText) {
+      await navigator.clipboard.writeText(json)
+    } else {
+      fallbackCopy()
+    }
+    return true
+  } catch {
+    fallbackCopy()
+    return false
+  }
+}
+
+function InlineHint({
+  icon: Icon,
+  label,
+  value,
+}: {
+  icon: LucideIcon
+  label: string
+  value: string | number
+}) {
+  return (
+    <div className="flex items-center justify-between gap-3 rounded-2xl border border-border/50 bg-muted/30 px-4 py-2">
+      <div className="flex items-center gap-2 text-sm text-muted-foreground">
+        <Icon className="h-4 w-4 text-primary" />
+        <span>{label}</span>
+      </div>
+      <span className="text-sm font-medium text-foreground">{value}</span>
+    </div>
+  )
+}
+
+function PayloadLoadingSkeleton({ label }: { label: string }) {
+  return (
+    <div className="space-y-5 rounded-2xl border border-border/50 bg-muted/30 p-6">
+      <div className="flex items-center justify-between">
+        <div>
+          <p className="text-sm font-semibold text-muted-foreground">{label}</p>
+          <Skeleton className="mt-3 h-4 w-40" />
+        </div>
+        <Skeleton className="h-8 w-24 rounded-full" />
+      </div>
+      <div className="grid gap-4 md:grid-cols-3">
+        <Skeleton className="h-32 rounded-2xl" />
+        <Skeleton className="h-32 rounded-2xl" />
+        <Skeleton className="h-32 rounded-2xl" />
+      </div>
+      <Skeleton className="h-48 rounded-2xl" />
+    </div>
+  )
 }
