@@ -22,14 +22,7 @@ export function SchemaExplorer({
 }: SchemaExplorerProps) {
   const [expanded, setExpanded] = useState<Record<string, boolean>>({})
 
-  const normalized = useMemo(() => {
-    if (!schema) return null
-    if (schema.$ref) {
-      const resolved = resolveRef(spec, schema.$ref)
-      return { ...resolved, __refName: refName(schema.$ref) }
-    }
-    return schema
-  }, [spec, schema])
+  const normalized = useMemo(() => normalizeSchemaWithRef(spec, schema), [spec, schema])
 
   if (!normalized) {
     return <div className="text-sm text-muted-foreground">Kein Schema vorhanden.</div>
@@ -38,7 +31,6 @@ export function SchemaExplorer({
   const schemaTitle = title ?? normalized.__refName ?? "Schema"
 
   const props = normalized.properties ?? null
-  const required: string[] = Array.isArray(normalized.required) ? normalized.required : []
 
   if (!props || typeof props !== "object") {
     return (
@@ -51,16 +43,137 @@ export function SchemaExplorer({
 
   const keys = Object.keys(props)
 
+  const isRoot = depth === 0
+  const containerClasses = cn(
+    "space-y-3",
+    isRoot ? "rounded-lg border border-border bg-muted/30 p-4" : "rounded-md border border-border/50 bg-muted/15 p-3"
+  )
+  const headerClasses = cn(
+    "flex items-center justify-between gap-3",
+    isRoot ? "mb-3" : "mb-2 text-xs text-muted-foreground"
+  )
+  const bodyWrapperClasses = "overflow-x-auto"
+
+  const renderPropertyRows = (currentSchema: any, currentTitle: string, currentDepth: number): React.ReactNode => {
+    const currentProps = currentSchema.properties ?? {}
+    const currentRequired: string[] = Array.isArray(currentSchema.required) ? currentSchema.required : []
+    const propKeys = Object.keys(currentProps)
+
+    return propKeys.map((field) => {
+      const fieldSchema = currentProps[field]
+      const type = schemaTypeLabel(spec, fieldSchema)
+      const isReq = currentRequired.includes(field)
+      const nullable = !!fieldSchema?.nullable
+      const enumVals = Array.isArray(fieldSchema?.enum) ? fieldSchema.enum : null
+      const desc = safeString(fieldSchema?.description)
+
+      const canExpand =
+        currentDepth < maxDepth &&
+        (Boolean(fieldSchema?.$ref) ||
+          fieldSchema?.type === "object" ||
+          Boolean(fieldSchema?.properties) ||
+          (fieldSchema?.type === "array" && (fieldSchema?.items?.$ref || fieldSchema?.items?.properties)))
+
+      const keyId = `${currentTitle}.${field}`
+      const open = !!expanded[keyId]
+      const indentLevel = Math.max(0, currentDepth - depth)
+
+      const toggleRow = () => setExpanded((p) => ({ ...p, [keyId]: !p[keyId] }))
+
+      return (
+        <React.Fragment key={keyId}>
+          <tr
+            className={cn(
+              "border-t border-border/60 align-top",
+              canExpand && "cursor-pointer hover:bg-muted/40 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-border"
+            )}
+            onClick={canExpand ? () => toggleRow() : undefined}
+            onKeyDown={
+              canExpand
+                ? (event) => {
+                    if (event.key === "Enter" || event.key === " ") {
+                      event.preventDefault()
+                      toggleRow()
+                    }
+                  }
+                : undefined
+            }
+            tabIndex={canExpand ? 0 : undefined}
+            aria-expanded={canExpand ? open : undefined}
+          >
+            <td className="pr-3 py-2 font-mono text-xs" style={{ paddingLeft: indentLevel * 16 }}>
+              <div className="flex items-center gap-2">
+                {canExpand ? (
+                  <>
+                    <ChevronRight
+                      className={cn(
+                        "h-4 w-4 rounded-sm border border-border/40 bg-muted/40 p-0.5 transition-transform",
+                        open && "rotate-90"
+                      )}
+                    />
+                    <span>{field}</span>
+                  </>
+                ) : (
+                  <span>{field}</span>
+                )}
+              </div>
+            </td>
+            <td className="pr-3 py-2 font-mono text-xs">{type}</td>
+            <td className="pr-3 py-2">{isReq ? "✓" : ""}</td>
+            <td className="pr-3 py-2">{nullable ? "✓" : ""}</td>
+            <td className="pr-3 py-2">
+              {enumVals ? (
+                <span className="text-xs text-muted-foreground">
+                  {enumVals.slice(0, 4).join(", ")}
+                  {enumVals.length > 4 ? "…" : ""}
+                </span>
+              ) : (
+                ""
+              )}
+            </td>
+            <td className="py-2 text-muted-foreground">{desc}</td>
+          </tr>
+
+          {canExpand && open ? renderChildRows(fieldSchema, childTitle(field, fieldSchema), currentDepth + 1) : null}
+        </React.Fragment>
+      )
+    })
+  }
+
+  const renderChildRows = (childSchema: any, childLabel: string, nextDepth: number): React.ReactNode => {
+    const expandedSchema = expandChildSchema(childSchema, spec)
+    const normalizedChild = normalizeSchemaWithRef(spec, expandedSchema)
+    if (!normalizedChild) {
+      return (
+        <tr key={`${childLabel}-${nextDepth}-empty`} className="border-t border-border/40">
+          <td colSpan={6} className="pl-6 py-3 text-xs text-muted-foreground">
+            Keine weiteren Felder dokumentiert.
+          </td>
+        </tr>
+      )
+    }
+
+    if (!normalizedChild.properties || typeof normalizedChild.properties !== "object") {
+      return (
+        <tr key={`${childLabel}-${nextDepth}-leaf`} className="border-t border-border/40">
+          <td colSpan={6} className="pl-6 py-3 text-xs text-muted-foreground">
+            {childLabel}: {schemaTypeLabel(spec, normalizedChild)}
+          </td>
+        </tr>
+      )
+    }
+
+    return renderPropertyRows(normalizedChild, childLabel, nextDepth)
+  }
+
   return (
-    <div className="rounded-lg border border-border bg-muted/30 p-4">
-      <div className="mb-3 flex items-center justify-between gap-3">
-        <div className="text-sm font-semibold">{schemaTitle}</div>
-        <div className="text-xs text-muted-foreground">
-          Typ: {schemaTypeLabel(spec, normalized)}
-        </div>
+    <div className={containerClasses}>
+      <div className={headerClasses}>
+        <div className={cn(isRoot ? "text-sm font-semibold" : "text-xs font-semibold text-foreground/80")}>{schemaTitle}</div>
+        <div className={cn("text-xs text-muted-foreground", !isRoot && "text-[11px]")}>Typ: {schemaTypeLabel(spec, normalized)}</div>
       </div>
 
-      <div className="overflow-x-auto">
+      <div className={bodyWrapperClasses}>
         <table className="w-full text-left text-sm">
           <thead className="text-xs text-muted-foreground">
             <tr className="[&>th]:pb-2">
@@ -72,78 +185,7 @@ export function SchemaExplorer({
               <th>Beschreibung</th>
             </tr>
           </thead>
-          <tbody>
-            {keys.map((k) => {
-              const s = props[k]
-              const type = schemaTypeLabel(spec, s)
-              const isReq = required.includes(k)
-              const nullable = !!s?.nullable
-              const enumVals = Array.isArray(s?.enum) ? s.enum : null
-              const desc = safeString(s?.description)
-
-              const canExpand =
-                depth < maxDepth &&
-                (Boolean(s?.$ref) ||
-                  s?.type === "object" ||
-                  Boolean(s?.properties) ||
-                  (s?.type === "array" && (s?.items?.$ref || s?.items?.properties)))
-
-              const keyId = `${schemaTitle}.${k}`
-              const open = !!expanded[keyId]
-
-              return (
-                <React.Fragment key={k}>
-                  <tr className="border-t border-border/60 align-top">
-                    <td className="pr-3 py-2 font-mono text-xs">
-                      <div className="flex items-center gap-2">
-                        {canExpand ? (
-                          <button
-                            type="button"
-                            onClick={() => setExpanded((p) => ({ ...p, [keyId]: !p[keyId] }))}
-                            className="inline-flex items-center gap-1 rounded-md px-2 py-1 text-xs hover:bg-muted"
-                            aria-expanded={open}
-                          >
-                            <ChevronRight className={cn("h-4 w-4 transition-transform", open && "rotate-90")} />
-                            {k}
-                          </button>
-                        ) : (
-                          <span>{k}</span>
-                        )}
-                      </div>
-                    </td>
-                    <td className="pr-3 py-2 font-mono text-xs">{type}</td>
-                    <td className="pr-3 py-2">{isReq ? "✓" : ""}</td>
-                    <td className="pr-3 py-2">{nullable ? "✓" : ""}</td>
-                    <td className="pr-3 py-2">
-                      {enumVals ? (
-                        <span className="text-xs text-muted-foreground">
-                          {enumVals.slice(0, 4).join(", ")}
-                          {enumVals.length > 4 ? "…" : ""}
-                        </span>
-                      ) : (
-                        ""
-                      )}
-                    </td>
-                    <td className="py-2 text-muted-foreground">{desc}</td>
-                  </tr>
-
-                  {canExpand && open && (
-                    <tr className="border-t border-border/40">
-                      <td colSpan={6} className="py-3 pl-6">
-                        <SchemaExplorer
-                          spec={spec}
-                          schema={expandChildSchema(s, spec)}
-                          title={childTitle(k, s)}
-                          depth={depth + 1}
-                          maxDepth={maxDepth}
-                        />
-                      </td>
-                    </tr>
-                  )}
-                </React.Fragment>
-              )
-            })}
-          </tbody>
+          <tbody>{renderPropertyRows(normalized, schemaTitle, depth)}</tbody>
         </table>
       </div>
     </div>
@@ -160,5 +202,15 @@ function expandChildSchema(schema: any, spec: any) {
   if (!schema) return schema
   if (schema.$ref) return schema
   if (schema.type === "array") return schema.items
+  return schema
+}
+
+function normalizeSchemaWithRef(spec: any, schema: any) {
+  if (!schema) return null
+  if (schema.$ref) {
+    const resolved = resolveRef(spec, schema.$ref)
+    if (!resolved) return null
+    return { ...resolved, __refName: refName(schema.$ref) }
+  }
   return schema
 }
