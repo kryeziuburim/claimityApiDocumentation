@@ -477,15 +477,15 @@ export function ClaimPayloadSection({
       </div>
 
       <Tabs value={resolvedActive} onValueChange={handleTabChange} className="space-y-6">
-        <div className="sticky top-16 z-10 rounded-2xl border border-border/60 bg-background/80 p-3 backdrop-blur">
-          <TabsList className="flex w-full flex-wrap gap-2 bg-transparent p-0">
+        <div className="sticky top-14 z-10 rounded-2xl border border-border/60 bg-background/85 p-2 backdrop-blur-sm sm:top-16 sm:p-3">
+          <TabsList className="grid w-full grid-cols-1 gap-2 bg-transparent p-0 sm:grid-cols-2 lg:flex lg:flex-wrap">
             {CLAIM_PAYLOADS.map((payload) => {
               const Icon = PAYLOAD_ICONS[payload.key] ?? SquareStack
               return (
                 <TabsTrigger
                   key={payload.key}
                   value={payload.key}
-                  className="min-w-[160px] rounded-2xl border border-transparent bg-transparent data-[state=active]:border-primary/30 data-[state=active]:bg-primary/10 data-[state=active]:text-primary"
+                  className="w-full min-w-0 rounded-2xl border border-transparent bg-transparent text-sm data-[state=active]:border-primary/30 data-[state=active]:bg-primary/10 data-[state=active]:text-primary"
                 >
                   <Icon className="h-4 w-4" />
                   <span>{payload.navTitle}</span>
@@ -505,10 +505,10 @@ export function ClaimPayloadSection({
           const stats = schema ? buildSchemaStats(schema) : null
 
           return (
-            <TabsContent key={payload.key} value={payload.key} className="space-y-6">
+            <TabsContent key={payload.key} value={payload.key} className="space-y-6 min-w-0">
               <section
                 id={payload.anchorId}
-                className="space-y-6 rounded-3xl border border-border/60 bg-card/80 p-6 shadow-sm"
+                className="space-y-6 rounded-3xl border border-border/60 bg-card/80 p-4 shadow-sm sm:p-6"
               >
                 <div className="flex flex-wrap items-start justify-between gap-4">
                   <div>
@@ -529,13 +529,13 @@ export function ClaimPayloadSection({
                     <AlertDescription>{state.error}</AlertDescription>
                   </Alert>
                 ) : schema ? (
-                  <div className="space-y-6">
-                    <div className="grid gap-6 lg:grid-cols-[minmax(0,2fr)_minmax(0,1.1fr)]">
-                      <Card className="border-border/60">
-                        <CardHeader>
-                          <CardTitle className="text-base font-semibold">Kontext & Hinweise</CardTitle>
-                        </CardHeader>
-                        <CardContent className="space-y-4 text-sm text-muted-foreground">
+                    <div className="space-y-6">
+                      <div className="grid gap-4 sm:gap-6 lg:grid-cols-[minmax(0,2fr)_minmax(0,1.1fr)]">
+                        <Card className="min-w-0 border-border/60">
+                          <CardHeader>
+                            <CardTitle className="text-base font-semibold">Kontext & Hinweise</CardTitle>
+                          </CardHeader>
+                          <CardContent className="space-y-4 text-sm text-muted-foreground">
                           <p>
                             Die Payload-Kategorie <span className="font-medium text-foreground">{payload.label}</span> umfasst
                             {" "}
@@ -548,23 +548,23 @@ export function ClaimPayloadSection({
                         </CardContent>
                       </Card>
 
-                      <Card className="border-border/60 bg-muted/40">
-                        <CardHeader>
-                          <CardTitle className="text-base font-semibold">Aktionen & Links</CardTitle>
-                        </CardHeader>
+                        <Card className="min-w-0 border-border/60 bg-muted/40">
+                          <CardHeader>
+                            <CardTitle className="text-base font-semibold">Aktionen & Links</CardTitle>
+                          </CardHeader>
                         <CardContent className="space-y-4">
-                          <div className="flex flex-wrap gap-2">
+                          <div className="flex flex-col gap-2">
                             <Button
                               size="sm"
-                              className="gap-2"
-                              onClick={() => void handleCopyJson(payload.key, payload.label, exampleJson)}
-                              disabled={!exampleJson}
-                            >
-                              <ClipboardCheck className="h-4 w-4" />
-                              JSON kopieren
-                            </Button>
-                            <Button variant="outline" size="sm" className="gap-2" asChild>
-                              <a href={payload.schemaPath} download>
+                                className="w-full gap-2 sm:w-auto"
+                                onClick={() => void handleCopyJson(payload.key, payload.label, exampleJson)}
+                                disabled={!exampleJson}
+                              >
+                                <ClipboardCheck className="h-4 w-4" />
+                                JSON kopieren
+                              </Button>
+                              <Button variant="outline" size="sm" className="gap-2" asChild>
+                                <a href={payload.schemaPath} download>
                                 <Download className="h-4 w-4" />
                                 Schema herunterladen
                               </a>
@@ -579,7 +579,7 @@ export function ClaimPayloadSection({
 
                     <div className="rounded-3xl border border-border/60 bg-background/80">
                       <Accordion type="multiple" defaultValue={[]}>
-                        <AccordionItem value="example" className="border-border/40 px-6">
+                        <AccordionItem value="example" className="border-border/40 px-4 sm:px-6">
                           <AccordionTrigger className="text-base font-semibold">
                             <span className="inline-flex items-center gap-2">
                               <FileJson className="h-4 w-4 text-primary" />
@@ -589,7 +589,7 @@ export function ClaimPayloadSection({
                           <AccordionContent className="px-1">
                             {exampleJson ? (
                               <div className="relative">
-                                <ScrollArea className="h-[360px] rounded-2xl border border-border/60">
+                                <ScrollArea className="h-[360px] max-w-full rounded-2xl border border-border/60">
                                   <button
                                     type="button"
                                     onClick={() => void handleCopyJson(payload.key, payload.label, exampleJson)}
@@ -599,7 +599,7 @@ export function ClaimPayloadSection({
                                     )}
                                     aria-label={`${payload.label} Beispiel-JSON kopieren`}
                                   >
-                                    <pre className="min-w-full whitespace-pre overflow-x-auto text-left">{exampleJson}</pre>
+                                    <pre className="w-full overflow-x-auto whitespace-pre text-left text-wrap text-xs">{exampleJson}</pre>
                                   </button>
                                 </ScrollArea>
                                 <span className="pointer-events-none absolute right-4 top-4 inline-flex items-center gap-1 rounded-full bg-background/95 px-3 py-1 text-[11px] font-medium text-foreground shadow">
@@ -619,7 +619,7 @@ export function ClaimPayloadSection({
                           </AccordionContent>
                         </AccordionItem>
 
-                        <AccordionItem value="formats" className="border-border/40 px-6">
+                        <AccordionItem value="formats" className="border-border/40 px-4 sm:px-6">
                           <AccordionTrigger className="text-base font-semibold">
                             <span className="inline-flex items-center gap-2">
                               <Info className="h-4 w-4 text-primary" />
@@ -643,7 +643,7 @@ export function ClaimPayloadSection({
                           </AccordionContent>
                         </AccordionItem>
 
-                        <AccordionItem value="rules" className="border-border/40 px-6">
+                        <AccordionItem value="rules" className="border-border/40 px-4 sm:px-6">
                           <AccordionTrigger className="text-base font-semibold">
                             <span className="inline-flex items-center gap-2">
                               <ShieldCheck className="h-4 w-4 text-primary" />
@@ -676,7 +676,7 @@ export function ClaimPayloadSection({
                           </AccordionContent>
                         </AccordionItem>
 
-                        <AccordionItem value="schema" className="px-6">
+                        <AccordionItem value="schema" className="px-4 sm:px-6">
                           <AccordionTrigger className="text-base font-semibold">
                             <span className="inline-flex items-center gap-2">
                               <SquareStack className="h-4 w-4 text-primary" />
@@ -705,7 +705,7 @@ export function ClaimPayloadSection({
 
       <section
         id="claim-payload-validation"
-        className="space-y-6 rounded-3xl border border-border/60 bg-card/80 p-6 shadow-sm"
+        className="space-y-6 rounded-3xl border border-border/60 bg-card/80 p-4 shadow-sm sm:p-6"
       >
         <div className="space-y-2">
           <h3 className="text-2xl font-semibold tracking-tight">PayloadJson direkt testen</h3>
@@ -719,7 +719,7 @@ export function ClaimPayloadSection({
             <div className="space-y-2">
               <Label htmlFor="payload-category-select">Kategorie</Label>
               <Select value={testCategory} onValueChange={handleTestCategoryChange}>
-                <SelectTrigger id="payload-category-select" className="h-11 rounded-2xl border-border/70">
+                <SelectTrigger id="payload-category-select" className="h-11 w-full rounded-2xl border-border/70">
                   <SelectValue placeholder="Kategorie wählen" />
                 </SelectTrigger>
                 <SelectContent className="rounded-2xl">
@@ -743,7 +743,7 @@ export function ClaimPayloadSection({
                 }}
                 spellCheck={false}
                 rows={16}
-                className="rounded-2xl border-border/70 font-mono text-[13px] leading-relaxed"
+                className="w-full max-w-full rounded-2xl border-border/70 font-mono text-xs leading-relaxed sm:text-[13px]"
                 placeholder='{}'
               />
               <p className="text-xs text-muted-foreground">
@@ -751,8 +751,13 @@ export function ClaimPayloadSection({
               </p>
             </div>
 
-            <div className="flex flex-wrap gap-3">
-              <Button type="button" className="gap-2" onClick={() => void handleValidatePayload()} disabled={validationIsLoading}>
+            <div className="flex flex-col gap-3 sm:flex-row">
+              <Button
+                type="button"
+                className="w-full gap-2 sm:w-auto"
+                onClick={() => void handleValidatePayload()}
+                disabled={validationIsLoading}
+              >
                 {validationIsLoading ? (
                   <>
                     <Loader2 className="h-4 w-4 animate-spin" />
@@ -768,7 +773,7 @@ export function ClaimPayloadSection({
               <Button
                 type="button"
                 variant="outline"
-                className="gap-2"
+                className="w-full gap-2 sm:w-auto"
                 onClick={handleInsertExample}
                 disabled={!schemas[testCategory]?.schema || validationIsLoading}
               >
@@ -778,7 +783,7 @@ export function ClaimPayloadSection({
               <Button
                 type="button"
                 variant="ghost"
-                className="gap-2"
+                className="w-full gap-2 sm:w-auto"
                 onClick={handleResetPayload}
                 disabled={!payloadInput || validationIsLoading}
               >

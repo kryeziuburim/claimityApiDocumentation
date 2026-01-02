@@ -115,6 +115,7 @@ export default function ApiPageClient() {
   const heroSentinelRef = useRef<HTMLDivElement | null>(null)
   const sidebarScrollRef = useRef<HTMLDivElement | null>(null)
   const contentWrapperRef = useRef<HTMLDivElement | null>(null)
+  const bodyOverflowRef = useRef<string>("")
   const [desktopContentOffsetPx, setDesktopContentOffsetPx] = useState(0)
   const payloadKeyByAnchor = useMemo(() => {
     const map: Record<string, string> = {}
@@ -428,6 +429,20 @@ export default function ApiPageClient() {
     return () => observer.disconnect()
   }, [])
 
+  useEffect(() => {
+    if (typeof document === "undefined") return
+    const body = document.body
+    if (isMobileMenuOpen) {
+      bodyOverflowRef.current = body.style.overflow || ""
+      body.style.overflow = "hidden"
+    } else {
+      body.style.overflow = bodyOverflowRef.current || ""
+    }
+    return () => {
+      body.style.overflow = bodyOverflowRef.current || ""
+    }
+  }, [isMobileMenuOpen])
+
   const effectiveActive = childToParent[activeId] ?? activeId
   // Sidebar-Einblendung ab dem ersten Bereich ("Übersicht") und alle nachfolgenden Kapitel.
   const revealFrom = new Set([
@@ -445,11 +460,19 @@ export default function ApiPageClient() {
 
   return (
     <div className="min-h-screen bg-white text-gray-900">
-      <div className="flex">
+      {isMobileMenuOpen ? (
+        <button
+          type="button"
+          aria-label="Menü schliessen"
+          onClick={() => setIsMobileMenuOpen(false)}
+          className="fixed inset-0 z-20 bg-black/40 backdrop-blur-sm transition-opacity lg:hidden"
+        />
+      ) : null}
+      <div className="flex w-full flex-col overflow-x-hidden lg:flex-row">
         {/* Seiten-Navigation */}
         <aside
           className={cn(
-            "fixed inset-y-0 left-0 z-30 w-64 border-r border-border bg-sidebar transition-[transform,opacity] duration-[400ms] ease-out",
+            "fixed inset-y-0 left-0 z-30 w-full max-w-sm border-r border-border bg-sidebar transition-[transform,opacity] duration-[350ms] ease-out lg:max-w-none lg:w-64",
             isMobileMenuOpen ? "translate-x-0" : "-translate-x-full",
             showSidebar ? "lg:translate-x-0 lg:opacity-100" : "lg:-translate-x-full lg:opacity-0"
           )}
@@ -461,10 +484,14 @@ export default function ApiPageClient() {
         >
           <div
             ref={sidebarScrollRef}
-            className="api-sidebar-scroll h-[calc(100vh-4rem)] overflow-y-auto py-6"
-            style={footerLiftPx > 0 ? { height: `calc(100vh - 4rem - ${footerLiftPx}px)` } : undefined}
+            className="api-sidebar-scroll flex h-screen flex-col overflow-y-auto py-6 lg:h-[calc(100vh-4rem)]"
+            style={
+              footerLiftPx > 0 && showSidebar
+                ? { height: `calc(100vh - 4rem - ${footerLiftPx}px)` }
+                : undefined
+            }
           >
-            <div className="mb-2 flex items-center justify-between px-3 lg:hidden">
+            <div className="mb-2 flex items-center justify-between px-4 lg:hidden">
               <span className="text-sm font-medium">Navigation</span>
               <button
                 onClick={() => setIsMobileMenuOpen(false)}
@@ -473,7 +500,7 @@ export default function ApiPageClient() {
                 <X className="mr-1 h-4 w-4" /> Schliessen
               </button>
             </div>
-            <nav className="space-y-1 px-3" role="navigation" aria-label="API Navigation">
+            <nav className="space-y-1 px-4" role="navigation" aria-label="API Navigation">
               {navigationItems.map((item) => (
                 <div key={item.id}>
                   <button
@@ -564,24 +591,29 @@ export default function ApiPageClient() {
         </aside>
 
         {/* Hauptinhalt */}
-        <main className="flex-1">
+        <main className="flex-1 min-w-0">
           <section className="relative overflow-hidden">
             <div className="pointer-events-none absolute inset-x-0 top-[-12rem] -z-10 transform-gpu overflow-hidden blur-3xl">
               <div className="relative left-1/2 aspect-[1155/678] w-[72rem] -translate-x-1/2 bg-gradient-to-tr from-teal-500/20 via-cyan-400/15 to-sky-500/15" />
             </div>
 
-            <div className="relative mx-auto max-w-7xl px-6 pb-16 pt-10 md:pb-20 md:pt-16 lg:pb-24 lg:pt-20">
-              <div className="absolute right-6 top-6 z-10">
+            <div className="relative mx-auto max-w-7xl px-4 pb-16 pt-10 sm:px-6 md:pb-20 md:pt-16 lg:pb-24 lg:pt-20">
+              <div className="absolute right-4 top-6 hidden lg:block xl:right-6">
                 <LanguageSwitcher />
               </div>
-              <div className="absolute left-6 top-6 z-10 lg:hidden">
-                <button
-                  onClick={() => setIsMobileMenuOpen((v) => !v)}
-                  className="inline-flex items-center rounded-md bg-white/90 px-3 py-1 text-sm text-gray-900 hover:bg-white"
-                >
-                  <Menu className="mr-2 h-4 w-4" />
-                  Menü
-                </button>
+              <div className="mb-6 flex flex-wrap items-center justify-between gap-3 lg:hidden">
+                <div className="flex w-full justify-end sm:w-auto">
+                  <LanguageSwitcher />
+                </div>
+                <div className="flex w-full justify-start sm:w-auto">
+                  <button
+                    onClick={() => setIsMobileMenuOpen((v) => !v)}
+                    className="inline-flex w-full items-center justify-center rounded-md bg-white/90 px-3 py-2 text-sm text-gray-900 shadow-sm hover:bg-white sm:w-auto"
+                  >
+                    <Menu className="mr-2 h-4 w-4" />
+                    Menü
+                  </button>
+                </div>
               </div>
 
               {/* Hero */}
@@ -602,7 +634,7 @@ export default function ApiPageClient() {
 
               <div
                 ref={contentWrapperRef}
-                className="mt-8 w-full transition-[padding] duration-300 ease-out md:mt-10"
+                className="mt-8 w-full max-w-full overflow-x-hidden transition-[padding] duration-300 ease-out md:mt-10"
                 style={showSidebar && desktopContentOffsetPx ? { paddingLeft: desktopContentOffsetPx } : undefined}
               >
                 <SectionComponent id="overview"><OverviewSectionComponent /></SectionComponent>
