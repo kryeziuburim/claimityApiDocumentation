@@ -96,7 +96,7 @@ export function EndpointDetails({
   }
 
   return (
-    <div className={cn("mt-3 rounded-md border border-border/70 bg-card/80 p-5 shadow-sm", className)}>
+    <div className={cn("mt-3", className)}>
       <div className="mb-4 flex flex-wrap items-center gap-2">
         <TabButton active={tab === "request"} onClick={() => setTab("request")}>
           Request
