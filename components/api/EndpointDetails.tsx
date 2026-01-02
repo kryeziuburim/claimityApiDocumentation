@@ -15,6 +15,7 @@ import {
 import { useOpenApi } from "./OpenApiProvider"
 
 const ACCENT_COLOR = "#2a8289"
+const SCHEMA_EXPLORER_MAX_DEPTH = 6
 
 type HeaderRow = { k: string; v: string }
 
@@ -132,7 +133,12 @@ export function EndpointDetails({
 
           {requestSchema && spec && (
             <DetailBlock title="Request Body">
-              <SchemaExplorer spec={spec} schema={requestSchema} title="Request Schema" />
+              <SchemaExplorer
+                spec={spec}
+                schema={requestSchema}
+                title="Request Schema"
+                maxDepth={SCHEMA_EXPLORER_MAX_DEPTH}
+              />
               <CodeBlock title="Beispiel-Body">{reqExample ? prettyJson(reqExample) : null}</CodeBlock>
             </DetailBlock>
           )}
@@ -149,7 +155,12 @@ export function EndpointDetails({
               <DetailBlock key={code} title={`Response ${code}`} description={resp?.description ?? ""}>
                 {schema && spec ? (
                   <div className="space-y-3">
-                    <SchemaExplorer spec={spec} schema={schema} title="Response Schema" />
+                     <SchemaExplorer
+                       spec={spec}
+                       schema={schema}
+                       title="Response Schema"
+                       maxDepth={SCHEMA_EXPLORER_MAX_DEPTH}
+                     />
                     <CodeBlock title="Beispiel-Response">{example ? prettyJson(example) : null}</CodeBlock>
                   </div>
                 ) : (

@@ -71,24 +71,29 @@ export function safeString(v: any): string {
   return String(v)
 }
 
-export function generateExample(spec: any, schema: any, depth = 0, maxDepth = 2): any {
+export function generateExample(spec: any, schema: any, depth = 0, maxDepth = 5, visitedRefs?: Set<string>): any {
   if (!schema || depth > maxDepth) return null
+  const seen = visitedRefs ?? new Set<string>()
 
   // Deref
   if (schema.$ref) {
-    const resolved = resolveRef(spec, schema.$ref)
-    if (!resolved) return { _ref: refName(schema.$ref) }
-    return generateExample(spec, resolved, depth + 1, maxDepth)
+    const refKey = schema.$ref
+    if (seen.has(refKey)) return { _ref: refName(refKey) }
+    const resolved = resolveRef(spec, refKey)
+    if (!resolved) return { _ref: refName(refKey) }
+    const nextSeen = new Set(seen)
+    nextSeen.add(refKey)
+    return generateExample(spec, resolved, depth, maxDepth, nextSeen)
   }
 
   // Compositions
-  if (schema.oneOf?.length) return generateExample(spec, schema.oneOf[0], depth + 1, maxDepth)
-  if (schema.anyOf?.length) return generateExample(spec, schema.anyOf[0], depth + 1, maxDepth)
+  if (schema.oneOf?.length) return generateExample(spec, schema.oneOf[0], depth + 1, maxDepth, seen)
+  if (schema.anyOf?.length) return generateExample(spec, schema.anyOf[0], depth + 1, maxDepth, seen)
   if (schema.allOf?.length) {
     // merge objects if possible
     const merged: any = {}
     for (const s of schema.allOf) {
-      const ex = generateExample(spec, s, depth + 1, maxDepth)
+      const ex = generateExample(spec, s, depth + 1, maxDepth, seen)
       if (ex && typeof ex === "object" && !Array.isArray(ex)) Object.assign(merged, ex)
     }
     return Object.keys(merged).length ? merged : null
@@ -108,7 +113,7 @@ export function generateExample(spec: any, schema: any, depth = 0, maxDepth = 2)
   if (t === "integer" || t === "number") return 0
   if (t === "boolean") return false
   if (t === "array") {
-    const itemEx = generateExample(spec, schema.items, depth + 1, maxDepth)
+    const itemEx = generateExample(spec, schema.items, depth + 1, maxDepth, seen)
     return itemEx == null ? [] : [itemEx]
   }
   if (t === "object" || schema.properties) {
@@ -116,7 +121,7 @@ export function generateExample(spec: any, schema: any, depth = 0, maxDepth = 2)
     const out: any = {}
     const keys = Object.keys(props)
     for (const k of keys.slice(0, 25)) {
-      const ex = generateExample(spec, props[k], depth + 1, maxDepth)
+      const ex = generateExample(spec, props[k], depth + 1, maxDepth, seen)
       out[k] = ex
     }
     return out

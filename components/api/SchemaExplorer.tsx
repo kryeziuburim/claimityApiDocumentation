@@ -18,7 +18,7 @@ export function SchemaExplorer({
   schema,
   title,
   depth = 0,
-  maxDepth = 2,
+  maxDepth = 6,
 }: SchemaExplorerProps) {
   const [expanded, setExpanded] = useState<Record<string, boolean>>({})
 
