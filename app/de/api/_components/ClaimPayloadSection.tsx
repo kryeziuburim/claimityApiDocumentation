@@ -531,7 +531,7 @@ export function ClaimPayloadSection({
                 ) : schema ? (
                     <div className="space-y-6">
                       <div className="grid gap-4 sm:gap-6 lg:grid-cols-[minmax(0,2fr)_minmax(0,1.1fr)]">
-                        <Card className="min-w-0 border-border/60">
+                        <Card className="hidden min-w-0 border-border/60 md:block">
                           <CardHeader>
                             <CardTitle className="text-base font-semibold">Kontext & Hinweise</CardTitle>
                           </CardHeader>
