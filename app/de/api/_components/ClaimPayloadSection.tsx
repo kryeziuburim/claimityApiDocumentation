@@ -478,7 +478,7 @@ export function ClaimPayloadSection({
 
       <Tabs value={resolvedActive} onValueChange={handleTabChange} className="space-y-6">
         <div className="sticky top-[4.25rem] z-10 mb-4 rounded-2xl border border-border/60 bg-background/90 p-2 shadow-sm backdrop-blur-sm sm:top-16 sm:mb-6 sm:p-3">
-          <TabsList className="grid w-full grid-cols-1 gap-2 bg-transparent p-0 sm:grid-cols-2 lg:flex lg:flex-wrap">
+          <TabsList className="grid w-full grid-cols-1 gap-2 bg-transparent p-0 h-auto sm:h-10 sm:grid-cols-2 lg:flex lg:flex-wrap">
             {CLAIM_PAYLOADS.map((payload) => {
               const Icon = PAYLOAD_ICONS[payload.key] ?? SquareStack
               return (
