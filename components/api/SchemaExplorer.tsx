@@ -151,8 +151,8 @@ export function SchemaExplorer({
 }
 
 function childTitle(field: string, schema: any) {
-  if (schema?.$ref) return `${field}: ${refName(schema.$ref)}`
-  if (schema?.type === "array" && schema?.items?.$ref) return `${field}: array<${refName(schema.items.$ref)}>`
+  // if (schema?.$ref) return `${field}: ${refName(schema.$ref)}`
+  // if (schema?.type === "array" && schema?.items?.$ref) return `${field}: array<${refName(schema.items.$ref)}>`
   return field
 }
 

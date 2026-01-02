@@ -14,6 +14,10 @@ import {
 } from "./openapi-utils"
 import { useOpenApi } from "./OpenApiProvider"
 
+const ACCENT_COLOR = "#2a8289"
+
+type HeaderRow = { k: string; v: string }
+
 export function EndpointDetails({
   method,
   path,
@@ -24,10 +28,10 @@ export function EndpointDetails({
   className?: string
 }) {
   const ctx = useOpenApi()
-  const s = ctx.spec
+  const spec = ctx.spec
 
-  const op = useMemo(() => (s ? getOperation(s, method, path) : null), [s, method, path])
-  const baseUrl = useMemo(() => (s ? getServersBaseUrl(s) : null) ?? "https://app.claimity.ch", [s])
+  const op = useMemo(() => (spec ? getOperation(spec, method, path) : null), [spec, method, path])
+  const baseUrl = useMemo(() => (spec ? getServersBaseUrl(spec) : null) ?? "https://app.claimity.ch", [spec])
 
   const params = useMemo(() => listParameters(op), [op])
 
@@ -44,12 +48,20 @@ export function EndpointDetails({
     return pickJsonSchemaFromContent(content)
   }, [op])
 
+  const headerRows = useMemo<HeaderRow[]>(() => {
+    const rows: HeaderRow[] = [
+      { k: "Accept", v: "application/json" },
+      { k: "Authorization", v: "DPoP {access_token}" },
+      { k: "DPoP", v: "{dpop_proof_jwt}" },
+    ]
+    if (requestSchema) {
+      rows.push({ k: "Content-Type", v: "application/json" })
+    }
+    return rows
+  }, [requestSchema])
+
   const responses = useMemo(() => {
-    // OpenAPI typings sind hier absichtlich "loose", weil die Spec aus JSON kommt.
-    // Ohne Cast inferred TS `{}` und blockiert Zugriffe wie `resp.content`.
-    const r = (op?.responses ?? {}) as Record<string, any>
-    const entries = Object.entries(r) as [string, any][]
-    // status codes first, then default
+    const entries = Object.entries((op?.responses ?? {}) as Record<string, any>) as [string, any][]
     entries.sort(([a], [b]) => {
       if (a === "default") return 1
       if (b === "default") return -1
@@ -58,7 +70,10 @@ export function EndpointDetails({
     return entries
   }, [op])
 
-  const reqExample = useMemo(() => (s && requestSchema ? generateExample(s, requestSchema) : null), [s, requestSchema])
+  const reqExample = useMemo(
+    () => (spec && requestSchema ? generateExample(spec, requestSchema) : null),
+    [spec, requestSchema]
+  )
 
   const [tab, setTab] = useState<"request" | "response" | "errors" | "examples">("request")
 
@@ -81,71 +96,66 @@ export function EndpointDetails({
   }
 
   return (
-    <div className={cn("mt-3 rounded-lg border border-border bg-card p-4", className)}>
-      <div className="mb-3 flex flex-wrap items-center gap-2">
-        <TabButton active={tab === "request"} onClick={() => setTab("request")}>Request</TabButton>
-        <TabButton active={tab === "response"} onClick={() => setTab("response")}>Response</TabButton>
-        <TabButton active={tab === "errors"} onClick={() => setTab("errors")}>Errors</TabButton>
-        <TabButton active={tab === "examples"} onClick={() => setTab("examples")}>Examples</TabButton>
+    <div className={cn("mt-3 rounded-md border border-border/70 bg-card/80 p-5 shadow-sm", className)}>
+      <div className="mb-4 flex flex-wrap items-center gap-2">
+        <TabButton active={tab === "request"} onClick={() => setTab("request")}>
+          Request
+        </TabButton>
+        <TabButton active={tab === "response"} onClick={() => setTab("response")}>
+          Response
+        </TabButton>
+        <TabButton active={tab === "errors"} onClick={() => setTab("errors")}>
+          Errors
+        </TabButton>
+        <TabButton active={tab === "examples"} onClick={() => setTab("examples")}>
+          Examples
+        </TabButton>
       </div>
 
       {tab === "request" && (
-        <div className="space-y-5">
-          <SectionTitle>Headers</SectionTitle>
-          <KeyValueTable
-            rows={[
-              { k: "Accept", v: "application/json" },
-              { k: "Authorization", v: "Bearer {access-token}" },
-              { k: "Content-Type", v: requestSchema ? "application/json" : "-" },
-            ]}
-          />
+        <div className="space-y-4">
+          <DetailBlock title="Headers">
+            <HeaderList rows={headerRows} />
+          </DetailBlock>
 
           {grouped.path.length > 0 && (
-            <>
-              <SectionTitle>Path-Parameter</SectionTitle>
+            <DetailBlock title="Path-Parameter">
               <ParamTable params={grouped.path} />
-            </>
+            </DetailBlock>
           )}
 
           {grouped.query.length > 0 && (
-            <>
-              <SectionTitle>Query-Parameter</SectionTitle>
+            <DetailBlock title="Query-Parameter">
               <ParamTable params={grouped.query} />
-            </>
+            </DetailBlock>
           )}
 
-          {requestSchema && s && (
-            <>
-              <SectionTitle>Request Body</SectionTitle>
-              <SchemaExplorer spec={s} schema={requestSchema} title="Request Schema" />
-              <CodeBlock title="Beispiel-Body (generiert)">{prettyJson(reqExample)}</CodeBlock>
-            </>
+          {requestSchema && spec && (
+            <DetailBlock title="Request Body">
+              <SchemaExplorer spec={spec} schema={requestSchema} title="Request Schema" />
+              <CodeBlock title="Beispiel-Body">{reqExample ? prettyJson(reqExample) : null}</CodeBlock>
+            </DetailBlock>
           )}
         </div>
       )}
 
       {tab === "response" && (
-        <div className="space-y-5">
+        <div className="space-y-4">
           {responses.map(([code, resp]) => {
             const schema = pickJsonSchemaFromContent(resp?.content)
-            const example = s && schema ? generateExample(s, schema) : null
+            const example = spec && schema ? generateExample(spec, schema) : null
 
             return (
-              <div key={code} className="rounded-lg border border-border bg-muted/20 p-4">
-                <div className="mb-2 flex items-center justify-between gap-3">
-                  <div className="font-mono text-sm font-semibold">{code}</div>
-                  <div className="text-xs text-muted-foreground">{resp?.description ?? ""}</div>
-                </div>
-
-                {schema && s ? (
+              <DetailBlock key={code} title={`Response ${code}`} description={resp?.description ?? ""}>
+                {schema && spec ? (
                   <div className="space-y-3">
-                    <SchemaExplorer spec={s} schema={schema} title="Response Schema" />
-                    <CodeBlock title="Beispiel-Response (generiert)">{prettyJson(example)}</CodeBlock>
+                    <SchemaExplorer spec={spec} schema={schema} title="Response Schema" />
+                    <CodeBlock title="Beispiel-Response">{example ? prettyJson(example) : null}</CodeBlock>
                   </div>
                 ) : (
                   <div className="text-sm text-muted-foreground">Kein JSON-Schema dokumentiert.</div>
                 )}
-              </div>
+              </DetailBlock>
             )
           })}
         </div>
@@ -154,9 +164,11 @@ export function EndpointDetails({
       {tab === "errors" && (
         <div className="space-y-4">
           <p className="text-sm text-muted-foreground">
-            Diese Sektion zeigt alle nicht-2xx Responses aus der OpenAPI. (Empfehlung: überall konsistent `ProblemDetails` / `ValidationProblemDetails`.)
+            Diese Sektion zeigt alle Responses, die einen Fehler anzeigen.
           </p>
-          <ErrorMatrix responses={responses} />
+          <DetailBlock title="Fehlermatrix">
+            <ErrorMatrix responses={responses} />
+          </DetailBlock>
         </div>
       )}
 
@@ -191,41 +203,57 @@ function TabButton({
       type="button"
       onClick={onClick}
       className={cn(
-        "rounded-md px-3 py-1.5 text-sm transition-colors",
-        active ? "bg-sidebar-accent text-sidebar-accent-foreground" : "bg-muted/40 text-muted-foreground hover:text-foreground",
+        "rounded-md border border-border/60 px-4 py-1.5 text-xs font-semibold transition",
+        active ? "text-white shadow-sm" : "text-muted-foreground hover:text-foreground"
       )}
+      style={active ? { backgroundColor: ACCENT_COLOR, borderColor: ACCENT_COLOR } : undefined}
     >
       {children}
     </button>
   )
 }
 
-function SectionTitle({ children }: { children: React.ReactNode }) {
-  return <h4 className="text-sm font-semibold">{children}</h4>
+function DetailBlock({
+  title,
+  description,
+  children,
+}: {
+  title: string
+  description?: React.ReactNode
+  children: React.ReactNode
+}) {
+  return (
+    <div className="rounded-2xl border border-border/70 bg-muted/20 p-4">
+      <div className="mb-3 space-y-1">
+        <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">{title}</p>
+        {description ? <p className="text-xs text-muted-foreground">{description}</p> : null}
+      </div>
+      <div className="space-y-3">{children}</div>
+    </div>
+  )
 }
 
-function KeyValueTable({ rows }: { rows: { k: string; v: string }[] }) {
+function HeaderList({ rows }: { rows: HeaderRow[] }) {
   return (
-    <div className="overflow-x-auto rounded-md border border-border bg-muted/20">
-      <table className="w-full text-sm">
-        <tbody>
-          {rows.map((r) => (
-            <tr key={r.k} className="border-t border-border/60 first:border-t-0">
-              <td className="w-44 px-3 py-2 font-mono text-xs text-muted-foreground">{r.k}</td>
-              <td className="px-3 py-2 font-mono text-xs">{r.v}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+    <div className="grid gap-2">
+      {rows.map((row) => (
+        <div
+          key={row.k}
+          className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-border/60 bg-background/70 px-3 py-2"
+        >
+          <span className="font-mono text-xs text-muted-foreground">{row.k}</span>
+          <span className="font-mono text-xs text-foreground">{row.v}</span>
+        </div>
+      ))}
     </div>
   )
 }
 
 function ParamTable({ params }: { params: any[] }) {
   return (
-    <div className="overflow-x-auto rounded-md border border-border bg-muted/20">
+    <div className="overflow-x-auto rounded-xl border border-border/60 bg-background/80">
       <table className="w-full text-left text-sm">
-        <thead className="text-xs text-muted-foreground">
+        <thead className="text-xs uppercase tracking-wide text-muted-foreground">
           <tr className="[&>th]:px-3 [&>th]:py-2">
             <th>Name</th>
             <th>Typ</th>
@@ -236,16 +264,17 @@ function ParamTable({ params }: { params: any[] }) {
         </thead>
         <tbody>
           {params.map((p) => (
-            <tr key={`${p.in}-${p.name}`} className="border-t border-border/60">
+            <tr key={`${p.in}-${p.name}`} className="border-t border-border/40">
               <td className="px-3 py-2 font-mono text-xs">{p.name}</td>
               <td className="px-3 py-2 font-mono text-xs">
-                {p.schema?.type}{p.schema?.format ? ` (${p.schema.format})` : ""}
+                {p.schema?.type}
+                {p.schema?.format ? ` (${p.schema.format})` : ""}
               </td>
               <td className="px-3 py-2">{p.required ? "✓" : ""}</td>
               <td className="px-3 py-2 font-mono text-xs text-muted-foreground">
                 {p.schema?.default != null ? String(p.schema.default) : ""}
               </td>
-              <td className="px-3 py-2 text-muted-foreground">{p.description ?? ""}</td>
+              <td className="px-3 py-2 text-sm text-muted-foreground">{p.description ?? ""}</td>
             </tr>
           ))}
         </tbody>
@@ -254,14 +283,19 @@ function ParamTable({ params }: { params: any[] }) {
   )
 }
 
-function CodeBlock({ title, children }: { title: string; children: string }) {
+function CodeBlock({ title, children }: { title: string; children: string | null }) {
+  if (!children) return null
+
   return (
-    <div className="rounded-lg border border-border bg-muted/20">
-      <div className="flex items-center justify-between border-b border-border px-3 py-2">
-        <div className="text-xs font-medium text-muted-foreground">{title}</div>
+    <div className="overflow-hidden rounded-2xl border border-border/70 bg-background/80">
+      <div
+        className="px-4 py-2 text-xs font-semibold uppercase tracking-wide text-white"
+        style={{ backgroundColor: ACCENT_COLOR }}
+      >
+        {title}
       </div>
-      <pre className="overflow-x-auto p-3 text-xs">
-        <code className="font-mono">{children}</code>
+      <pre className="overflow-x-auto p-4 text-xs leading-relaxed text-muted-foreground">
+        <code className="font-mono text-foreground">{children}</code>
       </pre>
     </div>
   )
@@ -272,9 +306,9 @@ function ErrorMatrix({ responses }: { responses: [string, any][] }) {
   if (!errors.length) return <div className="text-sm text-muted-foreground">Keine Error-Responses dokumentiert.</div>
 
   return (
-    <div className="overflow-x-auto rounded-md border border-border bg-muted/20">
+    <div className="overflow-x-auto rounded-xl border border-border/60 bg-background/80">
       <table className="w-full text-left text-sm">
-        <thead className="text-xs text-muted-foreground">
+        <thead className="text-xs uppercase tracking-wide text-muted-foreground">
           <tr className="[&>th]:px-3 [&>th]:py-2">
             <th>Status</th>
             <th>Beschreibung</th>
@@ -284,12 +318,11 @@ function ErrorMatrix({ responses }: { responses: [string, any][] }) {
         <tbody>
           {errors.map(([code, resp]) => {
             const schema = resp?.content ? (resp.content["application/json"]?.schema ?? null) : null
-            const schemaLabel =
-              schema?.$ref ? schema.$ref.split("/").pop() : (schema?.type ?? "")
+            const schemaLabel = schema?.$ref ? schema.$ref.split("/").pop() : schema?.type ?? ""
             return (
-              <tr key={code} className="border-t border-border/60">
+              <tr key={code} className="border-t border-border/40">
                 <td className="px-3 py-2 font-mono text-xs">{code}</td>
-                <td className="px-3 py-2 text-muted-foreground">{resp?.description ?? ""}</td>
+                <td className="px-3 py-2 text-sm text-muted-foreground">{resp?.description ?? ""}</td>
                 <td className="px-3 py-2 font-mono text-xs text-muted-foreground">{schemaLabel}</td>
               </tr>
             )
@@ -312,8 +345,8 @@ function buildCurl({
   hasBody: boolean
 }) {
   const url = `${baseUrl}${path}`.replace(/\{[^}]+\}/g, "REPLACE_ME")
-  const body = hasBody ? " \\\n  -H 'Content-Type: application/json' \\\n  -d '{...}'" : ""
-  return `curl -X ${method} \\\n  '${url}' \\\n  -H 'Accept: application/json' \\\n  -H 'Authorization: Bearer {access-token}'${body}`
+  const body = hasBody ? " \\\n+  -H 'Content-Type: application/json' \\\n+  -d '{...}'" : ""
+  return `curl -X ${method} \\\n+  '${url}' \\\n+  -H 'Accept: application/json' \\\n+  -H 'Authorization: DPoP {access-token}' \\\n+  -H 'DPoP: {dpop_proof_jwt}'${body}`
 }
 
 function buildFetch({
@@ -330,7 +363,7 @@ function buildFetch({
   const url = `${baseUrl}${path}`.replace(/\{[^}]+\}/g, "REPLACE_ME")
   const body = hasBody ? `,\n  body: JSON.stringify({ /* ... */ })` : ""
   const ct = hasBody ? `,\n    "Content-Type": "application/json"` : ""
-  return `const res = await fetch("${url}", {\n  method: "${method}",\n  headers: {\n    "Accept": "application/json",\n    "Authorization": "Bearer ${"{accessToken}"}"${ct}\n  }${body}\n});\n\nconst data = await res.json();`
+  return `const res = await fetch("${url}", {\n  method: "${method}",\n  headers: {\n    "Accept": "application/json",\n    "Authorization": "DPoP ${"{accessToken}"}",\n    "DPoP": "{dpop_proof_jwt}"${ct}\n  }${body}\n});\n\nconst data = await res.json();`
 }
 
 function buildPython({
@@ -347,5 +380,6 @@ function buildPython({
   const url = `${baseUrl}${path}`.replace(/\{[^}]+\}/g, "REPLACE_ME")
   const dataLine = hasBody ? `\npayload = { }\n` : ""
   const jsonArg = hasBody ? `, json=payload` : ""
-  return `import requests\n\nurl = "${url}"\nheaders = {\n  "Accept": "application/json",\n  "Authorization": "Bearer <access-token>",\n}\n${dataLine}res = requests.request("${method}", url, headers=headers${jsonArg})\nprint(res.status_code)\nprint(res.text)`
+  const ctHeader = hasBody ? `,\n  "Content-Type": "application/json"` : ""
+  return `import requests\n\nurl = "${url}"\nheaders = {\n  "Accept": "application/json",\n  "Authorization": "DPoP <access-token>",\n  "DPoP": "{dpop_proof_jwt}"${ctHeader}\n}\n${dataLine}res = requests.request("${method}", url, headers=headers${jsonArg})\nprint(res.status_code)\nprint(res.text)`
 }
