@@ -1,6 +1,7 @@
 "use client"
 
-import React, { useMemo, useState } from "react"
+import React, { useEffect, useMemo, useState } from "react"
+import { ChevronDown } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { SchemaExplorer } from "./SchemaExplorer"
 import {
@@ -76,7 +77,56 @@ export function EndpointDetails({
     [spec, requestSchema]
   )
 
+  const exampleBlocks = useMemo(
+    () => [
+      {
+        key: "curl",
+        title: "cURL",
+        content: buildCurl({ baseUrl, method, path, hasBody: !!requestSchema }),
+      },
+      {
+        key: "js",
+        title: "JavaScript (fetch)",
+        content: buildFetch({ baseUrl, method, path, hasBody: !!requestSchema }),
+      },
+      {
+        key: "py",
+        title: "Python (requests)",
+        content: buildPython({ baseUrl, method, path, hasBody: !!requestSchema }),
+      },
+    ],
+    [baseUrl, method, path, requestSchema]
+  )
+
   const [tab, setTab] = useState<"request" | "response" | "errors" | "examples">("request")
+  const [activeResponse, setActiveResponse] = useState<string | null>(null)
+  const [activeExample, setActiveExample] = useState<string | null>(() => (exampleBlocks[0] ? exampleBlocks[0].key : null))
+
+  useEffect(() => {
+    if (responses.length === 0) {
+      setActiveResponse(null)
+      return
+    }
+    setActiveResponse((prev) => {
+      if (prev && responses.some(([code]) => code === prev)) {
+        return prev
+      }
+      return null
+    })
+  }, [responses])
+
+  useEffect(() => {
+    if (exampleBlocks.length === 0) {
+      setActiveExample(null)
+      return
+    }
+    setActiveExample((prev) => {
+      if (prev && exampleBlocks.some((block) => block.key === prev)) {
+        return prev
+      }
+      return exampleBlocks[0].key
+    })
+  }, [exampleBlocks])
 
   if (ctx.loading) {
     return <div className={cn("text-sm text-muted-foreground", className)}>Lade OpenAPI…</div>
@@ -150,23 +200,43 @@ export function EndpointDetails({
           {responses.map(([code, resp]) => {
             const schema = pickJsonSchemaFromContent(resp?.content)
             const example = spec && schema ? generateExample(spec, schema) : null
+            const isOpen = activeResponse === code
 
             return (
-              <DetailBlock key={code} title={`Response ${code}`} description={resp?.description ?? ""}>
-                {schema && spec ? (
-                  <div className="space-y-3">
-                     <SchemaExplorer
-                       spec={spec}
-                       schema={schema}
-                       title="Response Schema"
-                       maxDepth={SCHEMA_EXPLORER_MAX_DEPTH}
-                     />
-                    <CodeBlock title="Beispiel-Response">{example ? prettyJson(example) : null}</CodeBlock>
+              <div key={code} className="overflow-hidden rounded-2xl border border-border/60 bg-muted/15">
+                <button
+                  type="button"
+                  onClick={() => setActiveResponse((prev) => (prev === code ? null : code))}
+                  className="flex w-full items-center justify-between gap-3 px-4 py-3 text-left"
+                  aria-expanded={isOpen}
+                >
+                  <div>
+                    <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Response {code}</p>
+                    {resp?.description ? (
+                      <p className="text-sm text-muted-foreground">{resp.description}</p>
+                    ) : null}
                   </div>
-                ) : (
-                  <div className="text-sm text-muted-foreground">Kein JSON-Schema dokumentiert.</div>
-                )}
-              </DetailBlock>
+                  <ChevronDown className={cn("h-4 w-4 transition-transform", isOpen && "rotate-180")} />
+                </button>
+
+                {isOpen ? (
+                  <div className="border-t border-border/40 bg-card/80 p-4">
+                    {schema && spec ? (
+                      <div className="space-y-3">
+                        <SchemaExplorer
+                          spec={spec}
+                          schema={schema}
+                          title="Response Schema"
+                          maxDepth={SCHEMA_EXPLORER_MAX_DEPTH}
+                        />
+                        <CodeBlock title="Beispiel-Response">{example ? prettyJson(example) : null}</CodeBlock>
+                      </div>
+                    ) : (
+                      <div className="text-sm text-muted-foreground">Kein JSON-Schema dokumentiert.</div>
+                    )}
+                  </div>
+                ) : null}
+              </div>
             )
           })}
         </div>
@@ -185,15 +255,28 @@ export function EndpointDetails({
 
       {tab === "examples" && (
         <div className="space-y-4">
-          <CodeBlock title="cURL">
-            {buildCurl({ baseUrl, method, path, hasBody: !!requestSchema })}
-          </CodeBlock>
-          <CodeBlock title="JavaScript (fetch)">
-            {buildFetch({ baseUrl, method, path, hasBody: !!requestSchema })}
-          </CodeBlock>
-          <CodeBlock title="Python (requests)">
-            {buildPython({ baseUrl, method, path, hasBody: !!requestSchema })}
-          </CodeBlock>
+          {exampleBlocks.map(({ key, title, content }) => {
+            const isOpen = activeExample === key
+            return (
+              <div key={key} className="overflow-hidden rounded-2xl border border-border/60 bg-muted/15">
+                <button
+                  type="button"
+                  onClick={() => setActiveExample(key)}
+                  className="flex w-full items-center justify-between gap-3 px-4 py-2 text-left text-xs font-semibold uppercase tracking-wide text-white"
+                  aria-expanded={isOpen}
+                  style={{ backgroundColor: ACCENT_COLOR }}
+                >
+                  <span>{title}</span>
+                  <ChevronDown className={cn("h-4 w-4 transition-transform", isOpen && "rotate-180")} />
+                </button>
+                {isOpen ? (
+                  <pre className="border-t border-border/40 bg-background/90 p-4 text-xs leading-relaxed text-muted-foreground">
+                    <code className="font-mono text-foreground">{content}</code>
+                  </pre>
+                ) : null}
+              </div>
+            )
+          })}
         </div>
       )}
     </div>
