@@ -215,7 +215,7 @@ export function SchemaExplorer({
       </div>
 
       <div className={bodyWrapperClasses}>
-        <table className="w-full table-fixed text-left text-sm">
+        <table className="w-full min-w-[640px] table-auto text-left text-sm">
           <colgroup>
             <col className="w-[22%]" />
             <col className="w-[18%]" />
