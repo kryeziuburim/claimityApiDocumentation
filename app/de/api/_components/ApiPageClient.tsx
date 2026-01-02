@@ -113,6 +113,25 @@ export default function ApiPageClient() {
   const sidebarScrollRef = useRef<HTMLDivElement | null>(null)
   const contentWrapperRef = useRef<HTMLDivElement | null>(null)
   const [desktopContentOffsetPx, setDesktopContentOffsetPx] = useState(0)
+  const payloadKeyByAnchor = useMemo(() => {
+    const map: Record<string, string> = {}
+    CLAIM_PAYLOADS.forEach((payload) => {
+      map[payload.anchorId] = payload.key
+    })
+    return map
+  }, [])
+  const payloadAnchorByKey = useMemo(() => {
+    const map: Record<string, string> = {}
+    CLAIM_PAYLOADS.forEach((payload) => {
+      map[payload.key] = payload.anchorId
+    })
+    return map
+  }, [])
+  const [activePayloadKey, setActivePayloadKey] = useState<string>(CLAIM_PAYLOADS[0]?.key ?? "")
+  const activePayloadKeyRef = useRef(activePayloadKey)
+  useEffect(() => {
+    activePayloadKeyRef.current = activePayloadKey
+  }, [activePayloadKey])
 
   // Layout-Shift nur dann, wenn die Sidebar (w-64) den Content tatsächlich überlappen würde.
   // Auf sehr großen Screens bleibt der Content unverändert.
@@ -175,16 +194,52 @@ export default function ApiPageClient() {
     return () => observer.disconnect()
   }, [])
 
-  const handleNavigate = useCallback((id: string) => {
-    if (typeof window !== "undefined") {
-      try { history.pushState(null, "", `#${id}`) } catch {}
+  const handleNavigate = useCallback(
+    (id: string) => {
+      const payloadKey = payloadKeyByAnchor[id]
+      if (payloadKey) {
+        setActivePayloadKey((prev) => (prev === payloadKey ? prev : payloadKey))
+      }
+      if (typeof window !== "undefined") {
+        try { history.pushState(null, "", `#${id}`) } catch {}
+      }
+      const el = document.getElementById(id)
+      if (el) {
+        el.scrollIntoView({ behavior: "smooth", block: "start" })
+      }
+      setActiveId(id)
+      setIsMobileMenuOpen(false)
+    },
+    [payloadKeyByAnchor]
+  )
+
+  useEffect(() => {
+    const payloadKey = payloadKeyByAnchor[activeId]
+    if (payloadKey && payloadKey !== activePayloadKey) {
+      setActivePayloadKey(payloadKey)
     }
-    const el = document.getElementById(id)
-    if (el) {
-      el.scrollIntoView({ behavior: "smooth", block: "start" })
+  }, [activeId, activePayloadKey, payloadKeyByAnchor])
+
+  const handlePayloadTabChange = useCallback(
+    (key: string) => {
+      setActivePayloadKey((prev) => (prev === key ? prev : key))
+      const anchor = payloadAnchorByKey[key]
+      if (anchor) {
+        setActiveId(anchor)
+      }
+    },
+    [payloadAnchorByKey]
+  )
+
+  useEffect(() => {
+    if (!activePayloadKey) return
+    const anchor = payloadAnchorByKey[activePayloadKey]
+    if (!anchor) return
+    const isPayloadContext = activeId === "payloads" || payloadKeyByAnchor[activeId]
+    if (isPayloadContext && activeId !== anchor) {
+      setActiveId(anchor)
     }
-    setIsMobileMenuOpen(false)
-  }, [])
+  }, [activeId, activePayloadKey, payloadAnchorByKey, payloadKeyByAnchor])
 
   useEffect(() => {
     const ids = [
@@ -210,7 +265,17 @@ export default function ApiPageClient() {
             return b.e.intersectionRatio - a.e.intersectionRatio
           })[0]
 
-        if (visible?.id) setActiveId(visible.id)
+        if (visible?.id) {
+          let nextId = visible.id
+          if (nextId === "payloads") {
+            const payloadKey = activePayloadKeyRef.current
+            const payloadAnchor = payloadKey ? payloadAnchorByKey[payloadKey] : undefined
+            if (payloadAnchor) {
+              nextId = payloadAnchor
+            }
+          }
+          setActiveId(nextId)
+        }
       },
       {
         root: null,
@@ -492,7 +557,12 @@ export default function ApiPageClient() {
                 <OpenApiProvider url="/assets/openapi.json">
                   <SectionComponent id="experts"><ExpertsSectionComponent /></SectionComponent>
                   <SectionComponent id="insurer"><InsurerSectionComponent /></SectionComponent>
-                  <SectionComponent id="payloads"><ClaimPayloadSection /></SectionComponent>
+                  <SectionComponent id="payloads">
+                    <ClaimPayloadSection
+                      activePayloadKey={activePayloadKey}
+                      onActivePayloadChange={handlePayloadTabChange}
+                    />
+                  </SectionComponent>
                 </OpenApiProvider>
               </div>
             </div>

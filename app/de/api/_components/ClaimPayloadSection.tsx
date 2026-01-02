@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 import {
   Anchor,
   BadgeCheck,
@@ -9,7 +9,6 @@ import {
   Download,
   FileJson,
   Info,
-  ListTree,
   ShieldAlert,
   ShieldCheck,
   SquareStack,
@@ -93,8 +92,16 @@ const PAYLOAD_ICONS: Record<string, LucideIcon> = {
   fraud: ShieldAlert,
 }
 
-export function ClaimPayloadSection() {
-  const [active, setActive] = useState<string>(CLAIM_PAYLOADS[0]?.key ?? "")
+type ClaimPayloadSectionProps = {
+  activePayloadKey?: string
+  onActivePayloadChange?: (key: string) => void
+}
+
+export function ClaimPayloadSection({
+  activePayloadKey,
+  onActivePayloadChange,
+}: ClaimPayloadSectionProps = {}) {
+  const [internalActive, setInternalActive] = useState<string>(CLAIM_PAYLOADS[0]?.key ?? "")
   const [schemas, setSchemas] = useState<Record<string, SchemaLoadState>>(() => {
     const base: Record<string, SchemaLoadState> = {}
     CLAIM_PAYLOADS.forEach((payload) => {
@@ -103,6 +110,21 @@ export function ClaimPayloadSection() {
     return base
   })
   const { toast } = useToast()
+
+  const isControlled = activePayloadKey !== undefined && activePayloadKey !== null
+  const resolvedActive = (isControlled ? (activePayloadKey as string) : internalActive) ?? ""
+
+  const updateActive = useCallback(
+    (value: string, { notifyParent = true }: { notifyParent?: boolean } = {}) => {
+      if (!isControlled) {
+        setInternalActive((prev) => (prev === value ? prev : value))
+      }
+      if (notifyParent) {
+        onActivePayloadChange?.(value)
+      }
+    },
+    [isControlled, onActivePayloadChange]
+  )
 
   useEffect(() => {
     let cancelled = false
@@ -137,15 +159,15 @@ export function ClaimPayloadSection() {
     const syncFromHash = () => {
       const hash = window.location.hash.replace(/^#/, "")
       const match = CLAIM_PAYLOADS.find((payload) => payload.anchorId === hash)
-      if (match) setActive(match.key)
+      if (match) updateActive(match.key)
     }
     syncFromHash()
     window.addEventListener("hashchange", syncFromHash)
     return () => window.removeEventListener("hashchange", syncFromHash)
-  }, [])
+  }, [updateActive])
 
   const handleTabChange = (value: string) => {
-    setActive(value)
+    updateActive(value)
     if (typeof window === "undefined") return
     const target = CLAIM_PAYLOADS.find((item) => item.key === value)
     if (!target) return
@@ -170,7 +192,7 @@ export function ClaimPayloadSection() {
         </p>
       </div>
 
-      <Tabs value={active} onValueChange={handleTabChange} className="space-y-6">
+      <Tabs value={resolvedActive} onValueChange={handleTabChange} className="space-y-6">
         <div className="sticky top-16 z-10 rounded-2xl border border-border/60 bg-background/80 p-3 backdrop-blur">
           <TabsList className="flex w-full flex-wrap gap-2 bg-transparent p-0">
             {CLAIM_PAYLOADS.map((payload) => {
@@ -197,7 +219,6 @@ export function ClaimPayloadSection() {
           const exampleJson = examplePayload ? JSON.stringify(examplePayload, null, 2) : ""
           const formatHints = schema ? extractFormatHints(schema) : []
           const stats = schema ? buildSchemaStats(schema) : null
-          const keyObjects = stats ? Math.max(stats.objectNodes - 1, 0) : 0
 
           return (
             <TabsContent key={payload.key} value={payload.key} className="space-y-6">
@@ -225,51 +246,6 @@ export function ClaimPayloadSection() {
                   </Alert>
                 ) : schema ? (
                   <div className="space-y-6">
-                    {stats ? (
-                      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-                        {[
-                          {
-                            label: "Felder",
-                            value: stats.totalFields,
-                            description: "Gesamtzahl dokumentierter Felder",
-                            icon: ListTree,
-                          },
-                          {
-                            label: "Pflichtfelder",
-                            value: stats.requiredFields,
-                            description: "Muss in jedem Payload vorhanden sein",
-                            icon: ShieldCheck,
-                          },
-                          {
-                            label: "Schlüsselobjekte",
-                            value: keyObjects,
-                            description: "Verschachtelte Objektstrukturen",
-                            icon: SquareStack,
-                          },
-                        ].map((card) => (
-                          <Card
-                            key={`${payload.key}-${card.label}`}
-                            className="border-border/60 bg-gradient-to-br from-background to-muted/40"
-                          >
-                            <CardHeader className="px-6">
-                              <CardTitle className="text-sm font-medium text-muted-foreground">
-                                {card.label}
-                              </CardTitle>
-                            </CardHeader>
-                            <CardContent className="flex items-center justify-between gap-4 px-6">
-                              <div>
-                                <p className="text-3xl font-semibold">{card.value}</p>
-                                <p className="text-sm text-muted-foreground">{card.description}</p>
-                              </div>
-                              <div className="rounded-2xl border border-border/60 bg-background/80 p-3 text-primary">
-                                <card.icon className="h-5 w-5" />
-                              </div>
-                            </CardContent>
-                          </Card>
-                        ))}
-                      </div>
-                    ) : null}
-
                     <div className="grid gap-6 lg:grid-cols-[minmax(0,2fr)_minmax(0,1.1fr)]">
                       <Card className="border-border/60">
                         <CardHeader>
