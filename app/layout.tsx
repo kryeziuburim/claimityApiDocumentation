@@ -1,7 +1,6 @@
 import type React from "react"
 import type { Metadata } from "next"
 import { Geist, Geist_Mono } from "next/font/google"
-import { Analytics } from "@vercel/analytics/next"
 import { Suspense } from "react"
 import "./globals.css"
 import { HtmlLangSetter } from "@/components/html-lang-setter"
@@ -28,7 +27,6 @@ export default function RootLayout({
       <body className={`font-sans antialiased overflow-x-hidden`}>
         <HtmlLangSetter />
         <Suspense fallback={null}>{children}</Suspense>
-        <Analytics />
       </body>
     </html>
   )
