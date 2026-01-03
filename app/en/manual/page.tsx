@@ -2,28 +2,30 @@ import type { Metadata } from "next"
 import Link from "next/link"
 import { Footer } from "@/components/footer"
 import { LanguageSwitcher } from "@/components/language-switcher"
+import { Button } from "@/components/ui/button"
+import { FileDown, Users, ShieldCheck, Mail, FormInput } from "lucide-react"
 
 export const metadata: Metadata = {
-  title: "Claimity – Manual",
-  description: "Guides and help for using the Claimity platform.",
+  title: "Claimity - User Manual",
+  description: "Instructions and help for using the Claimity platform.",
   alternates: {
     canonical: "/en/manual/",
     languages: {
       "de-CH": "/de/manual/",
-      en: "/en/manual/",
-      fr: "/fr/manual/",
+      en: "/en/",
+      fr: "/fr/",
       "x-default": "/de/",
     },
   },
   openGraph: {
-    title: "Claimity – Manual",
-    description: "Guides and help for using the Claimity platform.",
+    title: "Claimity - User Manual",
+    description: "Instructions and help for using the Claimity platform.",
     url: "/en/manual/",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Claimity – Manual",
-    description: "Guides and help for using the Claimity platform.",
+    title: "Claimity - User Manual",
+    description: "Instructions and help for using the Claimity platform.",
   },
 }
 
@@ -31,7 +33,7 @@ export default function ManualPage() {
   return (
     <div className="min-h-screen bg-white text-gray-900">
       <section className="relative overflow-hidden">
-        {/* Subtle background glow (Light) */}
+        {/* Subtle Background Glow (Light) */}
         <div className="pointer-events-none absolute inset-x-0 top-[-12rem] -z-10 transform-gpu overflow-hidden blur-3xl">
           <div className="relative left-1/2 aspect-[1155/678] w-[72rem] -translate-x-1/2 bg-gradient-to-tr from-teal-500/20 via-cyan-400/15 to-sky-500/15" />
         </div>
@@ -44,61 +46,106 @@ export default function ManualPage() {
           {/* Hero */}
           <div className="w-full">
             <p className="inline-flex items-center rounded-full bg-teal-50 px-3 py-1 text-xs font-medium text-teal-700 ring-1 ring-teal-100">
-              Claimity Manual
+              Claimity User Manual
             </p>
             <h1 className="mt-4 text-3xl font-semibold tracking-tight text-gray-900 md:text-4xl lg:text-5xl">
-              Support and step-by-step guides
+              Support and Instructions
             </h1>
             <p className="mt-4 text-sm md:text-base text-gray-600">
               Step-by-step instructions and best practices for using Claimity.
             </p>
           </div>
 
-          <div className="mt-10 grid gap-6 md:grid-cols-2">
-            <div className="bg-gray-50 rounded-2xl p-8 space-y-3">
-              <h2 className="text-xl font-bold text-gray-900">Getting started</h2>
-              <ul className="list-disc list-inside text-gray-700 space-y-1">
-                <li>Sign in and set up your account</li>
-                <li>Create a claim</li>
-                <li>Overview and status tracking</li>
-              </ul>
-            </div>
+          <div className="mt-8 md:mt-12">
+            <div className="rounded-2xl border border-slate-200 bg-white/80 p-8 shadow-sm backdrop-blur-xl">
+              <div className="flex items-start justify-between gap-6">
+                <div>
+                  <h2 className="mt-1 text-xl font-semibold text-gray-900 md:mt-3">Download User Manuals</h2>
+                  <p className="mt-1 text-sm text-gray-600 md:mt-2 md:text-base">
+                    Here you can find the complete PDF manuals for experts and insurers.
+                  </p>
+                </div>
+              </div>
 
-            <div className="bg-gray-50 rounded-2xl p-8 space-y-3">
-              <h2 className="text-xl font-bold text-gray-900">Roles & permissions</h2>
-              <ul className="list-disc list-inside text-gray-700 space-y-1">
-                <li>Role model</li>
-                <li>Team management</li>
-                <li>Two-factor authentication</li>
-              </ul>
-            </div>
+              <div className="mt-6 grid gap-6 md:grid-cols-2">
+                {/* Experts */}
+                <div className="group relative overflow-hidden rounded-2xl border border-slate-200 bg-white/70 p-6 backdrop-blur">
+                  <div className="pointer-events-none absolute -right-20 -top-24 h-56 w-56 rounded-full bg-white" />
+                  <div className="relative">
+                    <div className="flex items-start gap-4">
+                      <div className="hidden h-11 w-11 items-center justify-center rounded-xl bg-teal-500/10 ring-1 ring-teal-200/60 sm:flex">
+                        <Users className="h-5 w-5 text-teal-800" aria-hidden="true" />
+                      </div>
+                      <div className="min-w-0">
+                        <h3 className="text-lg font-semibold text-gray-900">For Experts</h3>
+                        <p className="mt-1 text-sm text-gray-600">
+                          Claimity User Manual (PDF) – Roles, workflows, and best practices for experts.
+                        </p>
+                      </div>
+                    </div>
 
-            <div className="bg-gray-50 rounded-2xl p-8 space-y-3">
-              <h2 className="text-xl font-bold text-gray-900">Case creation</h2>
-              <ul className="list-disc list-inside text-gray-700 space-y-1">
-                <li>Case creation process</li>
-                <li>Required fields</li>
-                <li>Assigning experts</li>
-              </ul>
-            </div>
+                    <Button asChild className="mt-5 w-full rounded-lg bg-teal-600 px-6 text-white hover:bg-teal-700">
+                      <a
+                        href="/assets/de/manual/Claimity_Bedienungsanleitung_Experten.pdf"
+                        download
+                      >
+                        <FileDown className="h-4 w-4" aria-hidden="true" />
+                        Download PDF
+                      </a>
+                    </Button>
+                  </div>
+                </div>
 
-            <div className="bg-gray-50 rounded-2xl p-8 space-y-3">
-              <h2 className="text-xl font-bold text-gray-900">Reports</h2>
-              <ul className="list-disc list-inside text-gray-700 space-y-1">
-                <li>Standard reports</li>
-                <li>Export</li>
-                <li>KPIs in the dashboard</li>
-              </ul>
-            </div>
+                {/* Insurers */}
+                <div className="group relative overflow-hidden rounded-2xl border border-slate-200 bg-white/70 p-6 backdrop-blur">
+                  <div className="pointer-events-none absolute -right-20 -top-24 h-56 w-56 rounded-full bg-white" />
+                  <div className="relative">
+                    <div className="flex items-start gap-4">
+                      <div className="hidden h-11 w-11 items-center justify-center rounded-xl bg-teal-500/10 ring-1 ring-teal-200/60 sm:flex">
+                        <ShieldCheck className="h-5 w-5 text-teal-800" aria-hidden="true" />
+                      </div>
+                      <div className="min-w-0">
+                        <h3 className="text-lg font-semibold text-gray-900">For Insurers</h3>
+                        <p className="mt-1 text-sm text-gray-600">
+                          Claimity User Manual (PDF) – Roles, workflows, and best practices for insurers.
+                        </p>
+                      </div>
+                    </div>
 
-            <div className="bg-gray-50 rounded-2xl p-8 space-y-3">
-              <h2 className="text-xl font-bold text-gray-900">API integration</h2>
-              <p className="text-gray-700">
-                Technical integration details can be found in the API documentation.
-              </p>
-              <Link href="/en/api/" className="text-teal-700 hover:underline">
-                Go to API documentation
-              </Link>
+                    <Button asChild className="mt-5 w-full rounded-lg bg-teal-600 px-6 text-white hover:bg-teal-700">
+                      <a
+                        href="/assets/de/manual/Claimity_Bedienungsanleitung_Versicherungen.pdf"
+                        download
+                      >
+                        <FileDown className="h-4 w-4" aria-hidden="true" />
+                        Download PDF
+                      </a>
+                    </Button>
+                  </div>
+                </div>
+              </div>
+              <div className="mt-10 border-t border-slate-200 pt-8">
+                <p className="text-sm font-semibold text-gray-900 md:text-base">
+                  Need more information or additional help?
+                </p>
+                <p className="mt-2 text-sm text-gray-600">
+                  Contact us or schedule an appointment – we are happy to support you.
+                </p>
+                <div className="mt-5 flex flex-wrap gap-3">
+                  <Button asChild className="rounded-lg bg-teal-600 px-6 text-white hover:bg-teal-700">
+                    <Link href="/en/support">
+                      <FormInput className="h-4 w-4" aria-hidden="true" />
+                      Contact Form
+                    </Link>
+                  </Button>
+                  <Button asChild variant="outline" className="rounded-lg">
+                    <a href="mailto:info@claimity.ch">
+                      <Mail className="h-4 w-4 text-slate-500" aria-hidden="true" />
+                      info@claimity.ch
+                    </a>
+                  </Button>
+                </div>
+              </div>
             </div>
           </div>
         </div>

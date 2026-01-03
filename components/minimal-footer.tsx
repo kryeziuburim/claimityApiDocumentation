@@ -41,7 +41,7 @@ export function MinimalFooter() {
   const termsHref = `${websiteRoot}terms`
 
   return (
-    <footer className="py-2">
+    <footer className="py-2 pb-10">
       <div className="mx-auto max-w-7xl px-6">
         {/* Bottom Bar - Copyright & Legal Links */}
         <div className="flex flex-col md:flex-row justify-between items-center gap-4">

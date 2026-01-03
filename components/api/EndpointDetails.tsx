@@ -1,6 +1,7 @@
 "use client"
 
 import React, { useEffect, useMemo, useState } from "react"
+import { usePathname } from "next/navigation"
 import { ChevronDown } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { SchemaExplorer } from "./SchemaExplorer"
@@ -29,6 +30,110 @@ const PAYLOAD_FIELD_LINKS = {
   payloadJson: "#claim-payloads",
 }
 
+type Lang = "de" | "en" | "fr"
+
+const i18n: Record<Lang, {
+  loading: string
+  error: string
+  notFound: string
+  found: string
+  requestBody: string
+  exampleBody: string
+  response: string
+  responseSchema: string
+  exampleResponse: string
+  noJsonSchema: string
+  errorSection: string
+  errorMatrix: string
+  noErrors: string
+  status: string
+  description: string
+  schema: string
+  headers: string
+  pathParams: string
+  queryParams: string
+  name: string
+  type: string
+  required: string
+  default: string
+}> = {
+  de: {
+    loading: "Lade OpenAPI…",
+    error: "OpenAPI konnte nicht geladen werden:",
+    notFound: "Keine OpenAPI-Definition für",
+    found: "gefunden.",
+    requestBody: "Request Body",
+    exampleBody: "Beispiel-Body",
+    response: "Response",
+    responseSchema: "Response Schema",
+    exampleResponse: "Beispiel-Response",
+    noJsonSchema: "Kein JSON-Schema dokumentiert.",
+    errorSection: "Diese Sektion zeigt alle Responses, die einen Fehler anzeigen.",
+    errorMatrix: "Fehlermatrix",
+    noErrors: "Keine Error-Responses dokumentiert.",
+    status: "Status",
+    description: "Beschreibung",
+    schema: "Schema",
+    headers: "Headers",
+    pathParams: "Path-Parameter",
+    queryParams: "Query-Parameter",
+    name: "Name",
+    type: "Typ",
+    required: "Required",
+    default: "Default",
+  },
+  en: {
+    loading: "Loading OpenAPI…",
+    error: "Could not load OpenAPI:",
+    notFound: "No OpenAPI definition found for",
+    found: ".",
+    requestBody: "Request Body",
+    exampleBody: "Example Body",
+    response: "Response",
+    responseSchema: "Response Schema",
+    exampleResponse: "Example Response",
+    noJsonSchema: "No JSON schema documented.",
+    errorSection: "This section shows all responses indicating an error.",
+    errorMatrix: "Error Matrix",
+    noErrors: "No error responses documented.",
+    status: "Status",
+    description: "Description",
+    schema: "Schema",
+    headers: "Headers",
+    pathParams: "Path Parameters",
+    queryParams: "Query Parameters",
+    name: "Name",
+    type: "Type",
+    required: "Required",
+    default: "Default",
+  },
+  fr: {
+    loading: "Chargement de l'OpenAPI…",
+    error: "Impossible de charger l'OpenAPI :",
+    notFound: "Aucune définition OpenAPI trouvée pour",
+    found: ".",
+    requestBody: "Corps de la requête",
+    exampleBody: "Exemple de corps",
+    response: "Réponse",
+    responseSchema: "Schéma de réponse",
+    exampleResponse: "Exemple de réponse",
+    noJsonSchema: "Aucun schéma JSON documenté.",
+    errorSection: "Cette section affiche toutes les réponses indiquant une erreur.",
+    errorMatrix: "Matrice d'erreurs",
+    noErrors: "Aucune réponse d'erreur documentée.",
+    status: "Statut",
+    description: "Description",
+    schema: "Schéma",
+    headers: "En-têtes",
+    pathParams: "Paramètres de chemin",
+    queryParams: "Paramètres de requête",
+    name: "Nom",
+    type: "Type",
+    required: "Requis",
+    default: "Défaut",
+  },
+}
+
 type HeaderRow = { k: string; v: string }
 
 export function EndpointDetails({
@@ -40,6 +145,10 @@ export function EndpointDetails({
   path: string
   className?: string
 }) {
+  const pathname = usePathname() || "/"
+  const lang = (pathname.startsWith("/en") ? "en" : pathname.startsWith("/fr") ? "fr" : "de") as Lang
+  const t = i18n[lang]
+
   const ctx = useOpenApi()
   const spec = ctx.spec
 
@@ -141,19 +250,19 @@ export function EndpointDetails({
   }, [exampleBlocks])
 
   if (ctx.loading) {
-    return <div className={cn("text-sm text-muted-foreground", className)}>Lade OpenAPI…</div>
+    return <div className={cn("text-sm text-muted-foreground", className)}>{t.loading}</div>
   }
   if (ctx.error) {
     return (
       <div className={cn("rounded-md border border-destructive/40 bg-destructive/5 p-3 text-sm", className)}>
-        OpenAPI konnte nicht geladen werden: <span className="font-mono">{ctx.error}</span>
+        {t.error} <span className="font-mono">{ctx.error}</span>
       </div>
     )
   }
   if (!op) {
     return (
       <div className={cn("rounded-md border border-border bg-muted/30 p-3 text-sm text-muted-foreground", className)}>
-        Keine OpenAPI-Definition für <span className="font-mono">{method} {path}</span> gefunden.
+        {t.notFound} <span className="font-mono">{method} {path}</span> {t.found}
       </div>
     )
   }
@@ -177,24 +286,24 @@ export function EndpointDetails({
 
       {tab === "request" && (
         <div className="space-y-4">
-          <DetailBlock title="Headers">
+          <DetailBlock title={t.headers}>
             <HeaderList rows={headerRows} />
           </DetailBlock>
 
           {grouped.path.length > 0 && (
-            <DetailBlock title="Path-Parameter">
-              <ParamTable params={grouped.path} />
+            <DetailBlock title={t.pathParams}>
+              <ParamTable params={grouped.path} t={t} />
             </DetailBlock>
           )}
 
           {grouped.query.length > 0 && (
-            <DetailBlock title="Query-Parameter">
-              <ParamTable params={grouped.query} />
+            <DetailBlock title={t.queryParams}>
+              <ParamTable params={grouped.query} t={t} />
             </DetailBlock>
           )}
 
           {requestSchema && spec && (
-            <DetailBlock title="Request Body">
+            <DetailBlock title={t.requestBody}>
               <SchemaExplorer
                 spec={spec}
                 schema={requestSchema}
@@ -202,7 +311,7 @@ export function EndpointDetails({
                 maxDepth={SCHEMA_EXPLORER_MAX_DEPTH}
                 fieldLinks={PAYLOAD_FIELD_LINKS}
               />
-              <CodeBlock title="Beispiel-Body" accentColor={accentColor}>
+              <CodeBlock title={t.exampleBody} accentColor={accentColor}>
                 {reqExample ? prettyJson(reqExample) : null}
               </CodeBlock>
             </DetailBlock>
@@ -241,16 +350,16 @@ export function EndpointDetails({
                         <SchemaExplorer
                           spec={spec}
                           schema={schema}
-                          title="Response Schema"
+                          title={t.responseSchema}
                           maxDepth={SCHEMA_EXPLORER_MAX_DEPTH}
                           fieldLinks={PAYLOAD_FIELD_LINKS}
                         />
-                        <CodeBlock title="Beispiel-Response" accentColor={accentColor}>
+                        <CodeBlock title={t.exampleResponse} accentColor={accentColor}>
                           {example ? prettyJson(example) : null}
                         </CodeBlock>
                       </div>
                     ) : (
-                      <div className="text-sm text-muted-foreground">Kein JSON-Schema dokumentiert.</div>
+                      <div className="text-sm text-muted-foreground">{t.noJsonSchema}</div>
                     )}
                   </div>
                 ) : null}
@@ -263,10 +372,10 @@ export function EndpointDetails({
       {tab === "errors" && (
         <div className="space-y-4">
           <p className="text-sm text-muted-foreground">
-            Diese Sektion zeigt alle Responses, die einen Fehler anzeigen.
+            {t.errorSection}
           </p>
-          <DetailBlock title="Fehlermatrix">
-            <ErrorMatrix responses={responses} />
+          <DetailBlock title={t.errorMatrix}>
+            <ErrorMatrix responses={responses} t={t} />
           </DetailBlock>
         </div>
       )}
@@ -363,16 +472,16 @@ function HeaderList({ rows }: { rows: HeaderRow[] }) {
   )
 }
 
-function ParamTable({ params }: { params: any[] }) {
+function ParamTable({ params, t }: { params: any[]; t: (typeof i18n)[Lang] }) {
   return (
     <div className="overflow-x-auto rounded-xl border border-border/60 bg-background/80">
       <table className="w-full text-left text-xs sm:text-sm">
         <thead className="text-[11px] uppercase tracking-wide text-muted-foreground sm:text-xs">
           <tr className="[&>th]:px-2.5 [&>th]:py-2 sm:[&>th]:px-3">
-            <th>Name</th>
-            <th>Typ</th>
-            <th>Required</th>
-            <th>Default</th>
+            <th>{t.name}</th>
+            <th>{t.type}</th>
+            <th>{t.required}</th>
+            <th>{t.default}</th>
           </tr>
         </thead>
         <tbody>
@@ -413,18 +522,18 @@ function CodeBlock({ title, children, accentColor }: { title: string; children: 
   )
 }
 
-function ErrorMatrix({ responses }: { responses: [string, any][] }) {
+function ErrorMatrix({ responses, t }: { responses: [string, any][]; t: (typeof i18n)[Lang] }) {
   const errors = responses.filter(([code]) => code === "default" || Number(code) >= 400)
-  if (!errors.length) return <div className="text-sm text-muted-foreground">Keine Error-Responses dokumentiert.</div>
+  if (!errors.length) return <div className="text-sm text-muted-foreground">{t.noErrors}</div>
 
   return (
     <div className="overflow-x-auto rounded-xl border border-border/60 bg-background/80">
       <table className="w-full text-left text-xs sm:text-sm">
         <thead className="text-[11px] uppercase tracking-wide text-muted-foreground sm:text-xs">
           <tr className="[&>th]:px-2.5 [&>th]:py-2 sm:[&>th]:px-3">
-            <th>Status</th>
-            <th>Beschreibung</th>
-            <th>Schema</th>
+            <th>{t.status}</th>
+            <th>{t.description}</th>
+            <th>{t.schema}</th>
           </tr>
         </thead>
         <tbody>

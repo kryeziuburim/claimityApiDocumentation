@@ -1,9 +1,50 @@
 "use client"
 
 import React, { useMemo, useState } from "react"
+import { usePathname } from "next/navigation"
 import { ChevronRight } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { refName, resolveRef, schemaTypeLabel, safeString } from "./openapi-utils"
+
+type Lang = "de" | "en" | "fr"
+
+const i18n: Record<Lang, {
+  noSchema: string
+  type: string
+  noFields: string
+  field: string
+  required: string
+  nullable: string
+  enum: string
+}> = {
+  de: {
+    noSchema: "Kein Schema vorhanden.",
+    type: "Typ:",
+    noFields: "Keine weiteren Felder dokumentiert.",
+    field: "Feld",
+    required: "Required",
+    nullable: "Nullable",
+    enum: "Enum",
+  },
+  en: {
+    noSchema: "No schema available.",
+    type: "Type:",
+    noFields: "No further fields documented.",
+    field: "Field",
+    required: "Required",
+    nullable: "Nullable",
+    enum: "Enum",
+  },
+  fr: {
+    noSchema: "Aucun schéma disponible.",
+    type: "Type :",
+    noFields: "Aucun autre champ documenté.",
+    field: "Champ",
+    required: "Requis",
+    nullable: "Nullable",
+    enum: "Enum",
+  },
+}
 
 type SchemaExplorerProps = {
   spec: any
@@ -22,12 +63,16 @@ export function SchemaExplorer({
   maxDepth = 6,
   fieldLinks,
 }: SchemaExplorerProps) {
+  const pathname = usePathname() || "/"
+  const lang = (pathname.startsWith("/en") ? "en" : pathname.startsWith("/fr") ? "fr" : "de") as Lang
+  const t = i18n[lang]
+
   const [expanded, setExpanded] = useState<Record<string, boolean>>({})
 
   const normalized = useMemo(() => normalizeSchemaWithRef(spec, schema), [spec, schema])
 
   if (!normalized) {
-    return <div className="text-sm text-muted-foreground">Kein Schema vorhanden.</div>
+    return <div className="text-sm text-muted-foreground">{t.noSchema}</div>
   }
 
   const schemaTitle = title ?? normalized.__refName ?? "Schema"
@@ -38,7 +83,7 @@ export function SchemaExplorer({
     return (
       <div className="rounded-md border border-border bg-muted/30 p-3">
         <div className="mb-2 text-sm font-medium">{schemaTitle}</div>
-        <div className="text-sm text-muted-foreground">Typ: {schemaTypeLabel(spec, normalized)}</div>
+        <div className="text-sm text-muted-foreground">{t.type} {schemaTypeLabel(spec, normalized)}</div>
       </div>
     )
   }
@@ -193,7 +238,7 @@ export function SchemaExplorer({
       return (
         <tr key={`${childLabel}-${nextDepth}-empty`} className="border-t border-border/40">
           <td colSpan={6} className="pl-6 py-3 text-xs text-muted-foreground">
-            Keine weiteren Felder dokumentiert.
+            {t.noFields}
           </td>
         </tr>
       )
@@ -216,7 +261,7 @@ export function SchemaExplorer({
     <div className={containerClasses}>
       <div className={headerClasses}>
         <div className={cn(isRoot ? "text-sm font-semibold" : "text-xs font-semibold text-foreground/80")}>{schemaTitle}</div>
-        <div className={cn("text-xs text-muted-foreground", !isRoot && "text-[11px]")}>Typ: {schemaTypeLabel(spec, normalized)}</div>
+        <div className={cn("text-xs text-muted-foreground", !isRoot && "text-[11px]")}>{t.type} {schemaTypeLabel(spec, normalized)}</div>
       </div>
 
       <div className={bodyWrapperClasses}>
@@ -230,11 +275,11 @@ export function SchemaExplorer({
           </colgroup>
           <thead className="text-[11px] text-muted-foreground sm:text-xs">
             <tr className="[&>th]:pb-2 text-left">
-              <th className="pr-3">Feld</th>
-              <th className="pr-3">Typ</th>
-              <th className="pr-3 text-center">Required</th>
-              <th className="pr-3 text-center">Nullable</th>
-              <th className="pr-3">Enum</th>
+              <th className="pr-3">{t.field}</th>
+              <th className="pr-3">{t.type.replace(":", "")}</th>
+              <th className="pr-3 text-center">{t.required}</th>
+              <th className="pr-3 text-center">{t.nullable}</th>
+              <th className="pr-3">{t.enum}</th>
             </tr>
           </thead>
           <tbody>{renderPropertyRows(normalized, schemaTitle, depth, "")}</tbody>
