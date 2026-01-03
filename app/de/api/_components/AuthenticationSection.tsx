@@ -311,7 +311,7 @@ export function AuthenticationSection() {
             <li className="flex gap-2">
               <span className="text-primary">•</span>
               <span>
-                <strong>iat</strong> außerhalb des Fensters: Systemzeit korrigieren
+                <strong>iat</strong> ausserhalb des Fensters: Systemzeit korrigieren
               </span>
             </li>
             <li className="flex gap-2">
