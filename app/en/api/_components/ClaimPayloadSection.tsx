@@ -96,7 +96,7 @@ const PAYLOAD_ICONS: Record<string, LucideIcon> = {
   fraud: ShieldAlert,
 }
 
-const VALIDATION_PROXY_PATH = "/en/api/claims/validate"
+const VALIDATION_ENDPOINT = "https://qua.claimity.ch/v1/insurers/claims:validate"
 
 type ValidationResult = {
   valid: boolean
@@ -298,7 +298,7 @@ export function ClaimPayloadSection({
     setValidationState({ status: "running" })
 
     try {
-      const response = await fetch(VALIDATION_PROXY_PATH, {
+      const response = await fetch(VALIDATION_ENDPOINT, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
