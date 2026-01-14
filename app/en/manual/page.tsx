@@ -86,7 +86,7 @@ export default function ManualPage() {
 
                     <Button asChild className="mt-5 w-full rounded-lg bg-teal-600 px-6 text-white hover:bg-teal-700">
                       <a
-                        href="/assets/en/manual/Claimity_Bedienungsanleitung_Experten.pdf"
+                        href="/assets/en/Claimity_Guide_Experts_en.pdf"
                         download
                       >
                         <FileDown className="h-4 w-4" aria-hidden="true" />
@@ -114,7 +114,7 @@ export default function ManualPage() {
 
                     <Button asChild className="mt-5 w-full rounded-lg bg-teal-600 px-6 text-white hover:bg-teal-700">
                       <a
-                        href="/assets/en/manual/Claimity_Bedienungsanleitung_Versicherungen.pdf"
+                        href="/assets/en/Claimity_Guide_Insurer_en.pdf"
                         download
                       >
                         <FileDown className="h-4 w-4" aria-hidden="true" />
