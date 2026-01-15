@@ -1205,6 +1205,15 @@
               "format": "int32",
               "default": 50
             }
+          },
+          {
+            "name": "lang",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": ["de", "en", "fr", "it"],
+              "default": "de"
+            }
           }
         ],
         "responses": {
@@ -2529,6 +2538,10 @@
           "ClaimId": {
             "type": "string",
             "format": "uuid"
+          },
+          "RevisionNo": {
+            "type": "integer",
+            "format": "int32"
           },
           "Status": {
             "type": "string",
