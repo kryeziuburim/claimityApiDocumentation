@@ -2539,6 +2539,10 @@
             "type": "string",
             "format": "uuid"
           },
+          "SequenceNo": {
+            "type": "integer",
+            "format": "int32"
+          },
           "RevisionNo": {
             "type": "integer",
             "format": "int32"
