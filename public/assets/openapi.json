@@ -2554,7 +2554,8 @@
               "Draft",
               "Submitted",
               "Approved",
-              "Returned"
+              "Returned",
+              "Cancelled"
             ]
           },
           "Comment": {
@@ -2671,7 +2672,8 @@
               "Draft",
               "Submitted",
               "Approved",
-              "Returned"
+              "Returned",
+              "Cancelled"
             ]
           },
           "Comment": {
