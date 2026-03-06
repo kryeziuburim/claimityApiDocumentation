@@ -114,7 +114,8 @@
         "email": { "type": "string" },
         "address": { "type": "string" },
         "postalCode": { "type": "string" },
-        "city": { "type": "string" }
+        "city": { "type": "string" },
+        "country": { "type": "string", "enum": ["CH", "DE", "AT", "FR", "IT", "LI"] }
       }
     },
 
@@ -176,7 +177,8 @@
             "properties": {
               "name": { "type": "string", "minLength": 1 },
               "city": { "type": "string", "minLength": 1 },
-              "phone": { "type": "string", "minLength": 1 }
+              "phone": { "type": "string", "minLength": 1 },
+              "country": { "type": "string", "enum": ["CH", "DE", "AT", "FR", "IT", "LI"] }
             },
             "required": ["name", "city", "phone"]
           }
@@ -192,7 +194,8 @@
             "properties": {
               "name": { "type": "string", "minLength": 1 },
               "city": { "type": "string", "minLength": 1 },
-              "phone": { "type": "string", "minLength": 1 }
+              "phone": { "type": "string", "minLength": 1 },
+              "country": { "type": "string", "enum": ["CH", "DE", "AT", "FR", "IT", "LI"] }
             },
             "required": ["name", "city", "phone"]
           }

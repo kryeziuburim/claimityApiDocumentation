@@ -130,7 +130,8 @@
         "email": { "type": "string" },
         "address": { "type": "string" },
         "postalCode": { "type": "string" },
-        "city": { "type": "string" }
+        "city": { "type": "string" },
+        "country": { "type": "string", "enum": ["CH", "DE", "AT", "FR", "IT", "LI"] }
       }
     },
 
@@ -143,7 +144,8 @@
         "email": { "type": "string" },
         "address": { "type": "string" },
         "postalCode": { "type": "string" },
-        "city": { "type": "string" }
+        "city": { "type": "string" },
+        "country": { "type": "string", "enum": ["CH", "DE", "AT", "FR", "IT", "LI"] }
       }
     },
 

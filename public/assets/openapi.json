@@ -2005,6 +2005,10 @@
           "ContentBase64": {
             "type": "string",
             "nullable": true
+          },
+          "IsSalvageSale": {
+            "type": "boolean",
+            "nullable": true
           }
         },
         "additionalProperties": false
@@ -2114,6 +2118,13 @@
           "SizeBytes": {
             "type": "integer",
             "format": "int64"
+          },
+          "Kind": {
+            "type": "string",
+            "nullable": true
+          },
+          "IsSalvageSale": {
+            "type": "boolean"
           },
           "CreatedAt": {
             "type": "string",
@@ -2605,6 +2616,13 @@
             "type": "integer",
             "format": "int64"
           },
+          "Kind": {
+            "type": "string",
+            "nullable": true
+          },
+          "IsSalvageSale": {
+            "type": "boolean"
+          },
           "CreatedAt": {
             "type": "string",
             "format": "date-time"
@@ -2642,6 +2660,13 @@
           "SizeBytes": {
             "type": "integer",
             "format": "int64"
+          },
+          "Kind": {
+            "type": "string",
+            "nullable": true
+          },
+          "IsSalvageSale": {
+            "type": "boolean"
           },
           "CreatedAt": {
             "type": "string",
