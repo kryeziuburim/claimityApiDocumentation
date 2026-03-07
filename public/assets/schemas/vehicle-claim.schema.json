@@ -207,7 +207,7 @@
           "inspectionDate": { "type": "string", "format": "date" },
           "workshop": {
             "type": "object",
-            "required": ["name", "phone", "city"]
+            "required": ["name", "phone", "city", "postalCode"]
           }
         }
       }
