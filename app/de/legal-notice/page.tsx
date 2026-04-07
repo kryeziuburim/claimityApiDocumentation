@@ -20,7 +20,7 @@ export default function LegalNoticeDE() {
               Impressum
             </h1>
             <div className="mt-10 rounded-2xl border border-slate-200 bg-white/80 shadow-sm backdrop-blur-xl p-8 md:p-12 space-y-8">
-              <p className="text-gray-600">Angaben gemäss Art. 8 UWG</p>
+              <p className="text-gray-600">Angaben gemäss Art. 3 lit. s Nr. 1 UWG</p>
 
               <section>
                 <h2 className="text-2xl font-bold text-gray-900 mb-4">Anschrift</h2>

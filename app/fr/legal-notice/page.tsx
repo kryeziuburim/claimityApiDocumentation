@@ -20,7 +20,7 @@ export default function LegalNoticeFR() {
               Mentions Légales
             </h1>
             <div className="mt-10 rounded-2xl border border-slate-200 bg-white/80 shadow-sm backdrop-blur-xl p-8 md:p-12 space-y-8">
-              <p className="text-gray-600">Informations selon l'art. 8 LCD</p>
+              <p className="text-gray-600">Informations selon l'art. 3 lit. s Nr. 1 LCD</p>
 
               <section>
                 <h2 className="text-2xl font-bold text-gray-900 mb-4">Adresse</h2>
