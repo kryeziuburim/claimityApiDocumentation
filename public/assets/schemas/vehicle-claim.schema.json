@@ -255,6 +255,7 @@
               "natural_hazard",
               "snow_slide",
               "theft",
+              "hail_damage",
               "animal_collision",
               "marten_damage",
               "glass_breakage",
