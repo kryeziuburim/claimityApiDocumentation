@@ -1888,6 +1888,10 @@
           },
           "Insurer": {
             "$ref": "#/components/schemas/M2MInsurerDto"
+          },
+          "HailDriveInAccepted": {
+            "type": "boolean",
+            "nullable": true
           }
         },
         "additionalProperties": false
@@ -2212,6 +2216,10 @@
           },
           "Expert": {
             "$ref": "#/components/schemas/M2MExpertDto"
+          },
+          "HailDriveInAccepted": {
+            "type": "boolean",
+            "nullable": true
           }
         },
         "additionalProperties": false
@@ -2273,6 +2281,10 @@
           },
           "Expert": {
             "$ref": "#/components/schemas/M2MExpertDto"
+          },
+          "HailDriveInAccepted": {
+            "type": "boolean",
+            "nullable": true
           }
         },
         "additionalProperties": false
