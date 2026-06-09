@@ -11,6 +11,10 @@ export function ChangeLogSection() {
       <div className="space-y-4">
         {[
           {
+            date: "2026-06-09",
+            changes: "Ajout de la nouvelle catégorie « Expertises spéciales », incluant le schéma et la structure de payload.",
+          },
+          {
             date: "2025-12-30",
             changes: "Ajout d'un nouveau point de terminaison à l'API assureur pour valider la structure du dossier.",
           },

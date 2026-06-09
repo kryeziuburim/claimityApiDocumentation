@@ -11,6 +11,10 @@ export function ChangeLogSection() {
       <div className="space-y-4">
         {[
           {
+            date: "2026-06-09",
+            changes: "Neue Kategorie „Spezialexpertisen“ inklusive Schema und Payload-Struktur ergänzt.",
+          },
+          {
             date: "2025-12-30",
             changes: "Ergänzung eines neuen Endpunkts zur Versicherer-API zum Validieren der Fallstruktur.",
           },

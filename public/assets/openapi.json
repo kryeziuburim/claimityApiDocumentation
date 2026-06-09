@@ -50,7 +50,8 @@
               "enum": [
                 "vehicle",
                 "fraud",
-                "appraiser"
+                "appraiser",
+                "special"
               ]
             }
           },
@@ -1350,7 +1351,8 @@
               "enum": [
                 "vehicle",
                 "fraud",
-                "appraiser"
+                "appraiser",
+                "special"
               ]
             }
           },
@@ -1848,7 +1850,8 @@
             "enum": [
               "vehicle",
               "fraud",
-              "appraiser"
+              "appraiser",
+                "special"
             ]
           },
           "Status": {
@@ -1913,7 +1916,8 @@
             "enum": [
               "vehicle",
               "fraud",
-              "appraiser"
+              "appraiser",
+                "special"
             ]
           },
           "Status": {
@@ -1967,7 +1971,8 @@
             "enum": [
               "vehicle",
               "fraud",
-              "appraiser"
+              "appraiser",
+                "special"
             ]
           },
           "PayloadJson": {
@@ -2176,7 +2181,8 @@
             "enum": [
               "vehicle",
               "fraud",
-              "appraiser"
+              "appraiser",
+                "special"
             ]
           },
           "Status": {
@@ -2241,7 +2247,8 @@
             "enum": [
               "vehicle",
               "fraud",
-              "appraiser"
+              "appraiser",
+                "special"
             ]
           },
           "Status": {

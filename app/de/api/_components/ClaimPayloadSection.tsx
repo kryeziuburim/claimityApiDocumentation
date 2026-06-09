@@ -7,6 +7,7 @@ import {
   Car,
   Check,
   ClipboardCheck,
+  Cog,
   Download,
   FileJson,
   Info,
@@ -60,6 +61,12 @@ type ClaimRule = {
   details: string[]
 }
 
+type ClaimRuleGroup = {
+  key: string
+  title: string
+  rules: ClaimRule[]
+}
+
 export const CLAIM_PAYLOADS: ClaimPayloadMeta[] = [
   {
     key: "vehicle",
@@ -85,6 +92,14 @@ export const CLAIM_PAYLOADS: ClaimPayloadMeta[] = [
     schemaPath: "/assets/schemas/fraud-claim.schema.json",
     badgeLabel: "Versicherungsmissbrauch",
   },
+  {
+    key: "special",
+    navTitle: "Spezialexpertisen",
+    anchorId: "payloads-special",
+    label: "Spezialexpertisen",
+    schemaPath: "/assets/schemas/special-claim.schema.json",
+    badgeLabel: "Spezialexpertisen",
+  },
 ]
 
 const PAYLOAD_FIELD_LINKS = {
@@ -96,6 +111,7 @@ const PAYLOAD_ICONS: Record<string, LucideIcon> = {
   vehicle: Car,
   appraiser: BadgeCheck,
   fraud: ShieldAlert,
+  special: Cog,
 }
 
 const VALIDATION_ENDPOINT = "https://app.claimity.ch/v1/insurers/claims:validate"
@@ -477,17 +493,17 @@ export function ClaimPayloadSection({
 
       <Tabs value={resolvedActive} onValueChange={handleTabChange} className="space-y-6">
         <div className="sticky top-[4.25rem] z-10 mb-4 rounded-2xl border border-border/60 bg-background/90 p-2 shadow-sm backdrop-blur-sm sm:top-16 sm:mb-6 sm:p-3">
-          <TabsList className="grid w-full grid-cols-1 gap-2 bg-transparent p-0 h-auto sm:h-10 sm:grid-cols-2 lg:flex lg:flex-wrap">
+          <TabsList className="grid w-full grid-cols-1 gap-2 bg-transparent p-0 h-auto sm:grid-cols-2 lg:grid-cols-4">
             {CLAIM_PAYLOADS.map((payload) => {
               const Icon = PAYLOAD_ICONS[payload.key] ?? SquareStack
               return (
                 <TabsTrigger
                   key={payload.key}
                   value={payload.key}
-                  className="w-full min-w-0 rounded-2xl border border-transparent bg-transparent text-sm data-[state=active]:border-primary/30 data-[state=active]:bg-primary/10 data-[state=active]:text-primary"
+                  className="h-auto min-h-10 w-full min-w-0 whitespace-normal rounded-2xl border border-transparent bg-transparent px-3 py-2 text-center text-sm leading-tight data-[state=active]:border-primary/30 data-[state=active]:bg-primary/10 data-[state=active]:text-primary"
                 >
-                  <Icon className="h-4 w-4" />
-                  <span>{payload.navTitle}</span>
+                  <Icon className="h-4 w-4 shrink-0" />
+                  <span className="min-w-0">{payload.navTitle}</span>
                 </TabsTrigger>
               )
             })}
@@ -497,7 +513,8 @@ export function ClaimPayloadSection({
         {CLAIM_PAYLOADS.map((payload) => {
           const state = schemas[payload.key]
           const schema = state?.schema
-          const rules = schema ? buildClaimRules(schema) : []
+          const ruleGroups = schema ? buildClaimRuleGroups(schema) : []
+          const ruleCount = ruleGroups.reduce((total, group) => total + group.rules.length, 0)
           const examplePayload = schema ? buildExamplePayload(schema) : null
           const exampleJson = examplePayload ? JSON.stringify(examplePayload, null, 2) : ""
           const formatHints = schema ? extractFormatHints(schema) : []
@@ -542,7 +559,7 @@ export function ClaimPayloadSection({
                           </p>
                           <div className="grid gap-3">
                             <InlineHint icon={Info} label="Formatvorgaben" value={formatHints.length ? `${formatHints.length} Besonderheiten` : "Keine speziellen Vorgaben"} />
-                            <InlineHint icon={ShieldCheck} label="Regeln & Abhängigkeiten" value={rules.length ? `${rules.length} definierte Regeln` : "Keine zusätzlichen Regeln"} />
+                            <InlineHint icon={ShieldCheck} label="Regeln & Abhängigkeiten" value={ruleCount ? `${ruleCount} definierte Regeln` : "Keine zusätzlichen Regeln"} />
                           </div>
                         </CardContent>
                       </Card>
@@ -649,24 +666,33 @@ export function ClaimPayloadSection({
                               Regeln & Abhängigkeiten
                             </span>
                           </AccordionTrigger>
-                          <AccordionContent className="space-y-4 px-1">
-                            {rules.length ? (
-                              rules.map((rule, index) => (
-                                <div
-                                  key={`${payload.key}-rule-${index}`}
-                                  className="rounded-2xl border border-border/40 bg-muted/30 p-4"
-                                >
-                                  <p className="text-sm font-semibold text-foreground">
-                                    {rule.type === "if" ? `Wenn ${rule.condition}` : rule.condition}
+                          <AccordionContent className="space-y-6 px-1">
+                            {ruleGroups.length ? (
+                              ruleGroups.map((group) => (
+                                <div key={`${payload.key}-${group.key}`} className="space-y-3">
+                                  <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                                    <RuleText text={group.title} />
                                   </p>
-                                  <ul className="mt-3 space-y-2 text-sm text-muted-foreground">
-                                    {rule.details.map((detail, detailIndex) => (
-                                      <li key={`${payload.key}-rule-${index}-${detailIndex}`} className="flex gap-2">
-                                        <span className="text-primary">•</span>
-                                        <span className="text-pretty">{detail}</span>
-                                      </li>
+                                  <div className="space-y-3">
+                                    {group.rules.map((rule, index) => (
+                                      <div
+                                        key={`${payload.key}-${group.key}-rule-${index}`}
+                                        className="rounded-2xl border border-border/40 bg-muted/30 p-4"
+                                      >
+                                        <p className="text-sm font-semibold text-foreground">
+                                          <RuleText text={rule.type === "if" ? `Wenn ${rule.condition}, dann:` : rule.condition} />
+                                        </p>
+                                        <ul className="mt-3 space-y-2 text-sm text-muted-foreground">
+                                          {rule.details.map((detail, detailIndex) => (
+                                            <li key={`${payload.key}-${group.key}-rule-${index}-${detailIndex}`} className="flex gap-2">
+                                              <span className="text-primary">•</span>
+                                              <span className="text-pretty"><RuleText text={detail} /></span>
+                                            </li>
+                                          ))}
+                                        </ul>
+                                      </div>
                                     ))}
-                                  </ul>
+                                  </div>
                                 </div>
                               ))
                             ) : (
@@ -809,12 +835,21 @@ export function ClaimPayloadSection({
   )
 }
 
-function buildClaimRules(schema: any): ClaimRule[] {
+const GENERIC_TRIGGER = "__generic__"
+
+function buildClaimRuleGroups(schema: any): ClaimRuleGroup[] {
   const entries = Array.isArray(schema?.allOf) ? schema.allOf : []
-  const rules: ClaimRule[] = []
+  const conditionalGroups = new Map<string, ClaimRule[]>()
+  const exclusions: ClaimRule[] = []
+
+  const driverSummaryRule = buildDriverAtIncidentSummary(schema)
+  if (driverSummaryRule) {
+    pushRuleToGroup(conditionalGroups, "driverAtIncident", driverSummaryRule)
+  }
+
   entries.forEach((entry: any) => {
     if (entry?.if) {
-      rules.push({
+      pushRuleToGroup(conditionalGroups, extractTriggerField(entry.if), {
         type: "if",
         condition: describeRuleCondition(entry.if),
         details: describeRuleConsequences(entry.then),
@@ -823,18 +858,46 @@ function buildClaimRules(schema: any): ClaimRule[] {
       if (getDriverConflict(entry.not)) {
         return
       }
-      rules.push({
+      exclusions.push({
         type: "not",
         condition: "Nicht erlaubt",
         details: [describeRuleNot(entry.not)],
       })
     }
   })
-  const driverSummaryRule = buildDriverAtIncidentSummary(schema)
-  if (driverSummaryRule) {
-    rules.unshift(driverSummaryRule)
+
+  const groups: ClaimRuleGroup[] = []
+  conditionalGroups.forEach((rules, field) => {
+    groups.push({
+      key: field,
+      title: field === GENERIC_TRIGGER ? "Weitere Bedingungen" : `Abhängig vom Feld \`${field}\``,
+      rules,
+    })
+  })
+  if (exclusions.length) {
+    groups.push({ key: "exclusions", title: "Nicht zulässige Kombinationen", rules: exclusions })
   }
-  return rules
+  return groups
+}
+
+function pushRuleToGroup(map: Map<string, ClaimRule[]>, field: string, rule: ClaimRule) {
+  const existing = map.get(field)
+  if (existing) {
+    existing.push(rule)
+  } else {
+    map.set(field, [rule])
+  }
+}
+
+function extractTriggerField(ifClause: any): string {
+  if (ifClause?.properties && typeof ifClause.properties === "object") {
+    const keys = Object.keys(ifClause.properties)
+    if (keys.length) return keys[0]
+  }
+  if (Array.isArray(ifClause?.required) && ifClause.required.length) {
+    return ifClause.required[0]
+  }
+  return GENERIC_TRIGGER
 }
 
 function buildDriverAtIncidentSummary(schema: any): ClaimRule | null {
@@ -861,7 +924,7 @@ function buildDriverAtIncidentSummary(schema: any): ClaimRule | null {
   return details.length
     ? {
         type: "if",
-        condition: "driverAtIncident – Personenanzahl",
+        condition: "`driverAtIncident` gesetzt wird",
         details,
       }
     : null
@@ -1048,8 +1111,10 @@ function describeFormatDetail(schema: any): string | null {
   return null
 }
 
+const CONDITION_FALLBACK = "eine besondere Bedingung erfüllt ist"
+
 function describeRuleCondition(condition: any, parentPath = ""): string {
-  if (!condition) return "spezielle Bedingung"
+  if (!condition) return CONDITION_FALLBACK
   const parts: string[] = []
 
   if (condition.properties && typeof condition.properties === "object") {
@@ -1060,7 +1125,10 @@ function describeRuleCondition(condition: any, parentPath = ""): string {
   }
 
   if (Array.isArray(condition.required) && condition.required.length && !condition.properties) {
-    parts.push(`Felder ${condition.required.join(", ")} vorhanden`)
+    condition.required.forEach((field: string) => {
+      const fieldPath = parentPath ? `${parentPath}.${field}` : field
+      parts.push(`das Feld \`${fieldPath}\` vorhanden ist`)
+    })
   }
 
   if (condition.contains) {
@@ -1071,12 +1139,12 @@ function describeRuleCondition(condition: any, parentPath = ""): string {
   const comboChildren = [...(condition.allOf ?? []), ...(condition.anyOf ?? []), ...(condition.oneOf ?? [])]
   comboChildren.forEach((child: any) => {
     const described = describeRuleCondition(child, parentPath)
-    if (described && described !== "spezielle Bedingung") {
+    if (described && described !== CONDITION_FALLBACK) {
       parts.push(described)
     }
   })
 
-  return parts.length ? parts.join(" und ") : "spezielle Bedingung"
+  return parts.length ? parts.join(" und ") : CONDITION_FALLBACK
 }
 
 function describeSchemaRequirements(path: string, schema: any): string[] {
@@ -1084,15 +1152,15 @@ function describeSchemaRequirements(path: string, schema: any): string[] {
   const facts: string[] = []
 
   if (schema.const !== undefined) {
-    facts.push(`${path} = ${formatSchemaValue(schema.const)}`)
+    facts.push(`\`${path}\` den Wert \`${formatSchemaValue(schema.const)}\` hat`)
   } else if (Array.isArray(schema.enum) && schema.enum.length) {
-    facts.push(`${path} ∈ (${schema.enum.join(", ")})`)
+    facts.push(`\`${path}\` einen der Werte ${formatValueList(schema.enum)} hat`)
   }
 
   if (Array.isArray(schema.required) && schema.required.length) {
     schema.required.forEach((requiredKey: string) => {
       const requirementPath = path ? `${path}.${requiredKey}` : requiredKey
-      facts.push(`Pflichtfeld ${requirementPath}`)
+      facts.push(`das Feld \`${requirementPath}\` vorhanden ist`)
     })
   }
 
@@ -1140,28 +1208,52 @@ function describeArrayContains(path: string, schema: any): string {
 
 function formatSchemaValue(value: any): string {
   if (value === null) return "null"
-  if (typeof value === "string") return `"${value}"`
   return String(value)
 }
 
+function formatValueList(values: any[]): string {
+  return values.map((value) => `\`${formatSchemaValue(value)}\``).join(", ")
+}
+
+function formatFieldList(fields: string[]): string {
+  return fields.map((field) => `\`${field}\``).join(", ")
+}
+
 function describeRuleConsequences(thenClause: any): string[] {
-  if (!thenClause) return ["Zusätzliche Validierung erforderlich."]
+  if (!thenClause) return ["Es gelten zusätzliche Anforderungen."]
   const lines: string[] = []
   if (Array.isArray(thenClause.required) && thenClause.required.length) {
-    lines.push(`Pflichtfelder: ${thenClause.required.join(", ")}`)
+    lines.push(`Pflichtfelder: ${formatFieldList(thenClause.required)}`)
   }
   if (thenClause.properties) {
     Object.entries(thenClause.properties).forEach(([prop, value]) => {
-      const typed = value as any
-      if (Array.isArray(typed?.required) && typed.required.length) {
-        lines.push(`${prop}: Pflichtfelder ${typed.required.join(", ")}`)
-      }
-      if (Array.isArray(typed?.enum) && typed.enum.length) {
-        lines.push(`${prop}: Wert ∈ (${typed.enum.join(", ")})`)
-      }
+      lines.push(...describeConsequenceFacts(prop, value))
     })
   }
-  return lines.length ? lines : ["Zusätzliche Anforderungen gelten."]
+  return lines.length ? lines : ["Es gelten zusätzliche Anforderungen."]
+}
+
+function describeConsequenceFacts(path: string, schema: any): string[] {
+  if (!schema || typeof schema !== "object") return []
+  const facts: string[] = []
+
+  if (schema.const !== undefined) {
+    facts.push(`\`${path}\` muss \`${formatSchemaValue(schema.const)}\` sein`)
+  } else if (Array.isArray(schema.enum) && schema.enum.length) {
+    facts.push(`\`${path}\` muss einer der Werte ${formatValueList(schema.enum)} sein`)
+  }
+
+  if (Array.isArray(schema.required) && schema.required.length) {
+    facts.push(`\`${path}\` benötigt ${formatFieldList(schema.required)}`)
+  }
+
+  if (schema.properties && typeof schema.properties === "object") {
+    Object.entries(schema.properties).forEach(([child, childSchema]) => {
+      facts.push(...describeConsequenceFacts(`${path}.${child}`, childSchema))
+    })
+  }
+
+  return facts
 }
 
 function describeRuleNot(node: any): string {
@@ -1324,6 +1416,26 @@ async function copyJsonToClipboard(json: string): Promise<boolean> {
     fallbackCopy()
     return false
   }
+}
+
+function RuleText({ text }: { text: string }) {
+  const segments = text.split("`")
+  return (
+    <>
+      {segments.map((segment, index) =>
+        index % 2 === 1 ? (
+          <code
+            key={index}
+            className="rounded bg-background px-1 py-0.5 font-mono text-[0.85em] text-foreground"
+          >
+            {segment}
+          </code>
+        ) : (
+          <span key={index}>{segment}</span>
+        )
+      )}
+    </>
+  )
 }
 
 function InlineHint({

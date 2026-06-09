@@ -1,0 +1,355 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://claimity/api/schemas/claims/special-claim.schema.json",
+  "title": "Special Claim Payload",
+  "type": "object",
+  "additionalProperties": true,
+  "required": [
+    "policyNumber",
+    "claimInsurance",
+    "claimType",
+    "machineCategory",
+    "machineType",
+    "location",
+    "incidentDate",
+    "damageDescription",
+    "estimatedAmount",
+    "estimatedCurrency",
+    "inspectionType"
+  ],
+  "properties": {
+    "policyNumber": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 200
+    },
+    "claimInsurance": {
+      "type": "string",
+      "enum": ["liability", "partial", "comprehensive"]
+    },
+    "claimType": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 200
+    },
+
+    "machineCategory": {
+      "type": "string",
+      "enum": ["rail_vehicle", "aircraft", "land_machine"]
+    },
+    "machineType": {
+      "type": "string",
+      "enum": [
+        "gondola",
+        "train",
+        "tram",
+        "rack_railway",
+        "glider",
+        "powered_aircraft",
+        "drone",
+        "tractor",
+        "trailer",
+        "harvester",
+        "stationary_machine"
+      ]
+    },
+
+    "insured": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {
+        "name": { "type": "string" },
+        "address": { "type": "string" },
+        "postalCode": { "type": "string" },
+        "city": { "type": "string" },
+        "phone": { "type": "string" },
+        "email": { "type": "string" },
+        "note": { "type": "string" },
+        "deductible": { "type": "string" },
+        "licensePlate": { "type": "string" },
+        "vin": { "type": "string" },
+        "carMake": { "type": "string" },
+        "carModel": { "type": "string" },
+        "firstRegistration": {
+          "oneOf": [
+            { "type": "string", "format": "date" },
+            { "type": "string", "maxLength": 0 },
+            { "type": "null" }
+          ]
+        }
+      }
+    },
+
+    "counterparty": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {
+        "name": { "type": "string" },
+        "address": { "type": "string" },
+        "postalCode": { "type": "string" },
+        "city": { "type": "string" },
+        "phone": { "type": "string" },
+        "email": { "type": "string" },
+        "note": { "type": "string" },
+        "licensePlate": { "type": "string" },
+        "vin": { "type": "string" },
+        "make": { "type": "string" },
+        "model": { "type": "string" },
+        "firstRegistration": {
+          "oneOf": [
+            { "type": "string", "format": "date" },
+            { "type": "string", "maxLength": 0 },
+            { "type": "null" }
+          ]
+        }
+      }
+    },
+
+    "location": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {
+        "address": { "type": "string" },
+        "postalCode": { "type": "string" },
+        "city": { "type": "string", "minLength": 1 }
+      },
+      "required": ["city"]
+    },
+
+    "incidentDate": {
+      "type": "string",
+      "format": "date"
+    },
+
+    "damageDescription": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 4000
+    },
+
+    "estimatedAmount": {
+      "oneOf": [
+        { "type": "number", "minimum": 0 },
+        { "type": "string", "pattern": "^-?\\d+(\\.\\d+)?$" }
+      ]
+    },
+
+    "estimatedCurrency": {
+      "type": "string",
+      "enum": ["CHF", "EUR", "USD"]
+    },
+
+    "inspectionType": {
+      "type": "string",
+      "enum": ["workshop", "private", "onsite", "estimate_review", "invoice_review"]
+    },
+
+    "workshop": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {
+        "name": { "type": "string" },
+        "phone": { "type": "string" },
+        "email": { "type": "string" },
+        "address": { "type": "string" },
+        "postalCode": { "type": "string" },
+        "city": { "type": "string" }
+      }
+    },
+
+    "inspectionContact": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {
+        "name": { "type": "string" },
+        "phone": { "type": "string" },
+        "email": { "type": "string" },
+        "address": { "type": "string" },
+        "postalCode": { "type": "string" },
+        "city": { "type": "string" }
+      }
+    },
+
+    "inspectionDate": {
+      "oneOf": [
+        { "type": "string", "format": "date" },
+        { "type": "null" }
+      ]
+    },
+
+    "remarks": { "type": "string", "maxLength": 4000 }
+  },
+  "allOf": [
+    {
+      "if": { "properties": { "machineCategory": { "enum": ["rail_vehicle", "aircraft"] } } },
+      "then": {
+        "properties": {
+          "claimInsurance": { "const": "liability" }
+        }
+      }
+    },
+    {
+      "if": { "properties": { "machineCategory": { "const": "rail_vehicle" } } },
+      "then": {
+        "properties": {
+          "machineType": { "enum": ["gondola", "train", "tram", "rack_railway"] }
+        }
+      }
+    },
+    {
+      "if": { "properties": { "machineCategory": { "const": "aircraft" } } },
+      "then": {
+        "properties": {
+          "machineType": { "enum": ["glider", "powered_aircraft", "drone"] }
+        }
+      }
+    },
+    {
+      "if": { "properties": { "machineCategory": { "const": "land_machine" } } },
+      "then": {
+        "properties": {
+          "machineType": { "enum": ["tractor", "trailer", "harvester", "stationary_machine"] }
+        }
+      }
+    },
+    {
+      "if": { "properties": { "machineCategory": { "const": "land_machine" } } },
+      "then": {
+        "properties": {
+          "inspectionType": { "enum": ["workshop", "private", "estimate_review", "invoice_review"] }
+        }
+      }
+    },
+    {
+      "if": { "properties": { "machineCategory": { "enum": ["rail_vehicle", "aircraft"] } } },
+      "then": {
+        "properties": {
+          "inspectionType": { "enum": ["onsite", "estimate_review", "invoice_review"] }
+        }
+      }
+    },
+    {
+      "if": { "properties": { "claimInsurance": { "const": "liability" } } },
+      "then": {
+        "required": ["counterparty"],
+        "properties": {
+          "counterparty": {
+            "type": "object",
+            "properties": {
+              "name": { "type": "string", "minLength": 1 },
+              "phone": { "type": "string", "minLength": 1 },
+              "city": { "type": "string", "minLength": 1 }
+            },
+            "required": ["name", "phone", "city"]
+          }
+        }
+      }
+    },
+    {
+      "if": { "properties": { "claimInsurance": { "enum": ["partial", "comprehensive"] } } },
+      "then": {
+        "required": ["insured"],
+        "properties": {
+          "insured": {
+            "type": "object",
+            "properties": {
+              "name": { "type": "string", "minLength": 1 },
+              "phone": { "type": "string", "minLength": 1 },
+              "address": { "type": "string", "minLength": 1 },
+              "postalCode": { "type": "string", "minLength": 1 },
+              "city": { "type": "string", "minLength": 1 }
+            },
+            "required": ["name", "phone", "address", "postalCode", "city"]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "machineCategory": { "enum": ["aircraft", "land_machine"] },
+          "claimInsurance": { "const": "liability" }
+        },
+        "required": ["machineCategory", "claimInsurance"]
+      },
+      "then": {
+        "required": ["counterparty"],
+        "properties": {
+          "counterparty": {
+            "type": "object",
+            "properties": {
+              "make": { "type": "string", "minLength": 1 }
+            },
+            "required": ["make"]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "machineCategory": { "const": "land_machine" },
+          "claimInsurance": { "enum": ["partial", "comprehensive"] }
+        },
+        "required": ["machineCategory", "claimInsurance"]
+      },
+      "then": {
+        "required": ["insured"],
+        "properties": {
+          "insured": {
+            "type": "object",
+            "properties": {
+              "carMake": { "type": "string", "minLength": 1 }
+            },
+            "required": ["carMake"]
+          }
+        }
+      }
+    },
+    {
+      "if": { "properties": { "inspectionType": { "const": "workshop" } } },
+      "then": {
+        "required": ["inspectionDate", "workshop"],
+        "properties": {
+          "inspectionDate": { "type": "string", "format": "date" },
+          "workshop": {
+            "type": "object",
+            "required": ["name", "phone", "city", "postalCode"]
+          }
+        }
+      }
+    },
+    {
+      "if": { "properties": { "inspectionType": { "enum": ["estimate_review", "invoice_review"] } } },
+      "then": {
+        "required": ["workshop"],
+        "properties": {
+          "workshop": {
+            "type": "object",
+            "required": ["name", "phone"]
+          }
+        }
+      }
+    },
+    {
+      "if": { "properties": { "inspectionType": { "enum": ["private", "onsite"] } } },
+      "then": {
+        "required": ["inspectionDate", "inspectionContact"],
+        "properties": {
+          "inspectionDate": { "type": "string", "format": "date" }
+        }
+      }
+    },
+    {
+      "if": { "required": ["inspectionContact"] },
+      "then": {
+        "properties": {
+          "inspectionContact": {
+            "type": "object",
+            "required": ["name", "address", "postalCode", "city", "phone"]
+          }
+        }
+      }
+    }
+  ]
+}

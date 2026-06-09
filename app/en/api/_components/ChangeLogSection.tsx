@@ -11,6 +11,10 @@ export function ChangeLogSection() {
       <div className="space-y-4">
         {[
           {
+            date: "2026-06-09",
+            changes: "Added new \"Special Appraisals\" category including schema and payload structure.",
+          },
+          {
             date: "2025-12-30",
             changes: "Addition of a new endpoint to the insurer API for validating the case structure.",
           },
