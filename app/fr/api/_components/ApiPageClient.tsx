@@ -60,6 +60,7 @@ const navigationItems: NavItem[] = [
       { id: "experts-cases-list", method: "GET", title: "Cases" },
       { id: "experts-cases-get", method: "GET", title: "Case" },
       { id: "experts-cases-comment", method: "PUT", title: "Expert comment" },
+      { id: "experts-cases-reopen", method: "POST", title: "Reopen case" },
       { id: "experts-cases-docs-list", method: "GET", title: "Documents" },
       { id: "experts-cases-docs-get", method: "GET", title: "Document" },
 
