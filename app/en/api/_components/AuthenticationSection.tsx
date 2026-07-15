@@ -43,8 +43,9 @@ export function AuthenticationSection() {
         <h2 className="mb-4 text-2xl font-bold tracking-tight text-balance sm:text-3xl">Authentication</h2>
         <p className="text-sm leading-relaxed text-muted-foreground text-pretty md:text-base">
           The Claimity Partner API uses <strong>OAuth 2.0 Client Credentials</strong> with <strong>JWT Client Assertion (RS256) </strong>
-          and additionally secures every request with <strong>DPoP Proof-of-Possession (ES256)</strong>. This binds the Access Token to the
-          specific request.
+          and additionally secures every request with <strong>DPoP Proof-of-Possession (ES256)</strong>. The Access Token is
+          <strong> bound to your DPoP key</strong> (<span className="font-mono">cnf.jkt</span>): use <strong>one key</strong> for the whole
+          session — the token request <em>and</em> every API call — and sign the token request itself with a DPoP proof.
         </p>
       </div>
 
@@ -76,7 +77,7 @@ export function AuthenticationSection() {
                 <strong className="text-foreground">JWT Client Assertion</strong>: Client generates a short-lived JWT (RS256).
               </li>
               <li>
-                <strong className="text-foreground">Token Request</strong>: Client sends <span className="font-mono">POST /v1/oauth/token</span> (Client-Credentials + Assertion).
+                <strong className="text-foreground">Token Request</strong>: Client sends <span className="font-mono">POST /v1/oauth/token</span> (Client-Credentials + Assertion) <strong>with a DPoP proof</strong>, which binds the issued token to the DPoP key.
               </li>
               <li>
                 <strong className="text-foreground">Validation</strong>: Auth server checks signature of the assertion and permissions and returns Token Response.
@@ -85,7 +86,7 @@ export function AuthenticationSection() {
                 <strong className="text-foreground">Query URL</strong>: The client creates the query URL (incl. query parameters).
               </li>
               <li>
-                <strong className="text-foreground">DPoP Proof</strong>: Client creates a DPoP JWT (ES256) per request bound to method + URL.
+                <strong className="text-foreground">DPoP Proof</strong>: Client creates a DPoP JWT (ES256) per request bound to method + URL, signed with the <strong>same key</strong> used for the token request.
               </li>
               <li>
                 <strong className="text-foreground">API Call</strong>: Client calls endpoint with <span className="font-mono">Authorization: DPoP </span>
@@ -227,8 +228,10 @@ export function AuthenticationSection() {
         <h3 className="text-lg font-semibold sm:text-xl">Send API Requests</h3>
 
         <p className="leading-relaxed text-muted-foreground text-pretty">
-          Every request additionally requires a <strong>DPoP Proof JWT</strong>. This is generated <strong>per request</strong> and signed
-          (ES256) and binds the request to method + URL.
+          Every request additionally requires a <strong>DPoP Proof JWT</strong>. A fresh proof is generated <strong>per request</strong> and
+          signed (ES256) to bind the request to method + URL, but always with the <strong>same key</strong> the Access Token is bound to
+          (<span className="font-mono">cnf.jkt</span>). A proof signed with a different key is rejected with{" "}
+          <span className="font-mono">401 &quot;Access token is not bound to the DPoP proof key&quot;</span>.
         </p>
 
         <h4 className="text-sm font-semibold">Required Headers</h4>
@@ -297,6 +300,13 @@ export function AuthenticationSection() {
             <li className="flex gap-2">
               <span className="text-primary">•</span>
               <span>
+                <strong>not bound</strong>: request signed with a different key than the token — reuse the single session key and
+                send a DPoP proof on the token request
+              </span>
+            </li>
+            <li className="flex gap-2">
+              <span className="text-primary">•</span>
+              <span>
                 <strong>htu mismatch</strong>: URL must be exact incl. query
               </span>
             </li>
@@ -326,6 +336,21 @@ export function AuthenticationSection() {
             </li>
           </ul>
         </details>
+
+        <div id="auth-correlation" className="space-y-3 rounded-lg border border-border bg-muted/20 p-4 scroll-mt-24">
+          <h4 className="text-sm font-semibold">Correlation ID</h4>
+          <p className="text-sm text-muted-foreground text-pretty">
+            Every response returns an <span className="font-mono">X-Correlation-Id</span> header. Claimity uses the same id in its
+            server logs and, on errors, as the <span className="font-mono">instance</span> field of the{" "}
+            <span className="font-mono">application/problem+json</span> body — log it and include it in support requests.
+          </p>
+          <p className="text-sm text-muted-foreground text-pretty">
+            You can also supply your own id to trace a request end-to-end: send an <span className="font-mono">X-Correlation-Id</span>{" "}
+            request header with a short, printable token (≤ 80 characters). A valid value is echoed back unchanged; an invalid or
+            oversized one is ignored and Claimity generates its own. The correlation id is independent of DPoP (the proof binds only
+            method + URL), so adding this header does not affect signing.
+          </p>
+        </div>
       </div>
     </div>
   )

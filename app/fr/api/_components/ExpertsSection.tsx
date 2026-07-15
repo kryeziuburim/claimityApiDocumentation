@@ -10,6 +10,18 @@ export function ExpertsSection() {
         </p>
       </div>
 
+      <div className="rounded-lg border border-border bg-muted/20 p-4 text-sm text-muted-foreground">
+        <h4 className="mb-2 text-sm font-semibold text-foreground">Synchronisation incrémentale &amp; horodatages</h4>
+        <ul className="space-y-1.5">
+          <li>
+            <span className="font-mono">LastChangedAt</span> — horodatage UTC de la dernière modification du dossier pertinente pour
+            le partenaire (statut, commentaire de l'expert, rapports, documents, …). Utilisable comme curseur de synchronisation :
+            conservez la valeur la plus élevée vue et renvoyez-la via <span className="font-mono">updatedSince</span> pour ne
+            récupérer que ce qui a changé depuis.
+          </li>
+        </ul>
+      </div>
+
       {/* ========== CASES ========== */}
       <div className="rounded-2xl border border-border bg-card/80 p-4 sm:p-5">
         <h3 className="mb-4 text-lg font-semibold sm:text-xl">Dossiers</h3>
@@ -20,7 +32,7 @@ export function ExpertsSection() {
               method="GET"
               path="/v1/experts/cases"
               label="List"
-              description="Liste paginée des dossiers. Filtrable en option via status, category."
+              description="Liste paginée des dossiers. Filtres : status (Created, Assigned, Accepted, Rejected, InProgress, ExpertCompleted, Final), category (vehicle, appraiser, fraud, special), inspectionType (onsite, workshop, private, live_expertise, estimate_review, invoice_review), q (recherche plein texte), createdFrom/createdTo, completedFrom/completedTo, updatedSince (synchronisation incrémentale). Chaque élément inclut LastChangedAt."
             />
           </div>
 
@@ -34,6 +46,15 @@ export function ExpertsSection() {
               path="/v1/experts/cases/{caseId}/expert-comment"
               label="Update"
               description="Définir/mettre à jour le commentaire de l'expert."
+            />
+          </div>
+
+          <div id="experts-cases-reopen" className="scroll-mt-24">
+            <EndpointCard
+              method="POST"
+              path="/v1/experts/cases/{caseId}:reopen"
+              label="Reopen"
+              description="Rouvrir un dossier clôturé pour continuer à y travailler (par ex. un rapport corrigé). Un motif est requis. Renvoie 204 No Content."
             />
           </div>
         </div>

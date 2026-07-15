@@ -10,6 +10,17 @@ export function ExpertsSection() {
         </p>
       </div>
 
+      <div className="rounded-lg border border-border bg-muted/20 p-4 text-sm text-muted-foreground">
+        <h4 className="mb-2 text-sm font-semibold text-foreground">Incremental sync &amp; timestamps</h4>
+        <ul className="space-y-1.5">
+          <li>
+            <span className="font-mono">LastChangedAt</span> — UTC timestamp of the last partner-relevant change to the case
+            (status, expert comment, reports, documents, …). Use it as a sync cursor: store the highest value you have seen and
+            pass it back as <span className="font-mono">updatedSince</span> to fetch only what has changed since.
+          </li>
+        </ul>
+      </div>
+
       {/* ========== CASES ========== */}
       <div className="rounded-2xl border border-border bg-card/80 p-4 sm:p-5">
         <h3 className="mb-4 text-lg font-semibold sm:text-xl">Cases</h3>
@@ -20,7 +31,7 @@ export function ExpertsSection() {
               method="GET"
               path="/v1/experts/cases"
               label="List"
-              description="Paginated list of cases. Optionally filterable via status, category."
+              description="Paginated list of cases. Filters: status (Created, Assigned, Accepted, Rejected, InProgress, ExpertCompleted, Final), category (vehicle, appraiser, fraud, special), inspectionType (onsite, workshop, private, live_expertise, estimate_review, invoice_review), q (free-text), createdFrom/createdTo, completedFrom/completedTo, updatedSince (incremental sync). Each item includes LastChangedAt."
             />
           </div>
 
@@ -34,6 +45,15 @@ export function ExpertsSection() {
               path="/v1/experts/cases/{caseId}/expert-comment"
               label="Update"
               description="Set/update expert comment."
+            />
+          </div>
+
+          <div id="experts-cases-reopen" className="scroll-mt-24">
+            <EndpointCard
+              method="POST"
+              path="/v1/experts/cases/{caseId}:reopen"
+              label="Reopen"
+              description="Reopen a completed case to continue working on it (e.g. a corrected report). A reason is required. Returns 204 No Content."
             />
           </div>
         </div>

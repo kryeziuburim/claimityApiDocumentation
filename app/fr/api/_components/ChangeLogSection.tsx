@@ -11,6 +11,11 @@ export function ChangeLogSection() {
       <div className="space-y-4">
         {[
           {
+            date: "2026-07-15",
+            changes:
+              "API Expert : nouveau point de terminaison pour rouvrir un dossier clôturé (POST /v1/experts/cases/{caseId}:reopen, renvoie 204). Les points de terminaison de liste ont reçu des filtres (recherche plein texte q, plages de dates de création/clôture) et un curseur updatedSince pour la synchronisation incrémentale. Les dossiers exposent désormais LastChangedAt ; les sinistres exposent en plus LastReportApprovedAt. Les points de terminaison de création et de téléversement renvoient désormais 201 Created. Chaque réponse renvoie désormais un en-tête X-Correlation-Id (une valeur entrante valide est répercutée) pour le traçage de bout en bout ; en cas d'erreur, il correspond aussi à l'instance ProblemDetails.",
+          },
+          {
             date: "2026-06-09",
             changes: "Ajout de la nouvelle catégorie « Expertises spéciales », incluant le schéma et la structure de payload.",
           },

@@ -11,6 +11,11 @@ export function ChangeLogSection() {
       <div className="space-y-4">
         {[
           {
+            date: "2026-07-15",
+            changes:
+              "Expert API: new endpoint to reopen a completed case (POST /v1/experts/cases/{caseId}:reopen, returns 204). List endpoints gained filters (free-text search q, created/completed date ranges) and an updatedSince cursor for incremental sync. Cases now expose LastChangedAt; claims additionally expose LastReportApprovedAt. Create and upload endpoints now return 201 Created. Every response now returns an X-Correlation-Id header (echoing a valid inbound one) for end-to-end tracing; on errors it is also the ProblemDetails instance.",
+          },
+          {
             date: "2026-06-09",
             changes: "Added new \"Special Appraisals\" category including schema and payload structure.",
           },

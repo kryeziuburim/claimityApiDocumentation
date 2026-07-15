@@ -11,6 +11,11 @@ export function ChangeLogSection() {
       <div className="space-y-4">
         {[
           {
+            date: "2026-07-15",
+            changes:
+              "Experten-API: neuer Endpunkt zum Wiedereröffnen eines abgeschlossenen Falls (POST /v1/experts/cases/{caseId}:reopen, liefert 204). List-Endpoints um Filter (Freitextsuche q, Datumsbereiche für Erstellung/Abschluss) und einen updatedSince-Cursor für inkrementelle Synchronisierung erweitert. Fälle liefern nun LastChangedAt; Claims zusätzlich LastReportApprovedAt. Create- und Upload-Endpoints liefern nun 201 Created. Jede Antwort liefert nun einen X-Correlation-Id-Header (ein gültiger eingehender Wert wird zurückgegeben) für Ende-zu-Ende-Tracing; bei Fehlern ist er zugleich die ProblemDetails-instance.",
+          },
+          {
             date: "2026-06-09",
             changes: "Neue Kategorie „Spezialexpertisen“ inklusive Schema und Payload-Struktur ergänzt.",
           },

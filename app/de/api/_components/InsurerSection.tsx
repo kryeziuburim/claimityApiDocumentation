@@ -10,6 +10,22 @@ export function InsurerSection() {
         </p>
       </div>
 
+      <div className="rounded-lg border border-border bg-muted/20 p-4 text-sm text-muted-foreground">
+        <h4 className="mb-2 text-sm font-semibold text-foreground">Inkrementelle Synchronisierung &amp; Zeitstempel</h4>
+        <ul className="space-y-1.5">
+          <li>
+            <span className="font-mono">LastChangedAt</span> — UTC-Zeitstempel der letzten partnerrelevanten Änderung am Claim
+            (Status, Dokumente, Reports, …). Als Sync-Cursor nutzbar: den höchsten gesehenen Wert speichern und als
+            <span className="font-mono"> updatedSince</span> zurückgeben, um nur die seither geänderten Claims abzurufen.
+          </li>
+          <li>
+            <span className="font-mono">LastReportApprovedAt</span> — UTC-Zeitstempel, wann der zuletzt genehmigte Experten-Report
+            des Claims genehmigt wurde (<span className="font-mono">null</span>, falls noch keiner). Damit erkennbar, dass ein neuer
+            oder aktualisierter Report zu einem Claim verfügbar ist.
+          </li>
+        </ul>
+      </div>
+
       <div className="rounded-2xl border border-border bg-card/80 p-4 sm:p-5">
         <h3 className="mb-4 text-lg font-semibold sm:text-xl">Schäden</h3>
 
@@ -19,7 +35,7 @@ export function InsurerSection() {
               method="GET"
               path="/v1/insurers/claims"
               label="List"
-              description="Paginierte Liste der Claims. Optional filterbar via category, status."
+              description="Paginierte Liste der Claims. Filter: category (vehicle, appraiser, fraud, special), status (Created, Assigned, Accepted, Rejected, InProgress, ExpertCompleted, Final), q (Freitextsuche), createdFrom/createdTo, completedFrom/completedTo, updatedSince (inkrementelle Synchronisierung). Jeder Eintrag enthält LastChangedAt und LastReportApprovedAt."
             />
           </div>
 

@@ -10,6 +10,22 @@ export function InsurerSection() {
         </p>
       </div>
 
+      <div className="rounded-lg border border-border bg-muted/20 p-4 text-sm text-muted-foreground">
+        <h4 className="mb-2 text-sm font-semibold text-foreground">Synchronisation incrémentale &amp; horodatages</h4>
+        <ul className="space-y-1.5">
+          <li>
+            <span className="font-mono">LastChangedAt</span> — horodatage UTC de la dernière modification du sinistre pertinente pour
+            le partenaire (statut, documents, rapports, …). Utilisable comme curseur de synchronisation : conservez la valeur la plus
+            élevée vue et renvoyez-la via <span className="font-mono">updatedSince</span> pour ne récupérer que ce qui a changé depuis.
+          </li>
+          <li>
+            <span className="font-mono">LastReportApprovedAt</span> — horodatage UTC indiquant quand le dernier rapport d'expert
+            approuvé du sinistre a été approuvé (<span className="font-mono">null</span> s'il n'y en a pas encore). Permet de détecter
+            qu'un rapport nouveau ou mis à jour est disponible pour un sinistre.
+          </li>
+        </ul>
+      </div>
+
       <div className="rounded-2xl border border-border bg-card/80 p-4 sm:p-5">
         <h3 className="mb-4 text-lg font-semibold sm:text-xl">Sinistres</h3>
 
@@ -19,7 +35,7 @@ export function InsurerSection() {
               method="GET"
               path="/v1/insurers/claims"
               label="List"
-              description="Liste paginée des sinistres. Filtrable en option via category, status."
+              description="Liste paginée des sinistres. Filtres : category (vehicle, appraiser, fraud, special), status (Created, Assigned, Accepted, Rejected, InProgress, ExpertCompleted, Final), q (recherche plein texte), createdFrom/createdTo, completedFrom/completedTo, updatedSince (synchronisation incrémentale). Chaque élément inclut LastChangedAt et LastReportApprovedAt."
             />
           </div>
 

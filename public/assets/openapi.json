@@ -72,6 +72,82 @@
               "format": "int32",
               "default": 50
             }
+          },
+          {
+            "name": "inspectionType",
+            "in": "query",
+            "description": "Filter by normalized inspection type. Allowed values depend on the claim category; live_expertise applies only to 'vehicle', onsite only to 'appraiser'/'special'. Fraud claims have no inspection type.",
+            "schema": {
+              "type": "string",
+              "nullable": true,
+              "enum": [
+                "onsite",
+                "workshop",
+                "private",
+                "live_expertise",
+                "estimate_review",
+                "invoice_review"
+              ]
+            }
+          },
+          {
+            "name": "q",
+            "in": "query",
+            "description": "Free-text search over the case external key, summary and payload.",
+            "schema": {
+              "type": "string",
+              "nullable": true
+            }
+          },
+          {
+            "name": "createdFrom",
+            "in": "query",
+            "description": "Only cases created at or after this timestamp (ISO 8601).",
+            "schema": {
+              "type": "string",
+              "format": "date-time",
+              "nullable": true
+            }
+          },
+          {
+            "name": "createdTo",
+            "in": "query",
+            "description": "Only cases created at or before this timestamp (ISO 8601).",
+            "schema": {
+              "type": "string",
+              "format": "date-time",
+              "nullable": true
+            }
+          },
+          {
+            "name": "completedFrom",
+            "in": "query",
+            "description": "Only cases finalized (Final event) at or after this timestamp (ISO 8601).",
+            "schema": {
+              "type": "string",
+              "format": "date-time",
+              "nullable": true
+            }
+          },
+          {
+            "name": "completedTo",
+            "in": "query",
+            "description": "Only cases finalized (Final event) at or before this timestamp (ISO 8601).",
+            "schema": {
+              "type": "string",
+              "format": "date-time",
+              "nullable": true
+            }
+          },
+          {
+            "name": "updatedSince",
+            "in": "query",
+            "description": "Incremental sync: only cases whose LastChangedAt is at or after this timestamp (ISO 8601). Pass the highest LastChangedAt from your previous poll to fetch only the delta.",
+            "schema": {
+              "type": "string",
+              "format": "date-time",
+              "nullable": true
+            }
           }
         ],
         "responses": {
@@ -219,6 +295,90 @@
             "application/*+json": {
               "schema": {
                 "$ref": "#/components/schemas/M2MExpertCommentRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/experts/cases/{caseId}:reopen": {
+      "post": {
+        "tags": [
+          "ExpertCasesV1"
+        ],
+        "summary": "Reopen a finalized case (Final -> InProgress).",
+        "description": "Reopens a FINALIZED case for the expert organization: the case status transitions from Final back to InProgress and an audited 'reopened_by_expert' event is recorded. A reason is required. Only valid while the case is in the Final state (otherwise the claim state machine rejects it) and only for the accepted expert organization of the case. The ':reopen' suffix is a literal action on the route.",
+        "parameters": [
+          {
+            "name": "caseId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/M2MReopenCaseRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/M2MReopenCaseRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/M2MReopenCaseRequest"
               }
             }
           }
@@ -1392,6 +1552,65 @@
               "format": "int32",
               "default": 50
             }
+          },
+          {
+            "name": "q",
+            "in": "query",
+            "description": "Free-text search over the claim external key, summary and payload.",
+            "schema": {
+              "type": "string",
+              "nullable": true
+            }
+          },
+          {
+            "name": "createdFrom",
+            "in": "query",
+            "description": "Only claims created at or after this timestamp (ISO 8601).",
+            "schema": {
+              "type": "string",
+              "format": "date-time",
+              "nullable": true
+            }
+          },
+          {
+            "name": "createdTo",
+            "in": "query",
+            "description": "Only claims created at or before this timestamp (ISO 8601).",
+            "schema": {
+              "type": "string",
+              "format": "date-time",
+              "nullable": true
+            }
+          },
+          {
+            "name": "completedFrom",
+            "in": "query",
+            "description": "Only claims finalized (Final event) at or after this timestamp (ISO 8601).",
+            "schema": {
+              "type": "string",
+              "format": "date-time",
+              "nullable": true
+            }
+          },
+          {
+            "name": "completedTo",
+            "in": "query",
+            "description": "Only claims finalized (Final event) at or before this timestamp (ISO 8601).",
+            "schema": {
+              "type": "string",
+              "format": "date-time",
+              "nullable": true
+            }
+          },
+          {
+            "name": "updatedSince",
+            "in": "query",
+            "description": "Incremental sync: only claims whose LastChangedAt is at or after this timestamp (ISO 8601). Pass the highest LastChangedAt from your previous poll to fetch only the delta.",
+            "schema": {
+              "type": "string",
+              "format": "date-time",
+              "nullable": true
+            }
           }
         ],
         "responses": {
@@ -1895,6 +2114,11 @@
           "HailDriveInAccepted": {
             "type": "boolean",
             "nullable": true
+          },
+          "LastChangedAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Partner-sync cursor. Advances on every partner-visible change to the case (report approval, document upload, expert comment, status change). On the next poll, pass the highest value you have seen as the `updatedSince` query parameter to fetch only what changed since."
           }
         },
         "additionalProperties": false
@@ -2028,6 +2252,17 @@
           "Text": {
             "type": "string",
             "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "M2MReopenCaseRequest": {
+        "type": "object",
+        "properties": {
+          "Reason": {
+            "type": "string",
+            "nullable": true,
+            "description": "Required reason for reopening the finalized case; recorded on the audited reopened_by_expert event."
           }
         },
         "additionalProperties": false
@@ -2226,6 +2461,17 @@
           "HailDriveInAccepted": {
             "type": "boolean",
             "nullable": true
+          },
+          "LastReportApprovedAt": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true,
+            "description": "When the most recently APPROVED report for this claim was approved (null if no report has been approved yet). Poll this to detect that a new report is available without fetching each claim's reports individually."
+          },
+          "LastChangedAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Partner-sync cursor. Advances on every partner-visible change to the claim (report approval, document upload, expert comment, status change). On the next poll, pass the highest value you have seen as the `updatedSince` query parameter to fetch only what changed since."
           }
         },
         "additionalProperties": false
@@ -2292,6 +2538,17 @@
           "HailDriveInAccepted": {
             "type": "boolean",
             "nullable": true
+          },
+          "LastReportApprovedAt": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true,
+            "description": "When the most recently APPROVED report for this claim was approved (null if no report has been approved yet). Poll this to detect that a new report is available without fetching each claim's reports individually."
+          },
+          "LastChangedAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Partner-sync cursor. Advances on every partner-visible change to the claim (report approval, document upload, expert comment, status change). On the next poll, pass the highest value you have seen as the `updatedSince` query parameter to fetch only what changed since."
           }
         },
         "additionalProperties": false

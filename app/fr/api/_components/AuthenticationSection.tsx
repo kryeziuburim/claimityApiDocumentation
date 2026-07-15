@@ -42,7 +42,10 @@ export function AuthenticationSection() {
       <div>
         <h2 className="mb-4 text-2xl font-bold tracking-tight text-balance sm:text-3xl">Authentification</h2>
         <p className="text-sm leading-relaxed text-muted-foreground text-pretty md:text-base">
-          L'API Partenaire Claimity utilise **OAuth 2.0 Client Credentials** avec **JWT Client Assertion (RS256)** et sécurise chaque requête avec **DPoP Proof-of-Possession (ES256)**. Cela lie le jeton d'accès à la requête spécifique.
+          L'API Partenaire Claimity utilise <strong>OAuth 2.0 Client Credentials</strong> avec <strong>JWT Client Assertion (RS256)</strong> et
+          sécurise chaque requête avec <strong>DPoP Proof-of-Possession (ES256)</strong>. Le jeton d'accès est <strong>lié à votre clé DPoP</strong>
+          (<span className="font-mono">cnf.jkt</span>) : utilisez <strong>une seule clé</strong> pour toute la session — la demande de jeton
+          <em> et</em> chaque appel API — et signez déjà la demande de jeton avec une preuve DPoP.
         </p>
       </div>
 
@@ -74,7 +77,7 @@ export function AuthenticationSection() {
                 <strong className="text-foreground">JWT Client Assertion</strong> : Le client génère un JWT de courte durée (RS256).
               </li>
               <li>
-                <strong className="text-foreground">Demande de jeton</strong> : Le client envoie <span className="font-mono">POST /v1/oauth/token</span> (Client-Credentials + Assertion).
+                <strong className="text-foreground">Demande de jeton</strong> : Le client envoie <span className="font-mono">POST /v1/oauth/token</span> (Client-Credentials + Assertion) <strong>avec une preuve DPoP</strong>, qui lie le jeton émis à la clé DPoP.
               </li>
               <li>
                 <strong className="text-foreground">Validation</strong> : Le serveur d'authentification vérifie la signature de l'assertion et les autorisations et renvoie la réponse du jeton.
@@ -83,7 +86,7 @@ export function AuthenticationSection() {
                 <strong className="text-foreground">URL de requête</strong> : Le client crée l'URL de requête (y compris les paramètres de requête).
               </li>
               <li>
-                <strong className="text-foreground">Preuve DPoP</strong> : Le client crée un JWT DPoP (ES256) par requête lié à la méthode + URL.
+                <strong className="text-foreground">Preuve DPoP</strong> : Le client crée un JWT DPoP (ES256) par requête lié à la méthode + URL, signé avec la <strong>même clé</strong> que celle utilisée pour la demande de jeton.
               </li>
               <li>
                 <strong className="text-foreground">Appel API</strong> : Le client appelle le point de terminaison avec <span className="font-mono">Authorization: DPoP </span>
@@ -225,8 +228,10 @@ export function AuthenticationSection() {
         <h3 className="text-lg font-semibold sm:text-xl">Envoyer des requêtes API</h3>
 
         <p className="leading-relaxed text-muted-foreground text-pretty">
-          Chaque requête nécessite en plus un <strong>JWT de preuve DPoP</strong>. Celui-ci est généré <strong>par requête</strong> et signé
-          (ES256) et lie la requête à la méthode + URL.
+          Chaque requête nécessite en plus un <strong>JWT de preuve DPoP</strong>. Une nouvelle preuve est générée <strong>par requête</strong> et
+          signée (ES256) pour lier la requête à la méthode + URL, mais toujours avec la <strong>même clé</strong> à laquelle le jeton d'accès est
+          lié (<span className="font-mono">cnf.jkt</span>). Une preuve signée avec une autre clé est rejetée avec{" "}
+          <span className="font-mono">401 &quot;Access token is not bound to the DPoP proof key&quot;</span>.
         </p>
 
         <h4 className="text-sm font-semibold">En-têtes requis</h4>
@@ -295,6 +300,13 @@ export function AuthenticationSection() {
             <li className="flex gap-2">
               <span className="text-primary">•</span>
               <span>
+                <strong>not bound</strong> : requête signée avec une clé différente de celle du jeton — réutilisez l'unique clé de
+                session et envoyez une preuve DPoP sur la demande de jeton
+              </span>
+            </li>
+            <li className="flex gap-2">
+              <span className="text-primary">•</span>
+              <span>
                 <strong>htu mismatch</strong> : L'URL doit être exacte y compris la requête
               </span>
             </li>
@@ -324,6 +336,21 @@ export function AuthenticationSection() {
             </li>
           </ul>
         </details>
+
+        <div id="auth-correlation" className="space-y-3 rounded-lg border border-border bg-muted/20 p-4 scroll-mt-24">
+          <h4 className="text-sm font-semibold">Identifiant de corrélation</h4>
+          <p className="text-sm text-muted-foreground text-pretty">
+            Chaque réponse renvoie un en-tête <span className="font-mono">X-Correlation-Id</span>. Claimity utilise le même identifiant
+            dans ses journaux serveur et, en cas d'erreur, comme champ <span className="font-mono">instance</span> du corps{" "}
+            <span className="font-mono">application/problem+json</span> — journalisez-le et indiquez-le dans vos demandes de support.
+          </p>
+          <p className="text-sm text-muted-foreground text-pretty">
+            Vous pouvez aussi fournir votre propre identifiant pour tracer une requête de bout en bout : envoyez un en-tête de requête{" "}
+            <span className="font-mono">X-Correlation-Id</span> avec un jeton court et imprimable (≤ 80 caractères). Une valeur valide est
+            renvoyée telle quelle ; une valeur invalide ou trop longue est ignorée et Claimity en génère une. L'identifiant de corrélation
+            est indépendant de DPoP (la preuve ne lie que la méthode + l'URL), l'ajout de cet en-tête n'affecte donc pas la signature.
+          </p>
+        </div>
       </div>
     </div>
   )
