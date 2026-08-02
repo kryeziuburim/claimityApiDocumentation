@@ -50,6 +50,8 @@ const navigationItems: NavItem[] = [
       { id: "basics-request-format", title: "Request Format" },
       { id: "basics-response-format", title: "Response Format" },
       { id: "basics-rate-limiting", title: "Rate Limiting" },
+      { id: "basics-idempotency", title: "Idempotency" },
+      { id: "basics-errors", title: "Error catalog" },
     ],
   },
   {

@@ -11,19 +11,29 @@ export function InsurerSection() {
       </div>
 
       <div className="rounded-lg border border-border bg-muted/20 p-4 text-sm text-muted-foreground">
-        <h4 className="mb-2 text-sm font-semibold text-foreground">Inkrementelle Synchronisierung &amp; Zeitstempel</h4>
+        <h4 className="mb-2 text-sm font-semibold text-foreground">Zeitstempel & inkrementelle Synchronisierung</h4>
+        <p className="mb-3 text-pretty">Vier Zeitstempel steuern Listen-Filter und Synchronisierung. Die Sync-Filter sind nach dem Feld benannt, das sie filtern, und vergleichen inklusiv (&gt;=).</p>
         <ul className="space-y-1.5">
           <li>
-            <span className="font-mono">LastChangedAt</span> — UTC-Zeitstempel der letzten partnerrelevanten Änderung am Claim
-            (Status, Dokumente, Reports, …). Als Sync-Cursor nutzbar: den höchsten gesehenen Wert speichern und als
-            <span className="font-mono"> updatedSince</span> zurückgeben, um nur die seither geänderten Claims abzurufen.
+            <span className="font-mono">CreatedAt</span> — Erstellzeitpunkt des Claims. Filter: createdFrom / createdTo.
           </li>
           <li>
-            <span className="font-mono">LastReportApprovedAt</span> — UTC-Zeitstempel, wann der zuletzt genehmigte Experten-Report
-            des Claims genehmigt wurde (<span className="font-mono">null</span>, falls noch keiner). Damit erkennbar, dass ein neuer
-            oder aktualisierter Report zu einem Claim verfügbar ist.
+            completedFrom / completedTo filtern auf den Zeitpunkt des jüngsten Fallabschlusses (Finalized-Ereignis; bei wiedereröffneten Fällen zählt der neueste Abschluss). Gedacht für Auswertungszeiträume («alle im Q2 abgeschlossenen Fälle») — nicht für Synchronisierung.
+          </li>
+          <li>
+            <span className="font-mono">LastChangedAt</span> — Letzte partnerrelevante Änderung (Status, Dokumente, Reports, Kommentare). Filter: lastChangedSince.
+          </li>
+          <li>
+            <span className="font-mono">LastReportApprovedAt</span> — Zeitpunkt der letzten Report-Genehmigung (null, falls noch keine). Filter: lastReportApprovedSince — Claims ohne genehmigten Report matchen nie.
           </li>
         </ul>
+        <h4 className="mb-1.5 mt-4 text-sm font-semibold text-foreground">Sync-Rezept (täglicher Poller)</h4>
+        <ol className="list-decimal space-y-1 pl-5">
+          <li>Mit lastChangedSince=&lt;gespeicherter Cursor&gt; abfragen (erster Lauf: ohne Filter).</li>
+          <li>Ergebnisse idempotent verarbeiten — der Vergleich ist inklusiv, der Grenzwert kann erneut erscheinen.</li>
+          <li>Als neuen Cursor das Maximum der gesehenen LastChangedAt speichern.</li>
+          <li>Nur an neuen genehmigten Reports interessiert? Gleicher Ablauf mit lastReportApprovedSince und LastReportApprovedAt.</li>
+        </ol>
       </div>
 
       <div className="rounded-2xl border border-border bg-card/80 p-4 sm:p-5">
@@ -35,7 +45,7 @@ export function InsurerSection() {
               method="GET"
               path="/v1/insurers/claims"
               label="List"
-              description="Paginierte Liste der Claims. Filter: category (vehicle, appraiser, fraud, special), status (Created, Assigned, Accepted, Rejected, InProgress, ExpertCompleted, Final), q (Freitextsuche), createdFrom/createdTo, completedFrom/completedTo, updatedSince (inkrementelle Synchronisierung). Jeder Eintrag enthält LastChangedAt und LastReportApprovedAt."
+              description="Paginierte Liste der Claims."
             />
           </div>
 

@@ -190,7 +190,24 @@ Content-Type: application/json
 
         <div className="space-y-4">
           {/* Policies side by side */}
-          <div className="grid gap-4 lg:grid-cols-3">
+          <div className="grid gap-4 lg:grid-cols-2">
+            {/* validate-anon policy */}
+            <div className="rounded-lg border border-border bg-muted/20 p-4">
+              <div className="mb-2 flex flex-wrap items-center justify-between gap-2">
+                <h4 className="text-sm font-semibold">Anonymous validation</h4>
+              </div>
+              <p className="mb-2 text-sm text-muted-foreground text-pretty">
+                POST /v1/insurers/claims:validate is usable without a token and therefore limited more strictly.
+              </p>
+              <ul className="space-y-2 text-sm text-muted-foreground">
+                <li className="flex gap-2">
+                  <span className="text-primary">•</span>
+                  <span className="text-pretty">
+                    <strong>FixedWindow: 10 requests/minute per client/IP</strong>
+                  </span>
+                </li>
+              </ul>
+            </div>
             {/* Default policy */}
             <div className="rounded-lg border border-border bg-muted/20 p-4">
               <div className="mb-2 flex flex-wrap items-center justify-between gap-2">
@@ -309,6 +326,91 @@ Content-Type: application/json
           </div>
         </div>
       </div>
+
+      <div id="basics-idempotency" className="rounded-lg border border-border bg-card p-4 scroll-mt-24 sm:p-6">
+        <h3 className="mb-3 text-lg font-semibold sm:text-xl">Idempotency (Idempotency-Key)</h3>
+        <p className="mb-4 leading-relaxed text-muted-foreground text-pretty">POST requests may carry an Idempotency-Key header (any unique value, e.g. a UUID). If the same request is repeated — say after a timeout — the API returns the stored response again without executing the operation a second time.</p>
+        <ul className="space-y-2 text-sm text-muted-foreground">
+          <li className="flex gap-2"><span className="text-primary">•</span><span className="text-pretty">The key is bound to method, path, client and payload hash — the same key with a different payload counts as a new request.</span></li>
+          <li className="flex gap-2"><span className="text-primary">•</span><span className="text-pretty">Stored responses are kept for replay for 24 hours.</span></li>
+          <li className="flex gap-2"><span className="text-primary">•</span><span className="text-pretty">Request bodies over 16 MB bypass idempotency; responses over 16 MB are not stored for replay (a retry re-executes the operation).</span></li>
+          <li className="flex gap-2"><span className="text-primary">•</span><span className="text-pretty">Recommendation: always set it on POST /v1/insurers/claims — retries after network errors are then guaranteed to be duplicate-free.</span></li>
+        </ul>
+      </div>
+
+      <div id="basics-errors" className="rounded-lg border border-border bg-card p-4 scroll-mt-24 sm:p-6">
+        <h3 className="mb-3 text-lg font-semibold sm:text-xl">Error catalog</h3>
+        <p className="mb-4 leading-relaxed text-muted-foreground text-pretty">Errors follow the ProblemDetails structure (title, status, detail). Payload validation errors arrive as ValidationProblemDetails with an errors map; every message names the field path and the concrete expectation.</p>
+        <div className="mb-4 overflow-x-auto">
+          <table className="w-full min-w-[480px] border-collapse text-sm">
+            <thead>
+              <tr className="border-b border-border text-left">
+                <th className="py-2 pr-4 font-semibold">title</th>
+                <th className="py-2 font-semibold">Meaning</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr className="border-b border-border/40">
+                <td className="py-2 pr-4 align-top font-mono text-xs">invalid_org_context</td>
+                <td className="py-2 text-muted-foreground">The token is not associated with a (single) organization of the expected type.</td>
+              </tr>
+              <tr className="border-b border-border/40">
+                <td className="py-2 pr-4 align-top font-mono text-xs">forbidden</td>
+                <td className="py-2 text-muted-foreground">Access to the resource is not allowed with this token.</td>
+              </tr>
+              <tr className="border-b border-border/40">
+                <td className="py-2 pr-4 align-top font-mono text-xs">org_without_members</td>
+                <td className="py-2 text-muted-foreground">The organization has no members — creation/retrieval is not possible.</td>
+              </tr>
+              <tr className="border-b border-border/40">
+                <td className="py-2 pr-4 align-top font-mono text-xs">invalid_category</td>
+                <td className="py-2 text-muted-foreground">Unknown claim category (allowed: vehicle, appraiser, fraud, special).</td>
+              </tr>
+              <tr className="border-b border-border/40">
+                <td className="py-2 pr-4 align-top font-mono text-xs">invalid_payload</td>
+                <td className="py-2 text-muted-foreground">PayloadJson is missing or not valid JSON.</td>
+              </tr>
+              <tr className="border-b border-border/40">
+                <td className="py-2 pr-4 align-top font-mono text-xs">invalid_state</td>
+                <td className="py-2 text-muted-foreground">The action is not allowed in the current claim status (e.g. reopening a case that is not completed).</td>
+              </tr>
+              <tr className="border-b border-border/40">
+                <td className="py-2 pr-4 align-top font-mono text-xs">invalid_document / missing_documents</td>
+                <td className="py-2 text-muted-foreground">Document invalid, or required documents are missing.</td>
+              </tr>
+              <tr className="border-b border-border/40">
+                <td className="py-2 pr-4 align-top font-mono text-xs">unsupported_content_type / size_limit_exceeded</td>
+                <td className="py-2 text-muted-foreground">File type not allowed, or the upload limit was exceeded.</td>
+              </tr>
+              <tr className="border-b border-border/40">
+                <td className="py-2 pr-4 align-top font-mono text-xs">upstream_timeout / upstream_error</td>
+                <td className="py-2 text-muted-foreground">A downstream service did not respond (in time) — retry with backoff.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div className="rounded-lg border border-border bg-muted/30 p-3">
+          <div className="mb-2 text-xs font-medium text-muted-foreground">Example: 400 from payload validation (POST /v1/insurers/claims:validate)</div>
+          <pre className="overflow-x-auto text-xs leading-relaxed">
+            <code className="font-mono">{`HTTP/1.1 400 Bad Request
+Content-Type: application/problem+json
+
+{
+  "title": "One or more validation errors occurred.",
+  "status": 400,
+  "errors": {
+    "PayloadJson": [
+      "PayloadJson does not match the required schema for the selected category.",
+      "counterparty.email: is required.",
+      "workshop.country: must be one of: CH, DE, AT, FR, IT, LI.",
+      "incidentDate: the incident date cannot be in the future \u2014 got 2099-01-15, today is 2026-08-02 (Europe/Zurich)."
+    ]
+  }
+}`}</code>
+          </pre>
+        </div>
+      </div>
+
     </div>
   )
 }

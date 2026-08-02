@@ -8,6 +8,7 @@
     "policyNumber",
     "claimInsurance",
     "claimType",
+    "insured",
     "location",
     "incidentDate",
     "damageDescription",
@@ -15,237 +16,709 @@
     "estimatedCurrency",
     "inspectionType"
   ],
+  "$defs": {
+    "optionalDate": {
+      "$comment": "Optional ISO date. Empty string and null both mean 'not set'. Deliberately NOT modelled as oneOf[format:date, maxLength:0, null]: `format` is annotation-only (RequireFormatValidation is off), so an empty string would match two branches and oneOf would fail.",
+      "type": [
+        "string",
+        "null"
+      ],
+      "pattern": "^(\\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12]\\d|3[01]))?$"
+    },
+    "requiredDate": {
+      "$comment": "Mandatory ISO date. `pattern` (not `format`) does the asserting; see optionalDate.",
+      "type": "string",
+      "pattern": "^\\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12]\\d|3[01])$"
+    },
+    "locationCountry": {
+      "$comment": "country scope",
+      "type": "string",
+      "enum": [
+        "CH",
+        "DE",
+        "AT",
+        "FR",
+        "IT",
+        "LI"
+      ]
+    }
+  },
   "properties": {
     "policyNumber": {
       "type": "string",
       "minLength": 1,
-      "maxLength": 200
+      "maxLength": 200,
+      "examples": [
+        "POL-2026-00123"
+      ]
     },
     "claimInsurance": {
       "type": "string",
-      "enum": ["liability", "partial", "comprehensive"]
+      "enum": [
+        "liability",
+        "partial",
+        "comprehensive"
+      ]
     },
     "claimType": {
       "type": "string",
       "minLength": 1,
-      "maxLength": 200
+      "maxLength": 200,
+      "examples": [
+        "Collision"
+      ]
     },
-
     "insured": {
       "type": "object",
       "additionalProperties": true,
       "properties": {
-        "name": { "type": "string" },
-        "address": { "type": "string" },
-        "postalCode": { "type": "string" },
-        "city": { "type": "string" },
-        "phone": { "type": "string" },
-        "email": { "type": "string" },
-        "note": { "type": "string" },
-        "deductible": { "type": "string" },
-        "licensePlate": { "type": "string" },
-        "carMake": { "type": "string" },
-        "carModel": { "type": "string" },
-        "vin": { "type": "string" },
+        "name": {
+          "type": "string",
+          "examples": [
+            "Max Sample"
+          ]
+        },
+        "address": {
+          "type": "string",
+          "examples": [
+            "Sample Street 1"
+          ]
+        },
+        "postalCode": {
+          "type": "string",
+          "examples": [
+            "8001"
+          ]
+        },
+        "city": {
+          "type": "string",
+          "examples": [
+            "Zurich"
+          ]
+        },
+        "phone": {
+          "type": "string",
+          "examples": [
+            "+41 44 123 45 67"
+          ]
+        },
+        "email": {
+          "type": "string",
+          "examples": [
+            "max.sample@example.ch"
+          ]
+        },
+        "note": {
+          "type": "string",
+          "examples": [
+            "Reachable after 2 pm"
+          ]
+        },
+        "deductible": {
+          "type": "string",
+          "examples": [
+            "300"
+          ]
+        },
+        "licensePlate": {
+          "type": "string",
+          "examples": [
+            "ZH 123456"
+          ]
+        },
+        "carMake": {
+          "type": "string",
+          "examples": [
+            "VW"
+          ]
+        },
+        "carModel": {
+          "type": "string",
+          "examples": [
+            "Golf"
+          ]
+        },
+        "vin": {
+          "type": "string",
+          "examples": [
+            "WVWZZZ1KZAW123456"
+          ]
+        },
         "firstRegistration": {
-          "oneOf": [
-            { "type": "string", "format": "date" },
-            { "type": "string", "maxLength": 0 },
-            { "type": "null" }
+          "$ref": "#/$defs/optionalDate",
+          "examples": [
+            "2020-06-15"
           ]
         }
       }
     },
-
     "counterparty": {
       "type": "object",
       "additionalProperties": true,
       "properties": {
-        "name": { "type": "string" },
-        "address": { "type": "string" },
-        "postalCode": { "type": "string" },
-        "city": { "type": "string" },
-        "phone": { "type": "string" },
-        "email": { "type": "string" },
-        "note": { "type": "string" },
-        "licensePlate": { "type": "string" },
-        "carMake": { "type": "string" },
-        "carModel": { "type": "string" },
-        "vin": { "type": "string" },
+        "name": {
+          "type": "string",
+          "examples": [
+            "Erika Example"
+          ]
+        },
+        "address": {
+          "type": "string",
+          "examples": [
+            "Example Road 2"
+          ]
+        },
+        "postalCode": {
+          "type": "string",
+          "examples": [
+            "3011"
+          ]
+        },
+        "city": {
+          "type": "string",
+          "examples": [
+            "Bern"
+          ]
+        },
+        "phone": {
+          "type": "string",
+          "examples": [
+            "+41 31 987 65 43"
+          ]
+        },
+        "email": {
+          "type": "string",
+          "examples": [
+            "erika.example@example.ch"
+          ]
+        },
+        "note": {
+          "type": "string",
+          "examples": [
+            "Represented by a lawyer"
+          ]
+        },
+        "licensePlate": {
+          "type": "string",
+          "examples": [
+            "BE 654321"
+          ]
+        },
+        "carMake": {
+          "type": "string",
+          "examples": [
+            "Audi"
+          ]
+        },
+        "carModel": {
+          "type": "string",
+          "examples": [
+            "A4"
+          ]
+        },
+        "vin": {
+          "type": "string",
+          "examples": [
+            "WAUZZZ8K9BA123456"
+          ]
+        },
         "firstRegistration": {
-          "oneOf": [
-            { "type": "string", "format": "date" },
-            { "type": "string", "maxLength": 0 },
-            { "type": "null" }
+          "$ref": "#/$defs/optionalDate",
+          "examples": [
+            "2019-03-01"
           ]
         }
       }
     },
-
     "location": {
       "type": "object",
       "additionalProperties": true,
       "properties": {
-        "address": { "type": "string" },
-        "postalCode": { "type": "string" },
-        "city": { "type": "string", "minLength": 1 }
+        "address": {
+          "type": "string",
+          "examples": [
+            "Sample Street 1"
+          ]
+        },
+        "postalCode": {
+          "type": "string",
+          "examples": [
+            "8001"
+          ]
+        },
+        "city": {
+          "type": "string",
+          "minLength": 1,
+          "examples": [
+            "Zurich"
+          ]
+        }
       },
-      "required": ["city"]
+      "required": [
+        "city"
+      ]
     },
-
     "incidentDate": {
-      "type": "string",
-      "format": "date"
+      "$ref": "#/$defs/requiredDate",
+      "examples": [
+        "2026-01-15"
+      ]
     },
-
     "damageDescription": {
       "type": "string",
       "minLength": 1,
-      "maxLength": 4000
-    },
-
-    "estimatedAmount": {
-      "oneOf": [
-        { "type": "number", "minimum": 0 },
-        { "type": "string", "pattern": "^-?\\d+(\\.\\d+)?$" }
+      "maxLength": 4000,
+      "examples": [
+        "Rear-end damage after a collision"
       ]
     },
-
+    "estimatedAmount": {
+      "$comment": "Non-negative. The string branch deliberately has no leading minus.",
+      "oneOf": [
+        {
+          "type": "number",
+          "minimum": 0
+        },
+        {
+          "type": "string",
+          "pattern": "^\\d+(\\.\\d+)?$"
+        }
+      ],
+      "examples": [
+        "2500"
+      ]
+    },
     "estimatedCurrency": {
       "type": "string",
-      "enum": ["CHF", "EUR", "USD"]
-    },
-
-    "inspectionType": {
-      "type": "string",
-      "enum": ["workshop", "private", "live_expertise", "estimate_review", "invoice_review"]
-    },
-
-    "workshop": {
-      "type": "object",
-      "additionalProperties": true,
-      "properties": {
-        "name": { "type": "string" },
-        "phone": { "type": "string" },
-        "email": { "type": "string" },
-        "address": { "type": "string" },
-        "postalCode": { "type": "string" },
-        "city": { "type": "string" },
-        "country": { "type": "string", "enum": ["CH", "DE", "AT", "FR", "IT", "LI"] }
-      }
-    },
-
-    "inspectionContact": {
-      "type": "object",
-      "additionalProperties": true,
-      "properties": {
-        "name": { "type": "string" },
-        "phone": { "type": "string" },
-        "email": { "type": "string" },
-        "address": { "type": "string" },
-        "postalCode": { "type": "string" },
-        "city": { "type": "string" },
-        "country": { "type": "string", "enum": ["CH", "DE", "AT", "FR", "IT", "LI"] }
-      }
-    },
-
-    "inspectionDate": {
-      "oneOf": [
-        { "type": "string", "format": "date" },
-        { "type": "null" }
+      "enum": [
+        "CHF",
+        "EUR",
+        "USD"
       ]
     },
-
-    "remarks": { "type": "string", "maxLength": 4000 }
+    "inspectionType": {
+      "type": "string",
+      "enum": [
+        "workshop",
+        "private",
+        "live_expertise",
+        "estimate_review",
+        "invoice_review"
+      ]
+    },
+    "workshop": {
+      "$comment": "country is left unconstrained here and only asserted in the workshop branch below. The `examples` entry keeps the docs' generated sample payload valid — without it the generator would emit a generic string, which that branch rejects.",
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {
+        "name": {
+          "type": "string",
+          "examples": [
+            "Sample Garage Ltd"
+          ]
+        },
+        "phone": {
+          "type": "string",
+          "examples": [
+            "+41 31 111 22 33"
+          ]
+        },
+        "email": {
+          "type": "string",
+          "examples": [
+            "info@sample-garage.ch"
+          ]
+        },
+        "address": {
+          "type": "string",
+          "examples": [
+            "Workshop Road 5"
+          ]
+        },
+        "postalCode": {
+          "type": "string",
+          "examples": [
+            "3000"
+          ]
+        },
+        "city": {
+          "type": "string",
+          "examples": [
+            "Bern"
+          ]
+        },
+        "country": {
+          "type": "string",
+          "examples": [
+            "CH"
+          ]
+        }
+      }
+    },
+    "inspectionContact": {
+      "$comment": "country is asserted in the inspectionContact branch below; examples for the same reason as on workshop.country.",
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {
+        "name": {
+          "type": "string",
+          "examples": [
+            "Henry Contact"
+          ]
+        },
+        "phone": {
+          "type": "string",
+          "examples": [
+            "+41 79 555 66 77"
+          ]
+        },
+        "email": {
+          "type": "string",
+          "examples": [
+            "henry.contact@example.ch"
+          ]
+        },
+        "address": {
+          "type": "string",
+          "examples": [
+            "Contact Lane 3"
+          ]
+        },
+        "postalCode": {
+          "type": "string",
+          "examples": [
+            "8400"
+          ]
+        },
+        "city": {
+          "type": "string",
+          "examples": [
+            "Winterthur"
+          ]
+        },
+        "country": {
+          "type": "string",
+          "examples": [
+            "CH"
+          ]
+        }
+      }
+    },
+    "inspectionDate": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "pattern": "^\\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12]\\d|3[01])$",
+      "$comment": "Example deliberately far in the future: claims:validate rejects inspection dates in the past, and the docs' Test tab submits this value as-is.",
+      "examples": [
+        "2030-01-15"
+      ]
+    },
+    "remarks": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "maxLength": 4000,
+      "examples": [
+        "Inspection preferred in the morning."
+      ]
+    }
   },
   "allOf": [
     {
-      "if": { "properties": { "claimInsurance": { "const": "liability" } } },
+      "if": {
+        "properties": {
+          "claimInsurance": {
+            "const": "liability"
+          }
+        },
+        "required": [
+          "claimInsurance"
+        ]
+      },
       "then": {
-        "required": ["counterparty"],
+        "required": [
+          "counterparty"
+        ],
         "properties": {
           "counterparty": {
             "type": "object",
             "properties": {
-              "name": { "type": "string", "minLength": 1 },
-              "phone": { "type": "string", "minLength": 1 },
-              "licensePlate": { "type": "string", "minLength": 1 },
-              "city": { "type": "string", "minLength": 1 },
-              "carMake": { "type": "string", "minLength": 1 }
+              "name": {
+                "type": "string",
+                "minLength": 1
+              },
+              "phone": {
+                "type": "string",
+                "minLength": 1
+              },
+              "licensePlate": {
+                "type": "string",
+                "minLength": 1
+              },
+              "city": {
+                "type": "string",
+                "minLength": 1
+              },
+              "carMake": {
+                "type": "string",
+                "minLength": 1
+              }
             },
-            "required": ["name", "phone", "licensePlate", "city", "carMake"]
+            "required": [
+              "name",
+              "phone",
+              "licensePlate",
+              "city",
+              "carMake"
+            ]
           }
         }
       }
     },
     {
-      "if": { "properties": { "claimInsurance": { "enum": ["partial", "comprehensive"] } } },
+      "if": {
+        "properties": {
+          "claimInsurance": {
+            "enum": [
+              "partial",
+              "comprehensive"
+            ]
+          }
+        },
+        "required": [
+          "claimInsurance"
+        ]
+      },
       "then": {
-        "required": ["insured"],
+        "required": [
+          "insured"
+        ],
         "properties": {
           "insured": {
             "type": "object",
             "properties": {
-              "name": { "type": "string", "minLength": 1 },
-              "phone": { "type": "string", "minLength": 1 },
-              "licensePlate": { "type": "string", "minLength": 1 },
-              "address": { "type": "string", "minLength": 1 },
-              "postalCode": { "type": "string", "minLength": 1 },
-              "city": { "type": "string", "minLength": 1 },
-              "carMake": { "type": "string", "minLength": 1 }
+              "name": {
+                "type": "string",
+                "minLength": 1
+              },
+              "phone": {
+                "type": "string",
+                "minLength": 1
+              },
+              "licensePlate": {
+                "type": "string",
+                "minLength": 1
+              },
+              "address": {
+                "type": "string",
+                "minLength": 1
+              },
+              "postalCode": {
+                "type": "string",
+                "minLength": 1
+              },
+              "city": {
+                "type": "string",
+                "minLength": 1
+              },
+              "carMake": {
+                "type": "string",
+                "minLength": 1
+              }
             },
-            "required": ["name", "phone", "licensePlate", "address", "postalCode", "city", "carMake"]
+            "required": [
+              "name",
+              "phone",
+              "licensePlate",
+              "address",
+              "postalCode",
+              "city",
+              "carMake"
+            ]
           }
         }
       }
     },
     {
-      "if": { "properties": { "inspectionType": { "const": "workshop" } } },
-      "then": {
-        "required": ["inspectionDate", "workshop"],
+      "if": {
         "properties": {
-          "inspectionDate": { "type": "string", "format": "date" },
+          "inspectionType": {
+            "const": "workshop"
+          }
+        },
+        "required": [
+          "inspectionType"
+        ]
+      },
+      "then": {
+        "required": [
+          "inspectionDate",
+          "workshop"
+        ],
+        "properties": {
+          "inspectionDate": {
+            "$ref": "#/$defs/requiredDate"
+          },
           "workshop": {
             "type": "object",
-            "required": ["name", "phone", "city", "postalCode"]
+            "required": [
+              "name",
+              "phone",
+              "city",
+              "postalCode",
+              "country"
+            ],
+            "properties": {
+              "name": {
+                "type": "string",
+                "minLength": 1
+              },
+              "phone": {
+                "type": "string",
+                "minLength": 1
+              },
+              "city": {
+                "type": "string",
+                "minLength": 1
+              },
+              "postalCode": {
+                "type": "string",
+                "minLength": 1
+              },
+              "country": {
+                "$ref": "#/$defs/locationCountry"
+              }
+            }
           }
         }
       }
     },
     {
-      "if": { "properties": { "inspectionType": { "enum": ["estimate_review", "invoice_review"] } } },
+      "if": {
+        "properties": {
+          "inspectionType": {
+            "enum": [
+              "estimate_review",
+              "invoice_review"
+            ]
+          }
+        },
+        "required": [
+          "inspectionType"
+        ]
+      },
       "then": {
-        "required": ["workshop"],
+        "required": [
+          "workshop"
+        ],
         "properties": {
           "workshop": {
             "type": "object",
-            "required": ["name", "phone"]
+            "required": [
+              "name",
+              "phone"
+            ],
+            "properties": {
+              "name": {
+                "type": "string",
+                "minLength": 1
+              },
+              "phone": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
           }
         }
       }
     },
     {
-      "if": { "properties": { "inspectionType": { "enum": ["private", "live_expertise"] } } },
-      "then": {
-        "required": ["inspectionDate", "inspectionContact"],
+      "if": {
         "properties": {
-          "inspectionDate": { "type": "string", "format": "date" }
+          "inspectionType": {
+            "enum": [
+              "private",
+              "live_expertise"
+            ]
+          }
+        },
+        "required": [
+          "inspectionType"
+        ]
+      },
+      "then": {
+        "required": [
+          "inspectionDate",
+          "inspectionContact"
+        ],
+        "properties": {
+          "inspectionDate": {
+            "$ref": "#/$defs/requiredDate"
+          }
         }
       }
     },
     {
-      "if": { "required": ["inspectionContact"] },
+      "if": {
+        "required": [
+          "inspectionContact"
+        ]
+      },
       "then": {
         "properties": {
           "inspectionContact": {
             "type": "object",
-            "required": ["name", "address", "postalCode", "city", "phone"]
+            "required": [
+              "name",
+              "address",
+              "postalCode",
+              "city",
+              "phone",
+              "country"
+            ],
+            "properties": {
+              "name": {
+                "type": "string",
+                "minLength": 1
+              },
+              "address": {
+                "type": "string",
+                "minLength": 1
+              },
+              "postalCode": {
+                "type": "string",
+                "minLength": 1
+              },
+              "city": {
+                "type": "string",
+                "minLength": 1
+              },
+              "phone": {
+                "type": "string",
+                "minLength": 1
+              },
+              "country": {
+                "$ref": "#/$defs/locationCountry"
+              }
+            }
           }
         }
       }
     },
     {
-      "if": { "properties": { "claimInsurance": { "const": "partial" } } },
+      "if": {
+        "properties": {
+          "claimInsurance": {
+            "const": "partial"
+          }
+        },
+        "required": [
+          "claimInsurance"
+        ]
+      },
       "then": {
         "properties": {
           "claimType": {
@@ -253,9 +726,9 @@
             "enum": [
               "fire",
               "natural_hazard",
+              "hail_damage",
               "snow_slide",
               "theft",
-              "hail_damage",
               "animal_collision",
               "marten_damage",
               "glass_breakage",

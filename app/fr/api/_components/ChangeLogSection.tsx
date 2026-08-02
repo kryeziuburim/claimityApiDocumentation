@@ -11,6 +11,12 @@ export function ChangeLogSection() {
       <div className="space-y-4">
         {[
           {
+            date: "2026-08-02",
+            breaking: true,
+            changes:
+              "Refonte des filtres de synchronisation : updatedSince devient lastChangedSince (les deux points de terminaison /v1/insurers/claims et /v1/experts/cases) — le filtre porte désormais le nom du champ qu'il filtre (LastChangedAt). Nouveau : lastReportApprovedSince sur /v1/insurers/claims ne renvoie que les sinistres dont la dernière approbation de rapport est au/apres l'instant donné (les sinistres sans rapport approuvé ne correspondent jamais). completedFrom/completedTo restent inchangés et filtrent le moment de la clôture la plus récente.",
+          },
+          {
             date: "2026-07-15",
             changes:
               "API Expert : nouveau point de terminaison pour rouvrir un dossier clôturé (POST /v1/experts/cases/{caseId}:reopen, renvoie 204). Les points de terminaison de liste ont reçu des filtres (recherche plein texte q, plages de dates de création/clôture) et un curseur updatedSince pour la synchronisation incrémentale. Les dossiers exposent désormais LastChangedAt ; les sinistres exposent en plus LastReportApprovedAt. Les points de terminaison de création et de téléversement renvoient désormais 201 Created. Chaque réponse renvoie désormais un en-tête X-Correlation-Id (une valeur entrante valide est répercutée) pour le traçage de bout en bout ; en cas d'erreur, il correspond aussi à l'instance ProblemDetails.",

@@ -122,7 +122,7 @@
           {
             "name": "completedFrom",
             "in": "query",
-            "description": "Only cases finalized (Final event) at or after this timestamp (ISO 8601).",
+            "description": "Lower bound (inclusive) on the completion timestamp: the moment of the most recent completion (Finalized event; for reopened cases the newest completion counts). Meant for reporting windows, not for incremental sync.",
             "schema": {
               "type": "string",
               "format": "date-time",
@@ -132,7 +132,7 @@
           {
             "name": "completedTo",
             "in": "query",
-            "description": "Only cases finalized (Final event) at or before this timestamp (ISO 8601).",
+            "description": "Upper bound (inclusive) on the completion timestamp; see completedFrom.",
             "schema": {
               "type": "string",
               "format": "date-time",
@@ -140,9 +140,9 @@
             }
           },
           {
-            "name": "updatedSince",
+            "name": "lastChangedSince",
             "in": "query",
-            "description": "Incremental sync: only cases whose LastChangedAt is at or after this timestamp (ISO 8601). Pass the highest LastChangedAt from your previous poll to fetch only the delta.",
+            "description": "Sync cursor on LastChangedAt (inclusive >=). LastChangedAt advances on every partner-visible change (report approval, document upload, expert comment, status change). On the next poll, pass the highest LastChangedAt you have seen to fetch only what changed since; process results idempotently (the boundary value can appear again).",
             "schema": {
               "type": "string",
               "format": "date-time",
@@ -1372,7 +1372,12 @@
             "in": "query",
             "schema": {
               "type": "string",
-              "enum": ["de", "en", "fr", "it"],
+              "enum": [
+                "de",
+                "en",
+                "fr",
+                "it"
+              ],
               "default": "de"
             }
           }
@@ -1585,7 +1590,7 @@
           {
             "name": "completedFrom",
             "in": "query",
-            "description": "Only claims finalized (Final event) at or after this timestamp (ISO 8601).",
+            "description": "Lower bound (inclusive) on the completion timestamp: the moment of the most recent completion (Finalized event; for reopened cases the newest completion counts). Meant for reporting windows, not for incremental sync.",
             "schema": {
               "type": "string",
               "format": "date-time",
@@ -1595,7 +1600,7 @@
           {
             "name": "completedTo",
             "in": "query",
-            "description": "Only claims finalized (Final event) at or before this timestamp (ISO 8601).",
+            "description": "Upper bound (inclusive) on the completion timestamp; see completedFrom.",
             "schema": {
               "type": "string",
               "format": "date-time",
@@ -1603,13 +1608,22 @@
             }
           },
           {
-            "name": "updatedSince",
+            "name": "lastChangedSince",
             "in": "query",
-            "description": "Incremental sync: only claims whose LastChangedAt is at or after this timestamp (ISO 8601). Pass the highest LastChangedAt from your previous poll to fetch only the delta.",
+            "description": "Sync cursor on LastChangedAt (inclusive >=). LastChangedAt advances on every partner-visible change (report approval, document upload, expert comment, status change). On the next poll, pass the highest LastChangedAt you have seen to fetch only what changed since; process results idempotently (the boundary value can appear again).",
             "schema": {
               "type": "string",
               "format": "date-time",
               "nullable": true
+            }
+          },
+          {
+            "name": "lastReportApprovedSince",
+            "in": "query",
+            "description": "Sync cursor on LastReportApprovedAt (inclusive >=): only claims whose most recent report approval happened at or after the given instant. Claims without any approved report never match.",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
             }
           }
         ],
@@ -2070,7 +2084,7 @@
               "vehicle",
               "fraud",
               "appraiser",
-                "special"
+              "special"
             ]
           },
           "Status": {
@@ -2118,7 +2132,7 @@
           "LastChangedAt": {
             "type": "string",
             "format": "date-time",
-            "description": "Partner-sync cursor. Advances on every partner-visible change to the case (report approval, document upload, expert comment, status change). On the next poll, pass the highest value you have seen as the `updatedSince` query parameter to fetch only what changed since."
+            "description": "Partner-sync cursor. Advances on every partner-visible change to the case (report approval, document upload, expert comment, status change). On the next poll, pass the highest value you have seen as the `lastChangedSince` query parameter to fetch only what changed since."
           }
         },
         "additionalProperties": false
@@ -2141,7 +2155,7 @@
               "vehicle",
               "fraud",
               "appraiser",
-                "special"
+              "special"
             ]
           },
           "Status": {
@@ -2196,7 +2210,7 @@
               "vehicle",
               "fraud",
               "appraiser",
-                "special"
+              "special"
             ]
           },
           "PayloadJson": {
@@ -2417,7 +2431,7 @@
               "vehicle",
               "fraud",
               "appraiser",
-                "special"
+              "special"
             ]
           },
           "Status": {
@@ -2466,12 +2480,12 @@
             "type": "string",
             "format": "date-time",
             "nullable": true,
-            "description": "When the most recently APPROVED report for this claim was approved (null if no report has been approved yet). Poll this to detect that a new report is available without fetching each claim's reports individually."
+            "description": "When the most recently APPROVED report for this claim was approved (null if no report has been approved yet). Poll this to detect that a new report is available without fetching each claim's reports individually. Filterable via the `lastReportApprovedSince` query parameter on the claims list."
           },
           "LastChangedAt": {
             "type": "string",
             "format": "date-time",
-            "description": "Partner-sync cursor. Advances on every partner-visible change to the claim (report approval, document upload, expert comment, status change). On the next poll, pass the highest value you have seen as the `updatedSince` query parameter to fetch only what changed since."
+            "description": "Partner-sync cursor. Advances on every partner-visible change to the claim (report approval, document upload, expert comment, status change). On the next poll, pass the highest value you have seen as the `lastChangedSince` query parameter to fetch only what changed since."
           }
         },
         "additionalProperties": false
@@ -2494,7 +2508,7 @@
               "vehicle",
               "fraud",
               "appraiser",
-                "special"
+              "special"
             ]
           },
           "Status": {
@@ -2543,12 +2557,12 @@
             "type": "string",
             "format": "date-time",
             "nullable": true,
-            "description": "When the most recently APPROVED report for this claim was approved (null if no report has been approved yet). Poll this to detect that a new report is available without fetching each claim's reports individually."
+            "description": "When the most recently APPROVED report for this claim was approved (null if no report has been approved yet). Poll this to detect that a new report is available without fetching each claim's reports individually. Filterable via the `lastReportApprovedSince` query parameter on the claims list."
           },
           "LastChangedAt": {
             "type": "string",
             "format": "date-time",
-            "description": "Partner-sync cursor. Advances on every partner-visible change to the claim (report approval, document upload, expert comment, status change). On the next poll, pass the highest value you have seen as the `updatedSince` query parameter to fetch only what changed since."
+            "description": "Partner-sync cursor. Advances on every partner-visible change to the claim (report approval, document upload, expert comment, status change). On the next poll, pass the highest value you have seen as the `lastChangedSince` query parameter to fetch only what changed since."
           }
         },
         "additionalProperties": false
@@ -3032,7 +3046,7 @@
             "nullable": true
           }
         },
-        "additionalProperties": { }
+        "additionalProperties": {}
       },
       "ValidationProblemDetails": {
         "type": "object",
@@ -3069,7 +3083,7 @@
             "nullable": true
           }
         },
-        "additionalProperties": { }
+        "additionalProperties": {}
       }
     },
     "securitySchemes": {
@@ -3083,7 +3097,7 @@
   },
   "security": [
     {
-      "Bearer": [ ]
+      "Bearer": []
     }
   ]
 }

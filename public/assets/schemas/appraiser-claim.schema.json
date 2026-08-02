@@ -16,190 +16,446 @@
     "estimatedCurrency",
     "inspectionType"
   ],
+  "$defs": {
+    "requiredDate": {
+      "$comment": "Mandatory ISO date. `pattern` (not `format`) does the asserting: `format` is annotation-only because RequireFormatValidation is off.",
+      "type": "string",
+      "pattern": "^\\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12]\\d|3[01])$"
+    },
+    "locationCountry": {
+      "$comment": "country scope",
+      "type": "string",
+      "enum": [
+        "CH",
+        "DE",
+        "AT",
+        "FR",
+        "IT",
+        "LI"
+      ]
+    },
+    "onsiteContact": {
+      "$comment": "Required fields of the on-site inspection contact.",
+      "type": "object",
+      "required": [
+        "name",
+        "postalCode",
+        "city",
+        "phone",
+        "country"
+      ],
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "postalCode": {
+          "type": "string",
+          "minLength": 1
+        },
+        "city": {
+          "type": "string",
+          "minLength": 1
+        },
+        "phone": {
+          "type": "string",
+          "minLength": 1
+        },
+        "country": {
+          "$ref": "#/$defs/locationCountry"
+        }
+      }
+    }
+  },
   "properties": {
     "policyNumber": {
       "type": "string",
       "minLength": 1,
-      "maxLength": 80
+      "maxLength": 200,
+      "examples": [
+        "POL-2026-00123"
+      ]
     },
     "claimInsurance": {
       "type": "string",
-      "enum": ["liability", "own"]
+      "enum": [
+        "liability",
+        "own"
+      ]
     },
     "claimType": {
       "type": "string",
-      "enum": ["building", "infrastructure", "household"]
+      "enum": [
+        "building",
+        "infrastructure",
+        "household"
+      ]
     },
-
     "insured": {
       "type": "object",
       "additionalProperties": true,
       "properties": {
-        "name": { "type": "string" },
-        "address": { "type": "string" },
-        "postalCode": { "type": "string" },
-        "city": { "type": "string" },
-        "phone": { "type": "string" },
-        "email": { "type": "string" },
-        "note": { "type": "string" }
+        "name": {
+          "type": "string",
+          "examples": [
+            "Max Sample"
+          ]
+        },
+        "address": {
+          "type": "string",
+          "examples": [
+            "Sample Street 1"
+          ]
+        },
+        "postalCode": {
+          "type": "string",
+          "examples": [
+            "8001"
+          ]
+        },
+        "city": {
+          "type": "string",
+          "examples": [
+            "Zurich"
+          ]
+        },
+        "phone": {
+          "type": "string",
+          "examples": [
+            "+41 44 123 45 67"
+          ]
+        },
+        "email": {
+          "type": "string",
+          "examples": [
+            "max.sample@example.ch"
+          ]
+        },
+        "note": {
+          "type": "string",
+          "examples": [
+            "Reachable after 2 pm"
+          ]
+        }
       }
     },
-
     "counterparty": {
       "type": "object",
       "additionalProperties": true,
       "properties": {
-        "name": { "type": "string" },
-        "address": { "type": "string" },
-        "postalCode": { "type": "string" },
-        "city": { "type": "string" },
-        "phone": { "type": "string" },
-        "email": { "type": "string" },
-        "note": { "type": "string" }
+        "name": {
+          "type": "string",
+          "examples": [
+            "Erika Example"
+          ]
+        },
+        "address": {
+          "type": "string",
+          "examples": [
+            "Example Road 2"
+          ]
+        },
+        "postalCode": {
+          "type": "string",
+          "examples": [
+            "3011"
+          ]
+        },
+        "city": {
+          "type": "string",
+          "examples": [
+            "Bern"
+          ]
+        },
+        "phone": {
+          "type": "string",
+          "examples": [
+            "+41 31 987 65 43"
+          ]
+        },
+        "email": {
+          "type": "string",
+          "examples": [
+            "erika.example@example.ch"
+          ]
+        },
+        "note": {
+          "type": "string",
+          "examples": [
+            "Represented by a lawyer"
+          ]
+        }
       }
     },
-
     "location": {
       "type": "object",
       "additionalProperties": true,
       "properties": {
-        "address": { "type": "string" },
-        "postalCode": { "type": "string" },
-        "city": { "type": "string", "minLength": 1 }
+        "address": {
+          "type": "string",
+          "examples": [
+            "Sample Street 1"
+          ]
+        },
+        "postalCode": {
+          "type": "string",
+          "examples": [
+            "8001"
+          ]
+        },
+        "city": {
+          "type": "string",
+          "minLength": 1,
+          "examples": [
+            "Zurich"
+          ]
+        }
       },
-      "required": ["city"]
+      "required": [
+        "city"
+      ]
     },
-
     "incidentDate": {
-      "type": "string",
-      "format": "date"
+      "$ref": "#/$defs/requiredDate",
+      "examples": [
+        "2026-01-15"
+      ]
     },
-
     "damageDescription": {
       "type": "string",
       "minLength": 1,
-      "maxLength": 4000
-    },
-
-    "estimatedAmount": {
-      "oneOf": [
-        { "type": "number", "minimum": 0 },
-        { "type": "string", "pattern": "^-?\\d+(\\.\\d+)?$" }
+      "maxLength": 4000,
+      "examples": [
+        "Water damage in the basement after a pipe burst"
       ]
     },
-
+    "estimatedAmount": {
+      "$comment": "Non-negative. The string branch deliberately has no leading minus.",
+      "oneOf": [
+        {
+          "type": "number",
+          "minimum": 0
+        },
+        {
+          "type": "string",
+          "pattern": "^\\d+(\\.\\d+)?$"
+        }
+      ],
+      "examples": [
+        "2500"
+      ]
+    },
     "estimatedCurrency": {
       "type": "string",
-      "enum": ["CHF", "EUR", "USD"]
-    },
-
-    "inspectionType": {
-      "type": "string",
-      "enum": ["onsite", "estimate_review", "invoice_review"]
-    },
-
-    "inspectionDate": {
-      "oneOf": [
-        { "type": "string", "format": "date" },
-        { "type": "null" }
+      "enum": [
+        "CHF",
+        "EUR",
+        "USD"
       ]
     },
-
+    "inspectionType": {
+      "type": "string",
+      "enum": [
+        "onsite",
+        "estimate_review",
+        "invoice_review"
+      ]
+    },
+    "inspectionDate": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "pattern": "^\\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12]\\d|3[01])$",
+      "$comment": "Example deliberately far in the future: claims:validate rejects inspection dates in the past, and the docs' Test tab submits this value as-is.",
+      "examples": [
+        "2030-01-15"
+      ]
+    },
     "inspectionContact": {
       "type": "object",
       "additionalProperties": true,
       "properties": {
-        "name": { "type": "string" },
-        "phone": { "type": "string" },
-        "email": { "type": "string" },
-        "address": { "type": "string" },
-        "postalCode": { "type": "string" },
-        "city": { "type": "string" },
-        "country": { "type": "string", "enum": ["CH", "DE", "AT", "FR", "IT", "LI"] }
+        "name": {
+          "type": "string",
+          "examples": [
+            "Henry Contact"
+          ]
+        },
+        "phone": {
+          "type": "string",
+          "examples": [
+            "+41 79 555 66 77"
+          ]
+        },
+        "email": {
+          "type": "string",
+          "examples": [
+            "henry.contact@example.ch"
+          ]
+        },
+        "address": {
+          "type": "string",
+          "examples": [
+            "Contact Lane 3"
+          ]
+        },
+        "postalCode": {
+          "type": "string",
+          "examples": [
+            "8400"
+          ]
+        },
+        "city": {
+          "type": "string",
+          "examples": [
+            "Winterthur"
+          ]
+        },
+        "country": {
+          "$ref": "#/$defs/locationCountry"
+        }
       }
     },
-
     "remarks": {
-      "oneOf": [
-        { "type": "string", "maxLength": 4000 },
-        { "type": "null" }
+      "type": [
+        "string",
+        "null"
+      ],
+      "maxLength": 4000,
+      "examples": [
+        "Inspection preferred in the morning."
       ]
     }
   },
   "allOf": [
     {
-      "if": { "properties": { "claimInsurance": { "const": "liability" } } },
+      "if": {
+        "properties": {
+          "claimInsurance": {
+            "const": "liability"
+          }
+        },
+        "required": [
+          "claimInsurance"
+        ]
+      },
       "then": {
+        "required": [
+          "counterparty"
+        ],
         "properties": {
           "insured": {
             "type": "object",
             "properties": {
-              "name": { "type": "string", "minLength": 1 }
+              "name": {
+                "type": "string",
+                "minLength": 1
+              }
             },
-            "required": ["name"]
+            "required": [
+              "name"
+            ]
           },
           "counterparty": {
             "type": "object",
             "properties": {
-              "name": { "type": "string", "minLength": 1 },
-              "phone": { "type": "string", "minLength": 1 },
-              "city": { "type": "string", "minLength": 1 }
+              "name": {
+                "type": "string",
+                "minLength": 1
+              },
+              "phone": {
+                "type": "string",
+                "minLength": 1
+              },
+              "city": {
+                "type": "string",
+                "minLength": 1
+              }
             },
-            "required": ["name", "phone", "city"]
+            "required": [
+              "name",
+              "phone",
+              "city"
+            ]
           }
         }
       }
     },
     {
-      "if": { "properties": { "claimInsurance": { "const": "own" } } },
+      "if": {
+        "properties": {
+          "claimInsurance": {
+            "const": "own"
+          }
+        },
+        "required": [
+          "claimInsurance"
+        ]
+      },
       "then": {
         "properties": {
           "insured": {
             "type": "object",
             "properties": {
-              "name": { "type": "string", "minLength": 1 },
-              "phone": { "type": "string", "minLength": 1 },
-              "city": { "type": "string", "minLength": 1 }
+              "name": {
+                "type": "string",
+                "minLength": 1
+              },
+              "phone": {
+                "type": "string",
+                "minLength": 1
+              },
+              "city": {
+                "type": "string",
+                "minLength": 1
+              }
             },
-            "required": ["name", "phone", "city"]
+            "required": [
+              "name",
+              "phone",
+              "city"
+            ]
           }
         }
       }
     },
     {
-      "if": { "properties": { "inspectionType": { "const": "onsite" } } },
-      "then": {
-        "required": ["inspectionDate", "inspectionContact"],
+      "if": {
         "properties": {
-          "inspectionDate": { "type": "string", "format": "date" },
+          "inspectionType": {
+            "const": "onsite"
+          }
+        },
+        "required": [
+          "inspectionType"
+        ]
+      },
+      "then": {
+        "required": [
+          "inspectionDate",
+          "inspectionContact"
+        ],
+        "properties": {
+          "inspectionDate": {
+            "$ref": "#/$defs/requiredDate"
+          },
           "inspectionContact": {
-            "type": "object",
-            "properties": {
-              "name": { "type": "string", "minLength": 1 },
-              "postalCode": { "type": "string", "minLength": 1 },
-              "city": { "type": "string", "minLength": 1 },
-              "phone": { "type": "string", "minLength": 1 },
-              "country": { "type": "string", "enum": ["CH", "DE", "AT", "FR", "IT", "LI"] }
-            },
-            "required": ["name", "postalCode", "city", "phone"]
+            "$ref": "#/$defs/onsiteContact"
           }
         }
       }
     },
     {
-      "if": { "required": ["inspectionContact"] },
+      "if": {
+        "required": [
+          "inspectionContact"
+        ]
+      },
       "then": {
         "properties": {
           "inspectionContact": {
-            "type": "object",
-            "properties": {
-              "name": { "type": "string", "minLength": 1 },
-              "postalCode": { "type": "string", "minLength": 1 },
-              "city": { "type": "string", "minLength": 1 },
-              "phone": { "type": "string", "minLength": 1 },
-              "country": { "type": "string", "enum": ["CH", "DE", "AT", "FR", "IT", "LI"] }
-            },
-            "required": ["name", "postalCode", "city", "phone"]
+            "$ref": "#/$defs/onsiteContact"
           }
         }
       }

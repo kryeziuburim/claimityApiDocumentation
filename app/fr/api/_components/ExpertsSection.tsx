@@ -11,13 +11,17 @@ export function ExpertsSection() {
       </div>
 
       <div className="rounded-lg border border-border bg-muted/20 p-4 text-sm text-muted-foreground">
-        <h4 className="mb-2 text-sm font-semibold text-foreground">Synchronisation incrémentale &amp; horodatages</h4>
+        <h4 className="mb-2 text-sm font-semibold text-foreground">Horodatages & synchronisation incrémentale</h4>
+        <p className="mb-3 text-pretty">Horodatages et filtres de synchronisation (inclusifs &gt;=), nommés d'après le champ qu'ils filtrent :</p>
         <ul className="space-y-1.5">
           <li>
-            <span className="font-mono">LastChangedAt</span> — horodatage UTC de la dernière modification du dossier pertinente pour
-            le partenaire (statut, commentaire de l'expert, rapports, documents, …). Utilisable comme curseur de synchronisation :
-            conservez la valeur la plus élevée vue et renvoyez-la via <span className="font-mono">updatedSince</span> pour ne
-            récupérer que ce qui a changé depuis.
+            <span className="font-mono">CreatedAt</span> — Date de création du sinistre. Filtres : createdFrom / createdTo.
+          </li>
+          <li>
+            completedFrom / completedTo filtrent sur le moment de la clôture la plus récente (événement Finalized ; pour les dossiers rouverts, la clôture la plus récente compte). Prévu pour des fenêtres d'analyse (« tous les dossiers clôturés au T2 ») — pas pour la synchronisation.
+          </li>
+          <li>
+            <span className="font-mono">LastChangedAt</span> — Dernière modification pertinente pour le partenaire (statut, documents, rapports, commentaires). Filtre : lastChangedSince.
           </li>
         </ul>
       </div>
@@ -32,7 +36,7 @@ export function ExpertsSection() {
               method="GET"
               path="/v1/experts/cases"
               label="List"
-              description="Liste paginée des dossiers. Filtres : status (Created, Assigned, Accepted, Rejected, InProgress, ExpertCompleted, Final), category (vehicle, appraiser, fraud, special), inspectionType (onsite, workshop, private, live_expertise, estimate_review, invoice_review), q (recherche plein texte), createdFrom/createdTo, completedFrom/completedTo, updatedSince (synchronisation incrémentale). Chaque élément inclut LastChangedAt."
+              description="Liste paginée de dossiers."
             />
           </div>
 

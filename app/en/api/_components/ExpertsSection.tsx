@@ -11,12 +11,17 @@ export function ExpertsSection() {
       </div>
 
       <div className="rounded-lg border border-border bg-muted/20 p-4 text-sm text-muted-foreground">
-        <h4 className="mb-2 text-sm font-semibold text-foreground">Incremental sync &amp; timestamps</h4>
+        <h4 className="mb-2 text-sm font-semibold text-foreground">Timestamps & incremental synchronisation</h4>
+        <p className="mb-3 text-pretty">Timestamps and sync filters (inclusive &gt;=), named after the field they filter:</p>
         <ul className="space-y-1.5">
           <li>
-            <span className="font-mono">LastChangedAt</span> — UTC timestamp of the last partner-relevant change to the case
-            (status, expert comment, reports, documents, …). Use it as a sync cursor: store the highest value you have seen and
-            pass it back as <span className="font-mono">updatedSince</span> to fetch only what has changed since.
+            <span className="font-mono">CreatedAt</span> — When the claim was created. Filters: createdFrom / createdTo.
+          </li>
+          <li>
+            completedFrom / completedTo filter on the moment of the most recent completion (Finalized event; for reopened cases the newest completion counts). Meant for reporting windows (“all cases completed in Q2”) — not for synchronisation.
+          </li>
+          <li>
+            <span className="font-mono">LastChangedAt</span> — Last partner-relevant change (status, documents, reports, comments). Filter: lastChangedSince.
           </li>
         </ul>
       </div>
@@ -31,7 +36,7 @@ export function ExpertsSection() {
               method="GET"
               path="/v1/experts/cases"
               label="List"
-              description="Paginated list of cases. Filters: status (Created, Assigned, Accepted, Rejected, InProgress, ExpertCompleted, Final), category (vehicle, appraiser, fraud, special), inspectionType (onsite, workshop, private, live_expertise, estimate_review, invoice_review), q (free-text), createdFrom/createdTo, completedFrom/completedTo, updatedSince (incremental sync). Each item includes LastChangedAt."
+              description="Paginated list of cases."
             />
           </div>
 

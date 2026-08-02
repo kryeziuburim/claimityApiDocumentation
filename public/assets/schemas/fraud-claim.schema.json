@@ -16,80 +16,267 @@
     "estimatedCurrency",
     "supportRequest"
   ],
+  "$defs": {
+    "optionalDate": {
+      "$comment": "Optional ISO date. Empty string and null both mean 'not set'. Deliberately NOT modelled as oneOf[format:date, maxLength:0, null]: `format` is annotation-only (RequireFormatValidation is off), so an empty string would match two branches and oneOf would fail.",
+      "type": [
+        "string",
+        "null"
+      ],
+      "pattern": "^(\\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12]\\d|3[01]))?$"
+    },
+    "driverAtIncident": {
+      "type": "string",
+      "enum": [
+        "unknown",
+        "yes",
+        "no"
+      ]
+    },
+    "isDriver": {
+      "$comment": "Matches a party object that is explicitly marked as the driver.",
+      "type": "object",
+      "properties": {
+        "driverAtIncident": {
+          "const": "yes"
+        }
+      },
+      "required": [
+        "driverAtIncident"
+      ]
+    }
+  },
   "properties": {
     "policyNumber": {
       "type": "string",
       "minLength": 1,
-      "maxLength": 80
+      "maxLength": 200,
+      "examples": [
+        "POL-2026-00123"
+      ]
     },
     "claimInsurance": {
       "type": "string",
-      "enum": ["liability", "partial", "comprehensive"]
+      "enum": [
+        "liability",
+        "partial",
+        "comprehensive"
+      ]
     },
     "claimType": {
       "type": "string",
       "minLength": 1,
-      "maxLength": 200
+      "maxLength": 200,
+      "examples": [
+        "Theft"
+      ]
     },
-
     "insured": {
       "type": "object",
       "additionalProperties": true,
       "properties": {
-        "name": { "type": "string", "minLength": 1 },
-        "address": { "type": "string", "minLength": 1 },
-        "postalCode": { "type": "string", "minLength": 1 },
-        "city": { "type": "string", "minLength": 1 },
-        "phone": { "type": "string", "minLength": 1 },
-        "email": { "type": "string", "minLength": 1 },
-        "note": { "type": "string" },
-        "birthPostalCode": { "type": "string" },
-        "birthCity": { "type": "string" },
-        "birthDate": {
-          "oneOf": [
-            { "type": "string", "format": "date" },
-            { "type": "string", "maxLength": 0 },
-            { "type": "null" }
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "examples": [
+            "Max Sample"
           ]
         },
-        "driverAtIncident": { "type": "string", "enum": ["unknown", "yes", "no"] },
-        "licensePlate": { "type": "string" },
-        "carMake": { "type": "string" },
-        "carModel": { "type": "string" },
-        "vin": { "type": "string" }
+        "address": {
+          "type": "string",
+          "minLength": 1,
+          "examples": [
+            "Sample Street 1"
+          ]
+        },
+        "postalCode": {
+          "type": "string",
+          "minLength": 1,
+          "examples": [
+            "8001"
+          ]
+        },
+        "city": {
+          "type": "string",
+          "minLength": 1,
+          "examples": [
+            "Zurich"
+          ]
+        },
+        "phone": {
+          "type": "string",
+          "minLength": 1,
+          "examples": [
+            "+41 44 123 45 67"
+          ]
+        },
+        "email": {
+          "type": "string",
+          "minLength": 1,
+          "examples": [
+            "max.sample@example.ch"
+          ]
+        },
+        "note": {
+          "type": "string",
+          "examples": [
+            "Reachable after 2 pm"
+          ]
+        },
+        "birthPostalCode": {
+          "type": "string",
+          "examples": [
+            "8003"
+          ]
+        },
+        "birthCity": {
+          "type": "string",
+          "examples": [
+            "Zurich"
+          ]
+        },
+        "birthDate": {
+          "$ref": "#/$defs/optionalDate",
+          "examples": [
+            "1985-04-12"
+          ]
+        },
+        "driverAtIncident": {
+          "$ref": "#/$defs/driverAtIncident"
+        },
+        "licensePlate": {
+          "type": "string",
+          "examples": [
+            "ZH 123456"
+          ]
+        },
+        "carMake": {
+          "type": "string",
+          "examples": [
+            "VW"
+          ]
+        },
+        "carModel": {
+          "type": "string",
+          "examples": [
+            "Golf"
+          ]
+        },
+        "vin": {
+          "type": "string",
+          "examples": [
+            "WVWZZZ1KZAW123456"
+          ]
+        }
       },
-      "required": ["name", "address", "postalCode", "city", "phone", "email"]
+      "required": [
+        "name",
+        "address",
+        "postalCode",
+        "city",
+        "phone",
+        "email"
+      ]
     },
-
     "counterparty": {
       "type": "object",
       "additionalProperties": true,
       "properties": {
-        "name": { "type": "string", "minLength": 1 },
-        "address": { "type": "string", "minLength": 1 },
-        "postalCode": { "type": "string", "minLength": 1 },
-        "city": { "type": "string", "minLength": 1 },
-        "phone": { "type": "string", "minLength": 1 },
-        "email": { "type": "string", "minLength": 1 },
-        "note": { "type": "string" },
-        "birthPostalCode": { "type": "string" },
-        "birthCity": { "type": "string" },
-        "birthDate": {
-          "oneOf": [
-            { "type": "string", "format": "date" },
-            { "type": "string", "maxLength": 0 },
-            { "type": "null" }
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "examples": [
+            "Erika Example"
           ]
         },
-        "driverAtIncident": { "type": "string", "enum": ["unknown", "yes", "no"] },
-        "licensePlate": { "type": "string" },
-        "carMake": { "type": "string" },
-        "carModel": { "type": "string" },
-        "vin": { "type": "string" }
-      },
-      "required": ["name", "address", "postalCode", "city", "phone", "email"]
+        "address": {
+          "type": "string",
+          "minLength": 1,
+          "examples": [
+            "Example Road 2"
+          ]
+        },
+        "postalCode": {
+          "type": "string",
+          "minLength": 1,
+          "examples": [
+            "3011"
+          ]
+        },
+        "city": {
+          "type": "string",
+          "minLength": 1,
+          "examples": [
+            "Bern"
+          ]
+        },
+        "phone": {
+          "type": "string",
+          "minLength": 1,
+          "examples": [
+            "+41 31 987 65 43"
+          ]
+        },
+        "email": {
+          "type": "string",
+          "minLength": 1,
+          "examples": [
+            "erika.example@example.ch"
+          ]
+        },
+        "note": {
+          "type": "string",
+          "examples": [
+            "Represented by a lawyer"
+          ]
+        },
+        "birthPostalCode": {
+          "type": "string",
+          "examples": [
+            "3007"
+          ]
+        },
+        "birthCity": {
+          "type": "string",
+          "examples": [
+            "Bern"
+          ]
+        },
+        "birthDate": {
+          "$ref": "#/$defs/optionalDate",
+          "examples": [
+            "1979-11-02"
+          ]
+        },
+        "driverAtIncident": {
+          "$ref": "#/$defs/driverAtIncident"
+        },
+        "licensePlate": {
+          "type": "string",
+          "examples": [
+            "BE 654321"
+          ]
+        },
+        "carMake": {
+          "type": "string",
+          "examples": [
+            "Audi"
+          ]
+        },
+        "carModel": {
+          "type": "string",
+          "examples": [
+            "A4"
+          ]
+        },
+        "vin": {
+          "type": "string",
+          "examples": [
+            "WAUZZZ8K9BA123456"
+          ]
+        }
+      }
     },
-
     "insuredPersons": {
       "type": "array",
       "maxItems": 25,
@@ -97,33 +284,76 @@
         "type": "object",
         "additionalProperties": true,
         "properties": {
-          "name": { "type": "string" },
-          "address": { "type": "string" },
-          "postalCode": { "type": "string" },
-          "city": { "type": "string" },
-          "phone": { "type": "string" },
-          "email": { "type": "string" },
-          "birthPostalCode": { "type": "string" },
-          "birthCity": { "type": "string" },
-          "birthDate": {
-            "oneOf": [
-              { "type": "string", "format": "date" },
-              { "type": "string", "maxLength": 0 },
-              { "type": "null" }
+          "name": {
+            "type": "string",
+            "examples": [
+              "Petra Extra"
             ]
           },
-          "driverAtIncident": { "type": "string", "enum": ["unknown", "yes", "no"] }
+          "address": {
+            "type": "string",
+            "examples": [
+              "Side Lane 4"
+            ]
+          },
+          "postalCode": {
+            "type": "string",
+            "examples": [
+              "8400"
+            ]
+          },
+          "city": {
+            "type": "string",
+            "examples": [
+              "Winterthur"
+            ]
+          },
+          "phone": {
+            "type": "string",
+            "examples": [
+              "+41 79 222 33 44"
+            ]
+          },
+          "email": {
+            "type": "string",
+            "examples": [
+              "petra.extra@example.ch"
+            ]
+          },
+          "birthPostalCode": {
+            "type": "string",
+            "examples": [
+              "8003"
+            ]
+          },
+          "birthCity": {
+            "type": "string",
+            "examples": [
+              "Zurich"
+            ]
+          },
+          "birthDate": {
+            "$ref": "#/$defs/optionalDate",
+            "examples": [
+              "1990-09-30"
+            ]
+          },
+          "driverAtIncident": {
+            "$ref": "#/$defs/driverAtIncident"
+          }
         }
       },
+      "$comment": "minContains:0 keeps the empty array valid. errorMessage is keyed by the keyword the evaluator actually reports — min/maxContains violations both surface as `contains`.",
+      "errorMessage": {
+        "contains": "at most one entry may have driverAtIncident = \"yes\".",
+        "maxItems": "at most 25 additional persons can be submitted."
+      },
       "contains": {
-        "type": "object",
-        "properties": { "driverAtIncident": { "const": "yes" } },
-        "required": ["driverAtIncident"]
+        "$ref": "#/$defs/isDriver"
       },
       "minContains": 0,
       "maxContains": 1
     },
-
     "counterpartyPersons": {
       "type": "array",
       "maxItems": 25,
@@ -131,109 +361,286 @@
         "type": "object",
         "additionalProperties": true,
         "properties": {
-          "name": { "type": "string" },
-          "address": { "type": "string" },
-          "postalCode": { "type": "string" },
-          "city": { "type": "string" },
-          "phone": { "type": "string" },
-          "email": { "type": "string" },
-          "birthPostalCode": { "type": "string" },
-          "birthCity": { "type": "string" },
-          "birthDate": {
-            "oneOf": [
-              { "type": "string", "format": "date" },
-              { "type": "string", "maxLength": 0 },
-              { "type": "null" }
+          "name": {
+            "type": "string",
+            "examples": [
+              "Petra Extra"
             ]
           },
-          "driverAtIncident": { "type": "string", "enum": ["unknown", "yes", "no"] }
+          "address": {
+            "type": "string",
+            "examples": [
+              "Side Lane 4"
+            ]
+          },
+          "postalCode": {
+            "type": "string",
+            "examples": [
+              "8400"
+            ]
+          },
+          "city": {
+            "type": "string",
+            "examples": [
+              "Winterthur"
+            ]
+          },
+          "phone": {
+            "type": "string",
+            "examples": [
+              "+41 79 222 33 44"
+            ]
+          },
+          "email": {
+            "type": "string",
+            "examples": [
+              "petra.extra@example.ch"
+            ]
+          },
+          "birthPostalCode": {
+            "type": "string",
+            "examples": [
+              "8003"
+            ]
+          },
+          "birthCity": {
+            "type": "string",
+            "examples": [
+              "Zurich"
+            ]
+          },
+          "birthDate": {
+            "$ref": "#/$defs/optionalDate",
+            "examples": [
+              "1990-09-30"
+            ]
+          },
+          "driverAtIncident": {
+            "$ref": "#/$defs/driverAtIncident"
+          }
         }
       },
+      "$comment": "minContains:0 keeps the empty array valid. errorMessage is keyed by the keyword the evaluator actually reports — min/maxContains violations both surface as `contains`.",
+      "errorMessage": {
+        "contains": "at most one entry may have driverAtIncident = \"yes\".",
+        "maxItems": "at most 25 additional persons can be submitted."
+      },
       "contains": {
-        "type": "object",
-        "properties": { "driverAtIncident": { "const": "yes" } },
-        "required": ["driverAtIncident"]
+        "$ref": "#/$defs/isDriver"
       },
       "minContains": 0,
       "maxContains": 1
     },
-
     "location": {
       "type": "object",
       "additionalProperties": true,
       "properties": {
-        "address": { "type": "string" },
-        "postalCode": { "type": "string" },
-        "city": { "type": "string", "minLength": 1 }
+        "address": {
+          "type": "string",
+          "examples": [
+            "Sample Street 1"
+          ]
+        },
+        "postalCode": {
+          "type": "string",
+          "examples": [
+            "8001"
+          ]
+        },
+        "city": {
+          "type": "string",
+          "minLength": 1,
+          "examples": [
+            "Zurich"
+          ]
+        }
       },
-      "required": ["city"]
-    },
-
-    "incidentDate": {
-      "type": "string",
-      "format": "date"
-    },
-    "incidentTime": {
-      "oneOf": [
-        { "type": "string", "pattern": "^([01]\\d|2[0-3]):([0-5]\\d)$" },
-        { "type": "null" }
+      "required": [
+        "city"
       ]
     },
-
+    "incidentDate": {
+      "type": "string",
+      "pattern": "^\\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12]\\d|3[01])$",
+      "examples": [
+        "2026-01-15"
+      ]
+    },
+    "incidentTime": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "pattern": "^([01]\\d|2[0-3]):([0-5]\\d)$",
+      "examples": [
+        "14:30"
+      ]
+    },
     "damageDescription": {
       "type": "string",
       "minLength": 1,
-      "maxLength": 4000
-    },
-
-    "estimatedAmount": {
-      "oneOf": [
-        { "type": "number", "minimum": 0 },
-        { "type": "string", "pattern": "^-?\\d+(\\.\\d+)?$" }
+      "maxLength": 4000,
+      "examples": [
+        "Contradictory statements about the course of events"
       ]
     },
-
-    "estimatedCurrency": { "type": "string", "enum": ["CHF", "EUR", "USD"] },
-
+    "estimatedAmount": {
+      "$comment": "Non-negative. The string branch deliberately has no leading minus.",
+      "oneOf": [
+        {
+          "type": "number",
+          "minimum": 0
+        },
+        {
+          "type": "string",
+          "pattern": "^\\d+(\\.\\d+)?$"
+        }
+      ],
+      "examples": [
+        "2500"
+      ]
+    },
+    "estimatedCurrency": {
+      "type": "string",
+      "enum": [
+        "CHF",
+        "EUR",
+        "USD"
+      ]
+    },
     "supportRequest": {
       "type": "string",
       "minLength": 1,
-      "maxLength": 10000
+      "maxLength": 10000,
+      "examples": [
+        "Please review the course of events for inconsistencies."
+      ]
     },
-
     "remarks": {
-      "oneOf": [
-        { "type": "string", "maxLength": 4000 },
-        { "type": "null" }
+      "type": [
+        "string",
+        "null"
+      ],
+      "maxLength": 4000,
+      "examples": [
+        "Previous reports by the same policyholder exist."
       ]
     }
   },
   "allOf": [
     {
-      "if": { "properties": { "claimInsurance": { "const": "liability" } } },
+      "$comment": "The counterparty is only mandatory for liability.",
+      "if": {
+        "properties": {
+          "claimInsurance": {
+            "const": "liability"
+          }
+        },
+        "required": [
+          "claimInsurance"
+        ]
+      },
       "then": {
-        "required": ["counterparty"],
+        "required": [
+          "counterparty"
+        ],
         "properties": {
           "counterparty": {
             "type": "object",
-            "required": ["name", "address", "postalCode", "city", "phone", "email"]
+            "required": [
+              "name",
+              "address",
+              "postalCode",
+              "city",
+              "phone",
+              "email"
+            ],
+            "properties": {
+              "name": {
+                "type": "string",
+                "minLength": 1
+              },
+              "address": {
+                "type": "string",
+                "minLength": 1
+              },
+              "postalCode": {
+                "type": "string",
+                "minLength": 1
+              },
+              "city": {
+                "type": "string",
+                "minLength": 1
+              },
+              "phone": {
+                "type": "string",
+                "minLength": 1
+              },
+              "email": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
           }
         }
       }
     },
     {
+      "$comment": "The `required` guards matter: without them a missing persons array makes the branch vacuously true, which would wrongly forbid the main party from being the driver.",
+      "errorMessage": "only one person on the policyholder side may have driverAtIncident = \"yes\" — it is set on both `insured` and an entry in `insuredPersons`.",
       "not": {
         "allOf": [
-          { "properties": { "insured": { "type": "object", "properties": { "driverAtIncident": { "const": "yes" } }, "required": ["driverAtIncident"] } } },
-          { "properties": { "insuredPersons": { "contains": { "type": "object", "properties": { "driverAtIncident": { "const": "yes" } }, "required": ["driverAtIncident"] } } } }
+          {
+            "properties": {
+              "insured": {
+                "$ref": "#/$defs/isDriver"
+              }
+            },
+            "required": [
+              "insured"
+            ]
+          },
+          {
+            "properties": {
+              "insuredPersons": {
+                "contains": {
+                  "$ref": "#/$defs/isDriver"
+                }
+              }
+            },
+            "required": [
+              "insuredPersons"
+            ]
+          }
         ]
       }
     },
     {
+      "errorMessage": "only one person on the counterparty side may have driverAtIncident = \"yes\" — it is set on both `counterparty` and an entry in `counterpartyPersons`.",
       "not": {
         "allOf": [
-          { "properties": { "counterparty": { "type": "object", "properties": { "driverAtIncident": { "const": "yes" } }, "required": ["driverAtIncident"] } } },
-          { "properties": { "counterpartyPersons": { "contains": { "type": "object", "properties": { "driverAtIncident": { "const": "yes" } }, "required": ["driverAtIncident"] } } } }
+          {
+            "properties": {
+              "counterparty": {
+                "$ref": "#/$defs/isDriver"
+              }
+            },
+            "required": [
+              "counterparty"
+            ]
+          },
+          {
+            "properties": {
+              "counterpartyPersons": {
+                "contains": {
+                  "$ref": "#/$defs/isDriver"
+                }
+              }
+            },
+            "required": [
+              "counterpartyPersons"
+            ]
+          }
         ]
       }
     }

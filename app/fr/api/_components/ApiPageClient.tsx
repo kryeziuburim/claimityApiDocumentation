@@ -49,7 +49,9 @@ const navigationItems: NavItem[] = [
     children: [
       { id: "basics-request-format", title: "Format de requête" },
       { id: "basics-response-format", title: "Format de réponse" },
-      { id: "basics-rate-limiting", title: "Limitation de débit" },
+      { id: "basics-rate-limiting", title: "Rate Limiting" },
+      { id: "basics-idempotency", title: "Idempotence" },
+      { id: "basics-errors", title: "Catalogue d'erreurs" },
     ],
   },
   {

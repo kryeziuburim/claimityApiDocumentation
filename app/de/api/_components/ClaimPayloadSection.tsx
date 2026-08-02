@@ -181,7 +181,7 @@ export function ClaimPayloadSection({
           if (cancelled) return
           setSchemas((prev) => ({
             ...prev,
-            [payload.key]: { loading: false, schema: json, error: null },
+            [payload.key]: { loading: false, schema: dereferenceSchema(json), error: null },
           }))
         })
         .catch((err) => {
@@ -667,6 +667,35 @@ export function ClaimPayloadSection({
                             </span>
                           </AccordionTrigger>
                           <AccordionContent className="space-y-6 px-1">
+                            {/* Not derived from the schema: JSON Schema cannot express rules relative to the current date. */}
+                            <div className="space-y-3">
+                              <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                                Zeitliche Plausibilität (alle Kategorien)
+                              </p>
+                              <div className="rounded-2xl border border-border/40 bg-muted/30 p-4">
+                                <ul className="space-y-2 text-sm text-muted-foreground">
+                                    <li className="flex gap-2">
+                                      <span className="text-primary">•</span>
+                                      <span className="text-pretty"><RuleText text={"`incidentDate` darf nicht in der Zukunft liegen."} /></span>
+                                    </li>
+                                    <li className="flex gap-2">
+                                      <span className="text-primary">•</span>
+                                      <span className="text-pretty"><RuleText text={"`inspectionDate` darf nicht in der Vergangenheit liegen."} /></span>
+                                    </li>
+                                    <li className="flex gap-2">
+                                      <span className="text-primary">•</span>
+                                      <span className="text-pretty"><RuleText text={"`firstRegistration` und `birthDate` dürfen nicht in der Zukunft liegen – auch in `insuredPersons[]` und `counterpartyPersons[]`."} /></span>
+                                    </li>
+                                    <li className="flex gap-2">
+                                      <span className="text-primary">•</span>
+                                      <span className="text-pretty"><RuleText text={"Stichtag ist der aktuelle Tag in Europe/Zurich, mit einem Tag Toleranz in beide Richtungen (Zeitzonen-Ausgleich)."} /></span>
+                                    </li>
+                                </ul>
+                                <p className="mt-3 text-xs text-muted-foreground/80">
+                                  Diese Regeln lassen sich in JSON Schema nicht ausdrücken – dort gibt es keinen Begriff von „heute“. Sie erscheinen daher nicht im Schema-Download, werden aber serverseitig geprüft.
+                                </p>
+                              </div>
+                            </div>
                             {ruleGroups.length ? (
                               ruleGroups.map((group) => (
                                 <div key={`${payload.key}-${group.key}`} className="space-y-3">
@@ -947,6 +976,47 @@ function describeDriverYesLimit(
   return `${contextLabel}: In ${objectName} und ${arrayName}[] darf ${limitText} driverAtIncident = "yes" sein${optionalNote}.`
 }
 
+// The claim schemas factor shared definitions (dates, country enum, contact blocks) into `$defs` and
+// reference them with `$ref`. Every renderer below walks the schema structurally, so a `{ "$ref": ... }`
+// node would render as an empty field. Inlining the targets once, at load time, keeps all of them
+// working without each having to understand references.
+function dereferenceSchema(root: any): any {
+  const resolvePointer = (pointer: string): any => {
+    if (!pointer.startsWith("#")) return null
+    return pointer
+      .slice(1)
+      .split("/")
+      .filter(Boolean)
+      .reduce((node: any, rawSegment: string) => {
+        if (node === null || node === undefined) return null
+        const segment = rawSegment.replace(/~1/g, "/").replace(/~0/g, "~")
+        return node[segment] ?? null
+      }, root)
+  }
+
+  // `seen` breaks reference cycles; a self-referential schema would otherwise recurse forever.
+  const inline = (node: any, seen: Set<string>): any => {
+    if (Array.isArray(node)) return node.map((item) => inline(item, seen))
+    if (!node || typeof node !== "object") return node
+
+    if (typeof node.$ref === "string") {
+      if (seen.has(node.$ref)) return {}
+      const target = resolvePointer(node.$ref)
+      if (!target) return {}
+      const { $ref, ...siblings } = node
+      return { ...inline(target, new Set([...seen, $ref])), ...inline(siblings, seen) }
+    }
+
+    return Object.fromEntries(Object.entries(node).map(([key, value]) => [key, inline(value, seen)]))
+  }
+
+  const resolved = inline(root, new Set())
+  // $defs has served its purpose once everything is inlined, and keeping it would make the renderers
+  // report the shared definitions as if they were payload fields.
+  if (resolved && typeof resolved === "object") delete resolved.$defs
+  return resolved
+}
+
 function buildExamplePayload(schema: any): any {
   if (!schema) return null
   if (schema.const !== undefined) return schema.const
@@ -1030,8 +1100,14 @@ function sampleForPattern(pattern: string): string {
   if (pattern === "^([01]\\d|2[0-3]):([0-5]\\d)$") {
     return "10:30"
   }
-  if (pattern === "^-?\\d+(\\.\\d+)?$") {
-    return "0.00"
+  if (pattern === "^\\d+(\\.\\d+)?$") {
+    return "1234.00"
+  }
+  if (
+    pattern === "^\\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12]\\d|3[01])$" ||
+    pattern === "^(\\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12]\\d|3[01]))?$"
+  ) {
+    return "2024-01-31"
   }
   return "pattern-value"
 }
@@ -1102,8 +1178,14 @@ function describeFormatDetail(schema: any): string | null {
     if (schema.pattern === "^([01]\\d|2[0-3]):([0-5]\\d)$") {
       return "Zeitfeld HH:MM (24h)"
     }
-    if (schema.pattern === "^-?\\d+(\\.\\d+)?$") {
-      return "Numerischer String (optional Nachkommastellen, Punkt als Trenner)"
+    if (schema.pattern === "^\\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12]\\d|3[01])$") {
+      return "Datum im ISO-Format YYYY-MM-DD"
+    }
+    if (schema.pattern === "^(\\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12]\\d|3[01]))?$") {
+      return 'Datum im ISO-Format YYYY-MM-DD, leer ("") oder null'
+    }
+    if (schema.pattern === "^\\d+(\\.\\d+)?$") {
+      return "Numerischer String ohne Vorzeichen (optional Nachkommastellen, Punkt als Trenner)"
     }
     return `Muss Regex ${schema.pattern} entsprechen`
   }

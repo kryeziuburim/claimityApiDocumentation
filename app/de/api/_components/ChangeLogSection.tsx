@@ -11,6 +11,11 @@ export function ChangeLogSection() {
       <div className="space-y-4">
         {[
           {
+            date: "2026-08-02",
+            changes:
+              "Sync-Filter überarbeitet: updatedSince heisst neu lastChangedSince (beide Endpunkte /v1/insurers/claims und /v1/experts/cases) — der Filter trägt damit den Namen des Feldes, das er filtert (LastChangedAt). Neu: lastReportApprovedSince auf /v1/insurers/claims liefert nur Claims, deren letzte Report-Genehmigung am/nach dem angegebenen Zeitpunkt liegt (Claims ohne genehmigten Report matchen nie). completedFrom/completedTo bleiben unverändert und filtern den Zeitpunkt des jüngsten Fallabschlusses.",
+          },
+          {
             date: "2026-07-15",
             changes:
               "Experten-API: neuer Endpunkt zum Wiedereröffnen eines abgeschlossenen Falls (POST /v1/experts/cases/{caseId}:reopen, liefert 204). List-Endpoints um Filter (Freitextsuche q, Datumsbereiche für Erstellung/Abschluss) und einen updatedSince-Cursor für inkrementelle Synchronisierung erweitert. Fälle liefern nun LastChangedAt; Claims zusätzlich LastReportApprovedAt. Create- und Upload-Endpoints liefern nun 201 Created. Jede Antwort liefert nun einen X-Correlation-Id-Header (ein gültiger eingehender Wert wird zurückgegeben) für Ende-zu-Ende-Tracing; bei Fehlern ist er zugleich die ProblemDetails-instance.",

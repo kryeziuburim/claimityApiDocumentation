@@ -11,6 +11,12 @@ export function ChangeLogSection() {
       <div className="space-y-4">
         {[
           {
+            date: "2026-08-02",
+            breaking: true,
+            changes:
+              "Reworked the sync filters: updatedSince is now lastChangedSince (both endpoints /v1/insurers/claims and /v1/experts/cases) — the filter now carries the name of the field it filters (LastChangedAt). New: lastReportApprovedSince on /v1/insurers/claims returns only claims whose latest report approval is at/after the given instant (claims without an approved report never match). completedFrom/completedTo are unchanged and filter the moment of the most recent completion.",
+          },
+          {
             date: "2026-07-15",
             changes:
               "Expert API: new endpoint to reopen a completed case (POST /v1/experts/cases/{caseId}:reopen, returns 204). List endpoints gained filters (free-text search q, created/completed date ranges) and an updatedSince cursor for incremental sync. Cases now expose LastChangedAt; claims additionally expose LastReportApprovedAt. Create and upload endpoints now return 201 Created. Every response now returns an X-Correlation-Id header (echoing a valid inbound one) for end-to-end tracing; on errors it is also the ProblemDetails instance.",

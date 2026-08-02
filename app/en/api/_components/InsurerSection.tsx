@@ -11,19 +11,29 @@ export function InsurerSection() {
       </div>
 
       <div className="rounded-lg border border-border bg-muted/20 p-4 text-sm text-muted-foreground">
-        <h4 className="mb-2 text-sm font-semibold text-foreground">Incremental sync &amp; timestamps</h4>
+        <h4 className="mb-2 text-sm font-semibold text-foreground">Timestamps & incremental synchronisation</h4>
+        <p className="mb-3 text-pretty">Four timestamps drive list filtering and synchronisation. The sync filters are named after the field they filter and compare inclusively (&gt;=).</p>
         <ul className="space-y-1.5">
           <li>
-            <span className="font-mono">LastChangedAt</span> — UTC timestamp of the last partner-relevant change to the claim
-            (status, documents, reports, …). Use it as a sync cursor: store the highest value you have seen and pass it back as
-            <span className="font-mono"> updatedSince</span> to fetch only what has changed since.
+            <span className="font-mono">CreatedAt</span> — When the claim was created. Filters: createdFrom / createdTo.
           </li>
           <li>
-            <span className="font-mono">LastReportApprovedAt</span> — UTC timestamp of when the most recently approved expert report
-            for the claim was approved (<span className="font-mono">null</span> if none yet). Use it to detect that a new or updated
-            report has become available for a claim.
+            completedFrom / completedTo filter on the moment of the most recent completion (Finalized event; for reopened cases the newest completion counts). Meant for reporting windows (“all cases completed in Q2”) — not for synchronisation.
+          </li>
+          <li>
+            <span className="font-mono">LastChangedAt</span> — Last partner-relevant change (status, documents, reports, comments). Filter: lastChangedSince.
+          </li>
+          <li>
+            <span className="font-mono">LastReportApprovedAt</span> — When the most recent report approval happened (null if none yet). Filter: lastReportApprovedSince — claims without an approved report never match.
           </li>
         </ul>
+        <h4 className="mb-1.5 mt-4 text-sm font-semibold text-foreground">Sync recipe (daily poller)</h4>
+        <ol className="list-decimal space-y-1 pl-5">
+          <li>Query with lastChangedSince=&lt;stored cursor&gt; (first run: without the filter).</li>
+          <li>Process results idempotently — the comparison is inclusive, so the boundary value can appear again.</li>
+          <li>Store the maximum LastChangedAt you saw as the new cursor.</li>
+          <li>Only interested in newly approved reports? Same flow with lastReportApprovedSince and LastReportApprovedAt.</li>
+        </ol>
       </div>
 
       <div className="rounded-2xl border border-border bg-card/80 p-4 sm:p-5">
@@ -35,7 +45,7 @@ export function InsurerSection() {
               method="GET"
               path="/v1/insurers/claims"
               label="List"
-              description="Paginated list of claims. Filters: category (vehicle, appraiser, fraud, special), status (Created, Assigned, Accepted, Rejected, InProgress, ExpertCompleted, Final), q (free-text), createdFrom/createdTo, completedFrom/completedTo, updatedSince (incremental sync). Each item includes LastChangedAt and LastReportApprovedAt."
+              description="Paginated list of claims."
             />
           </div>
 
