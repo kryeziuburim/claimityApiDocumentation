@@ -5,6 +5,7 @@ import { BadgeCheck, Car, Cog, ShieldAlert, SquareStack, type LucideIcon } from 
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import type { Locale } from "@/lib/i18n"
+import { scrollToAnchor } from "@/lib/scroll-to-anchor"
 
 import { claimPayloadMessages } from "./ClaimPayloadSection.messages"
 import { PayloadCategoryPanel } from "./PayloadCategoryPanel"
@@ -52,12 +53,17 @@ export function ClaimPayloadSection({
     [isControlled, onActivePayloadChange]
   )
 
+  // Deep links and hash changes to a payload anchor (e.g. /de/api/#payloads-fraud) select that tab.
+  // Only the active tab's section is rendered, so the browser can't scroll to it by itself;
+  // scrollToAnchor waits until it is mounted.
   useEffect(() => {
     if (typeof window === "undefined") return
     const syncFromHash = () => {
       const hash = window.location.hash.replace(/^#/, "")
       const match = claimPayloads.find((payload) => payload.anchorId === hash)
-      if (match) updateActive(match.key)
+      if (!match) return
+      updateActive(match.key)
+      scrollToAnchor(match.anchorId)
     }
     syncFromHash()
     window.addEventListener("hashchange", syncFromHash)
@@ -66,17 +72,10 @@ export function ClaimPayloadSection({
 
   const handleTabChange = (value: string) => {
     updateActive(value)
-    if (typeof window === "undefined") return
     const target = claimPayloads.find((item) => item.key === value)
     if (!target) return
-    const hash = `#${target.anchorId}`
-    window.history.replaceState(null, "", hash)
-    if (typeof document !== "undefined") {
-      const node = document.getElementById(target.anchorId)
-      if (node) {
-        node.scrollIntoView({ behavior: "smooth", block: "start" })
-      }
-    }
+    window.history.replaceState(null, "", `#${target.anchorId}`)
+    scrollToAnchor(target.anchorId)
   }
 
   if (!claimPayloads.length) return null

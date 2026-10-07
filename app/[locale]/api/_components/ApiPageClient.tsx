@@ -3,6 +3,7 @@
 import type React from "react"
 import { useState, useEffect, useCallback, useMemo, useRef, useLayoutEffect } from "react"
 import { Menu, ChevronRight, FileText, BookOpen, Bug, History, Lock, Code, Users, Shield, FileJson } from "lucide-react"
+import { scrollToAnchor } from "@/lib/scroll-to-anchor"
 import { cn } from "@/lib/utils"
 import { Footer } from "@/components/footer"
 import { OpenApiProvider } from "@/components/api/OpenApiProvider"
@@ -11,6 +12,7 @@ import { locales, type Locale } from "@/lib/i18n"
 import { ClaimPayloadSection } from "./claim-payload/ClaimPayloadSection"
 import { getClaimPayloads } from "./claim-payload/payloads"
 import { apiPageClientMessages } from "./ApiPageClient.messages"
+import { pickActiveSection } from "./scroll-spy"
 
 // Ausgelagerte Bereichs-Komponenten (je Kapitel)
 import { Section as SectionComponent } from "./Section"
@@ -125,7 +127,6 @@ export default function ApiPageClient({ locale }: { locale: Locale }) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   // UX: Es soll immer nur genau 1 "Accordion"-Parent gleichzeitig offen sein.
   const [expandedItem, setExpandedItem] = useState<string | null>(null)
-  const [footerInView, setFooterInView] = useState(false)
   const [pastHero, setPastHero] = useState(false)
   const heroSentinelRef = useRef<HTMLDivElement | null>(null)
   const sidebarScrollRef = useRef<HTMLDivElement | null>(null)
@@ -147,10 +148,6 @@ export default function ApiPageClient({ locale }: { locale: Locale }) {
     return map
   }, [claimPayloads])
   const [activePayloadKey, setActivePayloadKey] = useState<string>(claimPayloads[0]?.key ?? "")
-  const activePayloadKeyRef = useRef(activePayloadKey)
-  useEffect(() => {
-    activePayloadKeyRef.current = activePayloadKey
-  }, [activePayloadKey])
 
   const [footerLiftPx, setFooterLiftPx] = useState(0)
 
@@ -267,23 +264,16 @@ export default function ApiPageClient({ locale }: { locale: Locale }) {
       if (typeof window !== "undefined") {
         try { history.pushState(null, "", `#${id}`) } catch {}
       }
-      const el = document.getElementById(id)
-      if (el) {
-        el.scrollIntoView({ behavior: "smooth", block: "start" })
-      }
+      // Waits for payload tabs that are only mounted after the tab switch above.
+      scrollToAnchor(id)
       setActiveId(id)
       setIsMobileMenuOpen(false)
     },
     [payloadKeyByAnchor]
   )
 
-  useEffect(() => {
-    const payloadKey = payloadKeyByAnchor[activeId]
-    if (payloadKey && payloadKey !== activePayloadKey) {
-      setActivePayloadKey(payloadKey)
-    }
-  }, [activeId, activePayloadKey, payloadKeyByAnchor])
-
+  // Navigation and tab changes set activeId and activePayloadKey together, so the two never need to be
+  // synced by effects; the scroll spy maps the generic "payloads" section to the active tab's anchor.
   const handlePayloadTabChange = useCallback(
     (key: string) => {
       setActivePayloadKey((prev) => (prev === key ? prev : key))
@@ -295,98 +285,67 @@ export default function ApiPageClient({ locale }: { locale: Locale }) {
     [payloadAnchorByKey]
   )
 
-  useEffect(() => {
-    if (!activePayloadKey) return
-    const anchor = payloadAnchorByKey[activePayloadKey]
-    if (!anchor) return
-    const isPayloadContext = activeId === "payloads" || payloadKeyByAnchor[activeId]
-    if (isPayloadContext && activeId !== anchor) {
-      setActiveId(anchor)
-    }
-  }, [activeId, activePayloadKey, payloadAnchorByKey, payloadKeyByAnchor])
-
+  // Scroll spy. Re-created when the payload tab changes: only the active tab's section is mounted,
+  // so the newly shown anchor has to be observed.
   useEffect(() => {
     const ids = [
       ...navigationItems.map((i) => i.id),
       ...navigationItems.flatMap((i) => (i.children ? i.children.map((c) => c.id) : [])),
     ]
+    // The observer only reports elements whose visibility changed, so keep the full set of visible ones.
+    const visible = new Map<string, Element>()
 
     const observer = new IntersectionObserver(
       (entries) => {
-        // Wichtig: Parent-Sections (große Container) sind meist länger sichtbar als die kleinen Anchor-Divs.
-        // Damit Sub-Nav-Items beim Scrollen korrekt "aktiv" werden, bevorzugen wir Child-Anker gegenüber Parent-Sections.
-        const visible = entries
-          .filter((e) => e.isIntersecting)
-          .map((e) => ({
-            e,
-            id: (e.target as HTMLElement).id,
-            isChildAnchor: !!childToParent[(e.target as HTMLElement).id],
-          }))
-          .sort((a, b) => {
-            // Child-Anker gewinnen immer
-            if (a.isChildAnchor !== b.isChildAnchor) return a.isChildAnchor ? -1 : 1
-            // sonst nach Sichtbarkeitsanteil
-            return b.e.intersectionRatio - a.e.intersectionRatio
-          })[0]
-
-        if (visible?.id) {
-          let nextId = visible.id
-          if (nextId === "payloads") {
-            const payloadKey = activePayloadKeyRef.current
-            const payloadAnchor = payloadKey ? payloadAnchorByKey[payloadKey] : undefined
-            if (payloadAnchor) {
-              nextId = payloadAnchor
-            }
-          }
-          setActiveId(nextId)
+        for (const entry of entries) {
+          const id = (entry.target as HTMLElement).id
+          if (entry.isIntersecting) visible.set(id, entry.target)
+          else visible.delete(id)
         }
+        const next = pickActiveSection(
+          [...visible].map(([id, el]) => ({ id, top: el.getBoundingClientRect().top, isChildAnchor: id in childToParent }))
+        )
+        if (!next) return
+        setActiveId(next === "payloads" ? (payloadAnchorByKey[activePayloadKey] ?? next) : next)
       },
       {
         root: null,
-        rootMargin: "-20% 0px -70% 0px",
+        // The band starts just above where scrollIntoView puts a section (scroll-mt-24 = 96px), so the
+        // section navigated to is inside it rather than the one below it.
+        rootMargin: "-90px 0px -70% 0px",
         threshold: [0, 0.25, 0.5, 0.75, 1],
       }
     )
 
-    const elements: Element[] = []
     ids.forEach((id) => {
       const el = document.getElementById(id)
-      if (el) {
-        observer.observe(el)
-        elements.push(el)
-      }
+      if (el) observer.observe(el)
     })
 
     return () => {
       observer.disconnect()
     }
-  }, [navigationItems])
+  }, [navigationItems, childToParent, payloadAnchorByKey, activePayloadKey])
 
-  // Bei initialer URL mit Hash dorthin scrollen (nach Mount)
+  // Bei initialer URL mit Hash dorthin scrollen (nach Mount). Payload anchors are handled by
+  // ClaimPayloadSection, which first has to select the matching tab.
   useEffect(() => {
     if (typeof window === "undefined") return
     const hash = window.location.hash.replace(/^#/, "")
-    if (!hash) return
-    const el = document.getElementById(hash)
-    if (el) {
-      setTimeout(() => el.scrollIntoView({ behavior: "smooth", block: "start" }), 0)
-    }
-  }, [])
+    if (!hash || payloadKeyByAnchor[hash]) return
+    return scrollToAnchor(hash)
+  }, [payloadKeyByAnchor])
   
-  // Auto-Expand: Wenn Parent- oder Child-Anker aktiv wird, Parent offen halten
-  useEffect(() => {
-    if (!activeId) return
-    // Parent mit Kindern aktiv -> expandieren
+  // Auto-Expand: Wenn Parent- oder Child-Anker aktiv wird, Parent offen halten.
+  // State is adjusted during render when activeId changes (instead of in an effect), so the sidebar
+  // doesn't render once with the stale accordion first. The user can still collapse it manually.
+  const [expandedForActiveId, setExpandedForActiveId] = useState(activeId)
+  if (activeId !== expandedForActiveId) {
+    setExpandedForActiveId(activeId)
     const isParent = navigationItems.some((i) => i.id === activeId && i.children)
-    if (isParent) {
-      setExpandedItem(activeId)
-    }
-    // Child aktiv -> zugehörigen Parent expandieren
-    const parent = childToParent[activeId]
-    if (parent) {
-      setExpandedItem(parent)
-    }
-  }, [activeId, childToParent, navigationItems])
+    const toExpand = isParent ? activeId : childToParent[activeId]
+    if (toExpand) setExpandedItem(toExpand)
+  }
 
   // Auto-Scroll: aktives Sidebar-Element (auch weiter unten) automatisch in den sichtbaren Bereich holen
   useEffect(() => {
@@ -430,20 +389,6 @@ export default function ApiPageClient({ locale }: { locale: Locale }) {
     }
   }, [activeId, pastHero])
   
-  // Footer-Sentinel IntersectionObserver (10% Sichtbarkeit)
-  useEffect(() => {
-    const sentinel = document.getElementById("footer-sentinel")
-    if (!sentinel) return
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        setFooterInView(entry.isIntersecting && entry.intersectionRatio > 0)
-      },
-      { root: null, threshold: [0, 0.1] }
-    )
-    observer.observe(sentinel)
-    return () => observer.disconnect()
-  }, [])
-
   useEffect(() => {
     if (typeof document === "undefined") return
     const body = document.body

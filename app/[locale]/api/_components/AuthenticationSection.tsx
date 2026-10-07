@@ -25,8 +25,8 @@ export function AuthenticationSection({ locale }: { locale: Locale }) {
             <Image
               src="/assets/Auth_Sqeuence.png"
               alt={t.flowImageAlt}
-              width={1200}
-              height={675}
+              width={4347}
+              height={3645}
               className="h-auto w-full rounded-md"
               sizes="(min-width: 1024px) 440px, 100vw"
               priority

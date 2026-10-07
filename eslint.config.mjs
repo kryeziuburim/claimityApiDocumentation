@@ -11,8 +11,6 @@ export default defineConfig([
       "react/no-unescaped-entities": "off",
       // TODO: back to "error" once the OpenAPI types are generated and the any-casts are gone.
       "@typescript-eslint/no-explicit-any": "warn",
-      // TODO: back to "error" after the locale merge; the derived-state syncs in ApiPageClient/EndpointDetails need a refactor.
-      "react-hooks/set-state-in-effect": "warn",
     },
   },
   globalIgnores([".next/**", "out/**", ".kilo/**", "next-env.d.ts", "components/ui/**"]),

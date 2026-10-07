@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useEffect, useMemo, useState } from "react"
+import React, { useMemo, useState } from "react"
 import { useLocale } from "@/hooks/use-locale"
 import { ChevronDown } from "lucide-react"
 import type { Locale } from "@/lib/i18n"
@@ -219,35 +219,18 @@ export function EndpointDetails({
   )
 
   const [tab, setTab] = useState<"request" | "response" | "errors" | "examples">("request")
-  const [activeResponse, setActiveResponse] = useState<string | null>(null)
-  const [activeExample, setActiveExample] = useState<string | null>(() => (exampleBlocks[0] ? exampleBlocks[0].key : null))
+  const [selectedResponse, setActiveResponse] = useState<string | null>(null)
+  const [selectedExample, setActiveExample] = useState<string | null>(null)
   const accentColor = METHOD_ACCENTS[method] ?? DEFAULT_ACCENT_COLOR
 
-  useEffect(() => {
-    if (responses.length === 0) {
-      setActiveResponse(null)
-      return
-    }
-    setActiveResponse((prev) => {
-      if (prev && responses.some(([code]) => code === prev)) {
-        return prev
-      }
-      return null
-    })
-  }, [responses])
-
-  useEffect(() => {
-    if (exampleBlocks.length === 0) {
-      setActiveExample(null)
-      return
-    }
-    setActiveExample((prev) => {
-      if (prev && exampleBlocks.some((block) => block.key === prev)) {
-        return prev
-      }
-      return exampleBlocks[0].key
-    })
-  }, [exampleBlocks])
+  // Derived during render: a selection that is no longer in the (spec-dependent) list falls back
+  // to none / the first example, without an effect that re-syncs the state.
+  const activeResponse =
+    selectedResponse && responses.some(([code]) => code === selectedResponse) ? selectedResponse : null
+  const activeExample =
+    selectedExample && exampleBlocks.some((block) => block.key === selectedExample)
+      ? selectedExample
+      : (exampleBlocks[0]?.key ?? null)
 
   if (ctx.loading) {
     return <div className={cn("text-sm text-muted-foreground", className)}>{t.loading}</div>
