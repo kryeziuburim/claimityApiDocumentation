@@ -1,36 +1,36 @@
 "use client"
 
-import { usePathname } from "next/navigation"
 import LocalizedLink from "@/components/localized-link"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 import { Button } from "@/components/ui/button"
+import { useLocale } from "@/hooks/use-locale"
+import type { Locale } from "@/lib/i18n"
+
+const messages: Record<Locale, { title: string; lead: string; ctaPrimary: string; ctaSecondary: string }> = {
+  de: {
+    title: "Seite nicht gefunden",
+    lead: "Die angeforderte Seite existiert nicht oder wurde verschoben.",
+    ctaPrimary: "Zur Startseite",
+    ctaSecondary: "Support kontaktieren",
+  },
+  en: {
+    title: "Page not found",
+    lead: "The page you’re looking for doesn’t exist or may have been moved.",
+    ctaPrimary: "Go to Home",
+    ctaSecondary: "Contact Support",
+  },
+  fr: {
+    title: "Page introuvable",
+    lead: "La page demandée n'existe pas ou a été déplacée.",
+    ctaPrimary: "Retour à l'accueil",
+    ctaSecondary: "Contacter l'assistance",
+  },
+}
 
 export default function NotFound() {
-  const pathname = usePathname() || "/"
-  const lang = pathname.startsWith("/en") ? "en" : "de"
-  const base = `/${lang}`
-
-  const T =
-    lang === "en"
-      ? {
-          title: "Page not found",
-          lead:
-            "The page you’re looking for doesn’t exist or may have been moved.",
-          ctaPrimary: "Go to Home",
-          ctaSecondary: "Contact Sales",
-          homeHref: `${base}/`,
-          contactHref: `${base}/contact`,
-        }
-      : {
-          title: "Seite nicht gefunden",
-          lead:
-            "Die angeforderte Seite existiert nicht oder wurde verschoben.",
-          ctaPrimary: "Zur Startseite",
-          ctaSecondary: "Vertrieb kontaktieren",
-          homeHref: `${base}/`,
-          contactHref: `${base}/contact`,
-        }
+  const locale = useLocale()
+  const T = { ...messages[locale], homeHref: `/${locale}/`, contactHref: `/${locale}/support/` }
 
   return (
     <div className="min-h-screen flex flex-col">

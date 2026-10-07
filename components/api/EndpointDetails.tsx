@@ -1,8 +1,9 @@
 "use client"
 
 import React, { useEffect, useMemo, useState } from "react"
-import { usePathname } from "next/navigation"
+import { useLocale } from "@/hooks/use-locale"
 import { ChevronDown } from "lucide-react"
+import type { Locale } from "@/lib/i18n"
 import { cn } from "@/lib/utils"
 import { SchemaExplorer } from "./SchemaExplorer"
 import {
@@ -30,7 +31,7 @@ const PAYLOAD_FIELD_LINKS = {
   payloadJson: "#claim-payloads",
 }
 
-type Lang = "de" | "en" | "fr"
+type Lang = Locale
 
 const i18n: Record<Lang, {
   loading: string
@@ -145,8 +146,7 @@ export function EndpointDetails({
   path: string
   className?: string
 }) {
-  const pathname = usePathname() || "/"
-  const lang = (pathname.startsWith("/en") ? "en" : pathname.startsWith("/fr") ? "fr" : "de") as Lang
+  const lang = useLocale()
   const t = i18n[lang]
 
   const ctx = useOpenApi()

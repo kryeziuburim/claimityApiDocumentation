@@ -1,44 +1,16 @@
 "use client"
 
 import Link from "next/link"
-import { usePathname } from "next/navigation"
+
+import { footerMessages, websiteLinks } from "@/components/footer.messages"
+import { useLocale } from "@/hooks/use-locale"
 
 export function MinimalFooter() {
-  const pathname = usePathname() || "/"
-  const lang = pathname.startsWith("/en") ? "en" : pathname.startsWith("/fr") ? "fr" : "de"
-  const base = `/${lang}`
+  const locale = useLocale()
+  const L = footerMessages[locale]
 
-  const L =
-    lang === "de"
-      ? {
-          rights: "Alle Rechte vorbehalten.",
-          privacy: "Datenschutzerklärung",
-          terms: "Nutzungsbedingungen",
-          imprint: "Impressum",
-          companyName: "Claimity AG",
-        }
-      : lang === "en"
-      ? {
-          rights: "All rights reserved.",
-          privacy: "Privacy Policy",
-          terms: "Terms of Service",
-          imprint: "Legal Notice",
-          companyName: "Claimity AG",
-        }
-      : {
-          rights: "Tous droits réservés.",
-          privacy: "Politique de confidentialité",
-          terms: "Conditions d'utilisation",
-          imprint: "Mentions légales",
-          companyName: "Claimity SA",
-        }
-
-  const imprintHref = `${base}/legal-notice`
-
-  // External website links per language
-  const websiteRoot = `https://www.claimity.ch/${lang}/`
-  const privacyHref = `${websiteRoot}privacy`
-  const termsHref = `${websiteRoot}terms`
+  const imprintHref = `/${locale}/legal-notice`
+  const { privacy: privacyHref, terms: termsHref } = websiteLinks(locale)
 
   return (
     <footer className="py-2 pb-10">

@@ -2,42 +2,25 @@
 
 import Link from "next/link"
 import Image from "next/image"
-import { usePathname } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Menu } from "lucide-react"
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet"
 import { LanguageSwitcher } from "@/components/language-switcher"
+import { footerMessages } from "@/components/footer.messages"
+import { useLocale } from "@/hooks/use-locale"
+import type { Locale } from "@/lib/i18n"
+
+const headerMessages: Record<Locale, { navTitle: string; clientLogin: string }> = {
+  de: { navTitle: "Navigation", clientLogin: "Anmelden" },
+  en: { navTitle: "Navigation", clientLogin: "Login" },
+  fr: { navTitle: "Navigation", clientLogin: "Connexion" },
+}
 
 export function Header() {
-  const pathname = usePathname() || "/"
-  const lang = pathname.startsWith("/en") ? "en" : pathname.startsWith("/fr") ? "fr" : "de"
-  const base = `/${lang}`
-
-  const L =
-    lang === "de"
-      ? {
-          navTitle: "Navigation",
-          home: "Startseite",
-          support: "Support",
-          manual: "Bedienungsanleitung",
-          api: "API Integration",
-          clientLogin: "Anmelden",
-        }
-      : lang === "en"
-      ? {
-          navTitle: "Navigation",
-          support: "Support",
-          manual: "Manual",
-          api: "API-Integration",
-          clientLogin: "Login",
-        }
-      : {
-          navTitle: "Navigation",
-          support: "Assistance",
-          manual: "Mode d'emploi",
-          api: "Intégration API",
-          clientLogin: "Connexion",
-        }
+  const locale = useLocale()
+  const base = `/${locale}`
+  // Nav labels are shared with the footer.
+  const L = { ...footerMessages[locale], ...headerMessages[locale] }
 
   const homeHref = `${base}/`
   const supportHref = `${base}/support`

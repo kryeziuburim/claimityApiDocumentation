@@ -3,12 +3,15 @@
 import { useEffect } from "react"
 import { useRouter } from "next/navigation"
 import ModernLoader from "@/components/modern-loader"
+import { defaultLocale } from "@/lib/i18n"
+
+const home = `/${defaultLocale}/`
 
 export default function RootRedirect() {
   const router = useRouter()
 
   useEffect(() => {
-    router.replace("/de/")
+    router.replace(home)
   }, [router])
 
   return (
@@ -23,8 +26,8 @@ export default function RootRedirect() {
           <div className="text-center text-sm text-slate-200/80">
             <p>
               JavaScript ist deaktiviert. Bitte öffnen Sie{" "}
-              <a href="/de/" className="text-teal-200 underline">
-                /de/
+              <a href={home} className="text-teal-200 underline">
+                {home}
               </a>
               .
             </p>

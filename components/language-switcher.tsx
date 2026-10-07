@@ -1,94 +1,81 @@
 "use client"
 
-import { useCallback, useMemo } from "react"
+import { useCallback } from "react"
 import { usePathname, useRouter } from "next/navigation"
-import { Button } from "@/components/ui/button"
-import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from "@/components/ui/dropdown-menu"
 import ReactCountryFlag from "react-country-flag"
 
-type Lang = "de" | "en" | "fr"
+import { Button } from "@/components/ui/button"
+import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from "@/components/ui/dropdown-menu"
+import { useLocale } from "@/hooks/use-locale"
+import { locales, switchLocaleInPath, type Locale } from "@/lib/i18n"
 
-const languages: Array<{ code: Lang; label: string; country: string }> = [
-  { code: "de", label: "Deutsch", country: "DE" },
-  { code: "en", label: "English", country: "GB" },
-  { code: "fr", label: "Français", country: "FR" },
-]
+const languageInfo: Record<Locale, { label: string; country: string }> = {
+  de: { label: "Deutsch", country: "DE" },
+  en: { label: "English", country: "GB" },
+  fr: { label: "Français", country: "FR" },
+}
+const languages = locales.map((code) => ({ code, ...languageInfo[code] }))
 
-function computeLangFromPath(pathname: string | null | undefined): Lang {
-  if (!pathname) return "de"
-  if (pathname.startsWith("/en")) return "en"
-  if (pathname.startsWith("/fr")) return "fr"
-  return "de"
+const variants = {
+  light: {
+    trigger: "h-8 px-3 rounded-lg border-gray-200 text-gray-700 hover:bg-gray-50",
+    content: "w-44 rounded-lg border border-gray-200 shadow-md",
+    item: "cursor-pointer text-gray-700 hover:bg-gray-50 focus:bg-gray-50 data-[highlighted]:bg-gray-50 data-[highlighted]:text-gray-900",
+  },
+  dark: {
+    trigger:
+      "h-8 px-3 rounded-lg border-slate-700/70 bg-white/5 text-slate-100 hover:text-white hover:bg-white/10 hover:border-teal-400/40 backdrop-blur-sm",
+    content: "w-44 rounded-lg border border-slate-800 bg-slate-900/90 backdrop-blur-xl text-slate-200 shadow-2xl",
+    item: "cursor-pointer text-slate-200 hover:bg-white/10 focus:bg-white/10 data-[highlighted]:bg-white/10 data-[highlighted]:text-slate-100",
+  },
 }
 
-function buildPathForLang(pathname: string, target: Lang): string {
-  if (pathname === "/" || pathname === "") {
-    return `/${target}/`
-  }
-
-  if (pathname.startsWith("/de/") || pathname === "/de") {
-    return pathname.replace(/^\/de(\/|$)/, `/${target}/`)
-  }
-  if (pathname.startsWith("/en/") || pathname === "/en") {
-    return pathname.replace(/^\/en(\/|$)/, `/${target}/`)
-  }
-  if (pathname.startsWith("/fr/") || pathname === "/fr") {
-    return pathname.replace(/^\/fr(\/|$)/, `/${target}/`)
-  }
-
-  return `/${target}${pathname.endsWith("/") ? "" : "/"}`
+function Flag({ country }: { country: string }) {
+  return (
+    <ReactCountryFlag
+      countryCode={country}
+      svg
+      title={country}
+      style={{ width: "1.1rem", height: "1.1rem", borderRadius: "2px" }}
+      aria-label={`${country} flag`}
+    />
+  )
 }
 
-const Flag = ({ country }: { country: string }) => (
-  <ReactCountryFlag
-    countryCode={country}
-    svg
-    title={country}
-    style={{ width: "1.1rem", height: "1.1rem", borderRadius: "2px" }}
-    aria-label={`${country} flag`}
-  />
-)
-
-export function LanguageSwitcher() {
+export function LanguageSwitcher({ variant = "light" }: { variant?: keyof typeof variants }) {
   const router = useRouter()
   const pathname = usePathname() || "/"
-  const current = useMemo(() => computeLangFromPath(pathname), [pathname])
+  const current = useLocale()
+  const styles = variants[variant]
 
   const selectLang = useCallback(
-    (target: Lang) => {
+    (target: Locale) => {
       if (target === current) return
-      const nextPath = buildPathForLang(pathname, target)
-      const search = typeof window !== "undefined" ? window.location.search : ""
-      const hash = typeof window !== "undefined" ? window.location.hash : ""
-      router.push(`${nextPath}${search}${hash}`)
+      const { search, hash } = window.location
+      router.push(`${switchLocaleInPath(pathname, target)}${search}${hash}`)
     },
     [current, pathname, router]
   )
 
-  const currentLang = languages.find((l) => l.code === current) || languages[0]
+  const currentLang = languageInfo[current]
 
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button
-          variant="outline"
-          size="sm"
-          aria-label="Language selection"
-          className="h-8 px-3 rounded-lg border-gray-200 text-gray-700 hover:bg-gray-50"
-        >
+        <Button variant="outline" size="sm" aria-label="Language selection" className={styles.trigger}>
           <span className="mr-2 inline-flex items-center" aria-hidden="true">
             <Flag country={currentLang.country} />
           </span>
           <span className="uppercase tracking-wide text-xs">{current}</span>
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="w-44 rounded-lg border border-gray-200 shadow-md">
+      <DropdownMenuContent align="end" className={styles.content}>
         {languages.map((lang) => (
           <DropdownMenuItem
             key={lang.code}
             onSelect={() => selectLang(lang.code)}
             aria-checked={lang.code === current}
-            className="cursor-pointer text-gray-700 hover:bg-gray-50 focus:bg-gray-50 data-[highlighted]:bg-gray-50 data-[highlighted]:text-gray-900"
+            className={styles.item}
           >
             <span className="text-lg mt-0" aria-hidden="true"><Flag country={lang.country} /></span>
             <span className="ml-2 mt-0">{lang.label}</span>
