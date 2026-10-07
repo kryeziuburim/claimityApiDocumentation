@@ -21,7 +21,7 @@ export function InsurerSection() {
             completedFrom / completedTo filter on the moment of the most recent completion (Finalized event; for reopened cases the newest completion counts). Meant for reporting windows (“all cases completed in Q2”) — not for synchronisation.
           </li>
           <li>
-            <span className="font-mono">LastChangedAt</span> — Last partner-relevant change (status, documents, reports, comments). Filter: lastChangedSince.
+            <span className="font-mono">LastChangedAt</span> — Last partner-relevant change (status, documents, reports, comments, amounts). Filter: lastChangedSince.
           </li>
           <li>
             <span className="font-mono">LastReportApprovedAt</span> — When the most recent report approval happened (null if none yet). Filter: lastReportApprovedSince — claims without an approved report never match.
@@ -34,6 +34,22 @@ export function InsurerSection() {
           <li>Store the maximum LastChangedAt you saw as the new cursor.</li>
           <li>Only interested in newly approved reports? Same flow with lastReportApprovedSince and LastReportApprovedAt.</li>
         </ol>
+      </div>
+
+      <div className="rounded-lg border border-border bg-muted/20 p-4 text-sm text-muted-foreground">
+        <h4 className="mb-2 text-sm font-semibold text-foreground">Amounts (CHF)</h4>
+        <p className="mb-3 text-pretty">Claim list and claim details carry the amounts entered by the expert in CHF (null = not entered yet).</p>
+        <ul className="space-y-1.5">
+          <li>
+            <span className="font-mono">CostEstimateAmount</span> — The workshop's cost estimate.
+          </li>
+          <li>
+            <span className="font-mono">ApprovedAmount</span> — The amount approved by the expert report.
+          </li>
+          <li>
+            <span className="font-mono">SavingsAmount</span> — Savings = CostEstimateAmount − ApprovedAmount; only when both are set and the estimate is higher, otherwise null.
+          </li>
+        </ul>
       </div>
 
       <div className="rounded-2xl border border-border bg-card/80 p-4 sm:p-5">

@@ -11,6 +11,11 @@ export function ChangeLogSection() {
       <div className="space-y-4">
         {[
           {
+            date: "2026-10-07",
+            changes:
+              "New: case amounts. Claims (insurers) and cases (experts) carry CostEstimateAmount (cost estimate), ApprovedAmount (amount approved by the expert report) and SavingsAmount (savings = estimate − approved amount, only when positive) in list and details – all in CHF, null = not entered. Experts set the amounts with PUT /v1/experts/cases/{caseId}/amounts (204). Changing an amount advances LastChangedAt. The extension is backwards compatible.",
+          },
+          {
             date: "2026-08-02",
             breaking: true,
             changes:

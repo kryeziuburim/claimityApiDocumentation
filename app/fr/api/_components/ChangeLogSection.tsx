@@ -11,6 +11,11 @@ export function ChangeLogSection() {
       <div className="space-y-4">
         {[
           {
+            date: "2026-10-07",
+            changes:
+              "Nouveau : montants du dossier. Les sinistres (assureurs) et les dossiers (experts) fournissent dans la liste et le détail CostEstimateAmount (devis), ApprovedAmount (montant validé par l'expertise) et SavingsAmount (économie = devis − montant validé, uniquement si positive) – tous en CHF, null = non saisi. Les experts définissent les montants via PUT /v1/experts/cases/{caseId}/amounts (204). Une modification des montants fait avancer LastChangedAt. L'extension est rétrocompatible.",
+          },
+          {
             date: "2026-08-02",
             breaking: true,
             changes:

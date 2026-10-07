@@ -21,7 +21,23 @@ export function ExpertsSection() {
             completedFrom / completedTo filtern auf den Zeitpunkt des jüngsten Fallabschlusses (Finalized-Ereignis; bei wiedereröffneten Fällen zählt der neueste Abschluss). Gedacht für Auswertungszeiträume («alle im Q2 abgeschlossenen Fälle») — nicht für Synchronisierung.
           </li>
           <li>
-            <span className="font-mono">LastChangedAt</span> — Letzte partnerrelevante Änderung (Status, Dokumente, Reports, Kommentare). Filter: lastChangedSince.
+            <span className="font-mono">LastChangedAt</span> — Letzte partnerrelevante Änderung (Status, Dokumente, Reports, Kommentare, Beträge). Filter: lastChangedSince.
+          </li>
+        </ul>
+      </div>
+
+      <div className="rounded-lg border border-border bg-muted/20 p-4 text-sm text-muted-foreground">
+        <h4 className="mb-2 text-sm font-semibold text-foreground">Beträge (CHF)</h4>
+        <p className="mb-3 text-pretty">Fall-Liste und Fall-Details liefern drei Beträge in CHF (null = noch nicht erfasst). Gesetzt werden sie über PUT /v1/experts/cases/{'{caseId}'}/amounts.</p>
+        <ul className="space-y-1.5">
+          <li>
+            <span className="font-mono">CostEstimateAmount</span> — Kostenvoranschlag der Werkstatt.
+          </li>
+          <li>
+            <span className="font-mono">ApprovedAmount</span> — Durch das Gutachten freigegebener Betrag.
+          </li>
+          <li>
+            <span className="font-mono">SavingsAmount</span> — Einsparung = CostEstimateAmount − ApprovedAmount; nur wenn beide gesetzt sind und der Kostenvoranschlag höher ist, sonst null.
           </li>
         </ul>
       </div>
@@ -50,6 +66,15 @@ export function ExpertsSection() {
               path="/v1/experts/cases/{caseId}/expert-comment"
               label="Update"
               description="Expertenkommentar setzen/aktualisieren."
+            />
+          </div>
+
+          <div id="experts-cases-amounts" className="scroll-mt-24">
+            <EndpointCard
+              method="PUT"
+              path="/v1/experts/cases/{caseId}/amounts"
+              label="Update"
+              description="Beträge des Falls in CHF setzen: { CostEstimateAmount, ApprovedAmount }. Ersetzt beide Werte (null löscht einen), ≥ 0, max. 2 Nachkommastellen. Nur bis zum Fallabschluss (danach 409 – Fall zuerst wieder öffnen). Liefert 204 No Content."
             />
           </div>
 

@@ -346,6 +346,100 @@
         }
       }
     },
+    "/v1/experts/cases/{caseId}/amounts": {
+      "put": {
+        "tags": [
+          "ExpertCasesV1"
+        ],
+        "parameters": [
+          {
+            "name": "caseId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/M2MCaseAmountsRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/M2MCaseAmountsRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/M2MCaseAmountsRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Set the case amounts (CHF).",
+        "description": "Sets the cost estimate and the approved amount of the case in CHF. The request replaces both values (null clears one); values must be >= 0 with at most 2 decimals. Only the accepted expert organization may set them, and only until the case is final (409 afterwards - reopen the case first). Changing an amount advances LastChangedAt. Returns 204 No Content."
+      }
+    },
     "/v1/experts/cases/{caseId}:reopen": {
       "post": {
         "tags": [
@@ -2133,6 +2227,24 @@
             "type": "string",
             "format": "date-time",
             "description": "Partner-sync cursor. Advances on every partner-visible change to the case (report approval, document upload, expert comment, status change). On the next poll, pass the highest value you have seen as the `lastChangedSince` query parameter to fetch only what changed since."
+          },
+          "CostEstimateAmount": {
+            "type": "number",
+            "format": "double",
+            "nullable": true,
+            "description": "Workshop cost estimate in CHF (null = not entered yet). Set by the expert via PUT /v1/experts/cases/{caseId}/amounts."
+          },
+          "ApprovedAmount": {
+            "type": "number",
+            "format": "double",
+            "nullable": true,
+            "description": "Amount approved by the expert report in CHF (null = not entered yet)."
+          },
+          "SavingsAmount": {
+            "type": "number",
+            "format": "double",
+            "nullable": true,
+            "description": "Savings in CHF = CostEstimateAmount - ApprovedAmount; only when both are set and the estimate is higher, otherwise null."
           }
         },
         "additionalProperties": false
@@ -2486,6 +2598,24 @@
             "type": "string",
             "format": "date-time",
             "description": "Partner-sync cursor. Advances on every partner-visible change to the claim (report approval, document upload, expert comment, status change). On the next poll, pass the highest value you have seen as the `lastChangedSince` query parameter to fetch only what changed since."
+          },
+          "CostEstimateAmount": {
+            "type": "number",
+            "format": "double",
+            "nullable": true,
+            "description": "Workshop cost estimate in CHF (null = not entered yet). Set by the expert via PUT /v1/experts/cases/{caseId}/amounts."
+          },
+          "ApprovedAmount": {
+            "type": "number",
+            "format": "double",
+            "nullable": true,
+            "description": "Amount approved by the expert report in CHF (null = not entered yet)."
+          },
+          "SavingsAmount": {
+            "type": "number",
+            "format": "double",
+            "nullable": true,
+            "description": "Savings in CHF = CostEstimateAmount - ApprovedAmount; only when both are set and the estimate is higher, otherwise null."
           }
         },
         "additionalProperties": false
@@ -2563,6 +2693,24 @@
             "type": "string",
             "format": "date-time",
             "description": "Partner-sync cursor. Advances on every partner-visible change to the claim (report approval, document upload, expert comment, status change). On the next poll, pass the highest value you have seen as the `lastChangedSince` query parameter to fetch only what changed since."
+          },
+          "CostEstimateAmount": {
+            "type": "number",
+            "format": "double",
+            "nullable": true,
+            "description": "Workshop cost estimate in CHF (null = not entered yet). Set by the expert via PUT /v1/experts/cases/{caseId}/amounts."
+          },
+          "ApprovedAmount": {
+            "type": "number",
+            "format": "double",
+            "nullable": true,
+            "description": "Amount approved by the expert report in CHF (null = not entered yet)."
+          },
+          "SavingsAmount": {
+            "type": "number",
+            "format": "double",
+            "nullable": true,
+            "description": "Savings in CHF = CostEstimateAmount - ApprovedAmount; only when both are set and the estimate is higher, otherwise null."
           }
         },
         "additionalProperties": false
@@ -3084,6 +3232,24 @@
           }
         },
         "additionalProperties": {}
+      },
+      "M2MCaseAmountsRequest": {
+        "type": "object",
+        "properties": {
+          "CostEstimateAmount": {
+            "type": "number",
+            "format": "double",
+            "nullable": true,
+            "description": "Workshop cost estimate in CHF (>= 0, max. 2 decimals); null clears it."
+          },
+          "ApprovedAmount": {
+            "type": "number",
+            "format": "double",
+            "nullable": true,
+            "description": "Amount approved by the expert report in CHF (>= 0, max. 2 decimals); null clears it."
+          }
+        },
+        "additionalProperties": false
       }
     },
     "securitySchemes": {

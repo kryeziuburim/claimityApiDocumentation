@@ -21,7 +21,7 @@ export function InsurerSection() {
             completedFrom / completedTo filtern auf den Zeitpunkt des jüngsten Fallabschlusses (Finalized-Ereignis; bei wiedereröffneten Fällen zählt der neueste Abschluss). Gedacht für Auswertungszeiträume («alle im Q2 abgeschlossenen Fälle») — nicht für Synchronisierung.
           </li>
           <li>
-            <span className="font-mono">LastChangedAt</span> — Letzte partnerrelevante Änderung (Status, Dokumente, Reports, Kommentare). Filter: lastChangedSince.
+            <span className="font-mono">LastChangedAt</span> — Letzte partnerrelevante Änderung (Status, Dokumente, Reports, Kommentare, Beträge). Filter: lastChangedSince.
           </li>
           <li>
             <span className="font-mono">LastReportApprovedAt</span> — Zeitpunkt der letzten Report-Genehmigung (null, falls noch keine). Filter: lastReportApprovedSince — Claims ohne genehmigten Report matchen nie.
@@ -34,6 +34,22 @@ export function InsurerSection() {
           <li>Als neuen Cursor das Maximum der gesehenen LastChangedAt speichern.</li>
           <li>Nur an neuen genehmigten Reports interessiert? Gleicher Ablauf mit lastReportApprovedSince und LastReportApprovedAt.</li>
         </ol>
+      </div>
+
+      <div className="rounded-lg border border-border bg-muted/20 p-4 text-sm text-muted-foreground">
+        <h4 className="mb-2 text-sm font-semibold text-foreground">Beträge (CHF)</h4>
+        <p className="mb-3 text-pretty">Claim-Liste und Claim-Details liefern die vom Experten erfassten Beträge in CHF (null = noch nicht erfasst).</p>
+        <ul className="space-y-1.5">
+          <li>
+            <span className="font-mono">CostEstimateAmount</span> — Kostenvoranschlag der Werkstatt.
+          </li>
+          <li>
+            <span className="font-mono">ApprovedAmount</span> — Durch das Gutachten freigegebener Betrag.
+          </li>
+          <li>
+            <span className="font-mono">SavingsAmount</span> — Einsparung = CostEstimateAmount − ApprovedAmount; nur wenn beide gesetzt sind und der Kostenvoranschlag höher ist, sonst null.
+          </li>
+        </ul>
       </div>
 
       <div className="rounded-2xl border border-border bg-card/80 p-4 sm:p-5">

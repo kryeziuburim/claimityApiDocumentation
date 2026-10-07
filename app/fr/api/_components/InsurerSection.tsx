@@ -21,7 +21,7 @@ export function InsurerSection() {
             completedFrom / completedTo filtrent sur le moment de la clôture la plus récente (événement Finalized ; pour les dossiers rouverts, la clôture la plus récente compte). Prévu pour des fenêtres d'analyse (« tous les dossiers clôturés au T2 ») — pas pour la synchronisation.
           </li>
           <li>
-            <span className="font-mono">LastChangedAt</span> — Dernière modification pertinente pour le partenaire (statut, documents, rapports, commentaires). Filtre : lastChangedSince.
+            <span className="font-mono">LastChangedAt</span> — Dernière modification pertinente pour le partenaire (statut, documents, rapports, commentaires, montants). Filtre : lastChangedSince.
           </li>
           <li>
             <span className="font-mono">LastReportApprovedAt</span> — Moment de la dernière approbation de rapport (null si aucune). Filtre : lastReportApprovedSince — les sinistres sans rapport approuvé ne correspondent jamais.
@@ -34,6 +34,22 @@ export function InsurerSection() {
           <li>Enregistrer comme nouveau curseur le maximum des LastChangedAt observés.</li>
           <li>Seuls les nouveaux rapports approuvés vous intéressent ? Même déroulement avec lastReportApprovedSince et LastReportApprovedAt.</li>
         </ol>
+      </div>
+
+      <div className="rounded-lg border border-border bg-muted/20 p-4 text-sm text-muted-foreground">
+        <h4 className="mb-2 text-sm font-semibold text-foreground">Montants (CHF)</h4>
+        <p className="mb-3 text-pretty">La liste et le détail des sinistres fournissent les montants saisis par l'expert en CHF (null = pas encore saisi).</p>
+        <ul className="space-y-1.5">
+          <li>
+            <span className="font-mono">CostEstimateAmount</span> — Devis du garage.
+          </li>
+          <li>
+            <span className="font-mono">ApprovedAmount</span> — Montant validé par l'expertise.
+          </li>
+          <li>
+            <span className="font-mono">SavingsAmount</span> — Économie = CostEstimateAmount − ApprovedAmount ; uniquement si les deux sont renseignés et que le devis est plus élevé, sinon null.
+          </li>
+        </ul>
       </div>
 
       <div className="rounded-2xl border border-border bg-card/80 p-4 sm:p-5">

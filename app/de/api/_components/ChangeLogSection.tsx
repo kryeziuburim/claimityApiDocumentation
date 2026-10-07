@@ -11,6 +11,11 @@ export function ChangeLogSection() {
       <div className="space-y-4">
         {[
           {
+            date: "2026-10-07",
+            changes:
+              "Neu: Beträge am Fall. Claims (Versicherer) und Fälle (Experten) liefern in Liste und Details CostEstimateAmount (Kostenvoranschlag), ApprovedAmount (durch das Gutachten freigegebener Betrag) und SavingsAmount (Einsparung = Kostenvoranschlag − freigegebener Betrag, nur wenn positiv) – alle in CHF, null = nicht erfasst. Experten setzen die Beträge über PUT /v1/experts/cases/{caseId}/amounts (204). Eine Änderung der Beträge verschiebt LastChangedAt. Die Erweiterung ist rückwärtskompatibel.",
+          },
+          {
             date: "2026-08-02",
             changes:
               "Sync-Filter überarbeitet: updatedSince heisst neu lastChangedSince (beide Endpunkte /v1/insurers/claims und /v1/experts/cases) — der Filter trägt damit den Namen des Feldes, das er filtert (LastChangedAt). Neu: lastReportApprovedSince auf /v1/insurers/claims liefert nur Claims, deren letzte Report-Genehmigung am/nach dem angegebenen Zeitpunkt liegt (Claims ohne genehmigten Report matchen nie). completedFrom/completedTo bleiben unverändert und filtern den Zeitpunkt des jüngsten Fallabschlusses.",

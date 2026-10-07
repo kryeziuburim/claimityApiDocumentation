@@ -21,7 +21,23 @@ export function ExpertsSection() {
             completedFrom / completedTo filter on the moment of the most recent completion (Finalized event; for reopened cases the newest completion counts). Meant for reporting windows (“all cases completed in Q2”) — not for synchronisation.
           </li>
           <li>
-            <span className="font-mono">LastChangedAt</span> — Last partner-relevant change (status, documents, reports, comments). Filter: lastChangedSince.
+            <span className="font-mono">LastChangedAt</span> — Last partner-relevant change (status, documents, reports, comments, amounts). Filter: lastChangedSince.
+          </li>
+        </ul>
+      </div>
+
+      <div className="rounded-lg border border-border bg-muted/20 p-4 text-sm text-muted-foreground">
+        <h4 className="mb-2 text-sm font-semibold text-foreground">Amounts (CHF)</h4>
+        <p className="mb-3 text-pretty">Case list and case details carry three amounts in CHF (null = not entered yet). Set them with PUT /v1/experts/cases/{'{caseId}'}/amounts.</p>
+        <ul className="space-y-1.5">
+          <li>
+            <span className="font-mono">CostEstimateAmount</span> — The workshop's cost estimate.
+          </li>
+          <li>
+            <span className="font-mono">ApprovedAmount</span> — The amount approved by the expert report.
+          </li>
+          <li>
+            <span className="font-mono">SavingsAmount</span> — Savings = CostEstimateAmount − ApprovedAmount; only when both are set and the estimate is higher, otherwise null.
           </li>
         </ul>
       </div>
@@ -50,6 +66,15 @@ export function ExpertsSection() {
               path="/v1/experts/cases/{caseId}/expert-comment"
               label="Update"
               description="Set/update expert comment."
+            />
+          </div>
+
+          <div id="experts-cases-amounts" className="scroll-mt-24">
+            <EndpointCard
+              method="PUT"
+              path="/v1/experts/cases/{caseId}/amounts"
+              label="Update"
+              description="Set the case amounts in CHF: { CostEstimateAmount, ApprovedAmount }. Replaces both values (null clears one), ≥ 0, max. 2 decimals. Only until the case is completed (409 afterwards – reopen the case first). Returns 204 No Content."
             />
           </div>
 
