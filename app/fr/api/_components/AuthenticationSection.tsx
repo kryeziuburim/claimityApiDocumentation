@@ -1,42 +1,8 @@
-import type React from "react"
-
 import Image from "next/image"
 
+import { CodeBlock, KvpTable } from "@/components/api/doc-primitives"
+
 export function AuthenticationSection() {
-  const CodeBlock = ({ title, children }: { title: string; children: string }) => (
-    <div className="rounded-lg border border-border bg-muted/20">
-      <div className="flex items-center justify-between border-b border-border px-3 py-2">
-        <div className="text-xs font-medium text-muted-foreground">{title}</div>
-      </div>
-      <pre className="overflow-x-auto p-3 text-xs">
-        <code className="font-mono text-foreground">{children}</code>
-      </pre>
-    </div>
-  )
-
-  const KvpTable = ({ rows }: { rows: { k: string; v: React.ReactNode }[] }) => (
-    <div className="rounded-lg border border-border bg-muted/20">
-      <table className="hidden w-full text-left text-sm sm:table">
-        <tbody>
-          {rows.map((r) => (
-            <tr key={r.k} className="border-t border-border/60 first:border-t-0 align-top">
-              <td className="w-56 px-3 py-2 font-mono text-xs text-muted-foreground">{r.k}</td>
-              <td className="px-3 py-2 text-sm">{r.v}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-      <div className="space-y-3 p-3 text-sm text-muted-foreground sm:hidden">
-        {rows.map((r) => (
-          <div key={`${r.k}-mobile`} className="rounded-lg border border-border/60 bg-background/80 p-3">
-            <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">{r.k}</p>
-            <div className="mt-2 text-sm text-foreground">{r.v}</div>
-          </div>
-        ))}
-      </div>
-    </div>
-  )
-
   return (
     <div className="space-y-6">
       <div>
@@ -200,8 +166,8 @@ export function AuthenticationSection() {
 
             <div className="overflow-x-auto">
               <CodeBlock
-                title="Exemple : Demande de jeton (cURL, espace réservé)"
-                children={`curl -X POST \\
+                title="Exemple : Demande de jeton (cURL, espace réservé)">
+                {`curl -X POST \\
   'https://app.claimity.ch/v1/oauth/token' \\
   -H 'Content-Type: application/x-www-form-urlencoded' \\
   -d 'grant_type=client_credentials' \\
@@ -209,7 +175,7 @@ export function AuthenticationSection() {
   -d 'client_assertion_type=urn:ietf:params:oauth:client-assertion-type:jwt-bearer' \\
   -d 'client_assertion=<RS256-JWT-CLIENT-ASSERTION>' \\
   -d 'scope=roles'`}
-              />
+              </CodeBlock>
             </div>
           </div>
         </details>
@@ -282,13 +248,13 @@ export function AuthenticationSection() {
 
             <div className="overflow-x-auto">
               <CodeBlock
-                title="Exemple : Appel API authentifié (cURL)"
-                children={`curl -X GET \\
+                title="Exemple : Appel API authentifié (cURL)">
+                {`curl -X GET \\
   'https://app.claimity.ch/v1/experts/cases?page=1&size=50' \\
   -H 'Accept: application/json' \\
   -H 'Authorization: DPoP {access_token}' \\
   -H 'DPoP: {dpop_proof_jwt}'`}
-              />
+              </CodeBlock>
             </div>
           </div>
         </details>

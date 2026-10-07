@@ -187,18 +187,17 @@ type TicketValues = {
   category?: "general" | "technical" | "billing" | "other"
 }
 
-function getEmailJsEnv() {
-  // EmailJS benötigt Public Key clientseitig – daher NEXT_PUBLIC_*
-  const serviceId = process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID || ""
-  const templateId = process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID || ""
-  const publicKey = process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY || ""
-  return { serviceId, templateId, publicKey }
+// EmailJS benötigt Public Key clientseitig – daher NEXT_PUBLIC_* (beim Build eingesetzt)
+const EMAILJS_ENV = {
+  serviceId: process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID || "",
+  templateId: process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID || "",
+  publicKey: process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY || "",
 }
 
 export function SupportTicketForm({ locale = "de" }: { locale?: Lang }) {
   const t = i18n[locale] ?? i18n.de
   const schema = useMemo(() => makeSchema(t), [t])
-  const { serviceId, templateId, publicKey } = useMemo(getEmailJsEnv, [])
+  const { serviceId, templateId, publicKey } = EMAILJS_ENV
   const [status, setStatus] = useState<"idle" | "sending" | "success" | "error">("idle")
   const [errorMsg, setErrorMsg] = useState<string | null>(null)
   const fieldTextSizing = "bg-white text-sm placeholder:text-sm"
