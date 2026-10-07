@@ -4,6 +4,7 @@ import { Geist, Geist_Mono } from "next/font/google"
 import { Suspense } from "react"
 import "./globals.css"
 import { HtmlLangSetter } from "@/components/html-lang-setter"
+import { Toaster } from "@/components/ui/toaster"
 
 const _geist = Geist({ subsets: ["latin"] })
 const _geistMono = Geist_Mono({ subsets: ["latin"] })
@@ -27,6 +28,7 @@ export default function RootLayout({
       <body className={`font-sans antialiased overflow-x-hidden`}>
         <HtmlLangSetter />
         <Suspense fallback={null}>{children}</Suspense>
+        <Toaster />
       </body>
     </html>
   )
