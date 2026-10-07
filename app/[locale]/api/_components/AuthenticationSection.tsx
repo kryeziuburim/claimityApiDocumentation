@@ -120,7 +120,7 @@ export function AuthenticationSection({ locale }: { locale: Locale }) {
                 <li className="flex gap-2">
                   <span className="text-primary">•</span>
                   <span>
-                    <span className="font-mono">iat</span>/<span className="font-mono">exp</span> = “now” / “now+90s”
+                    <span className="font-mono">iat</span>/<span className="font-mono">exp</span> = “now” / “now+600s” (10 min)
                   </span>
                 </li>
                 <li className="flex gap-2">

@@ -10,7 +10,7 @@ const de = {
   extensionTitle: "Erweiterung der Schnittstellen",
   extensionItems: [
     "Prüfen Sie regelmässig das Änderungsprotokoll um auf dem Laufenden zu bleiben.",
-    "Nicht abwärtsinkompatible Änderungen können eingeführt werden, ohne die API-Version zu ändern.",
+    "Abwärtskompatible Änderungen (z. B. neue Endpunkte oder zusätzliche optionale Felder) können ohne neue API-Version eingeführt werden.",
     "Über wesentliche Änderungen werden Sie rechtzeitig informiert.",
   ],
 }
@@ -27,7 +27,7 @@ export const overviewMessages: Record<Locale, typeof de> = {
     extensionTitle: "Interface Extension",
     extensionItems: [
       "Check the changelog regularly to stay up to date.",
-      "Non-backward-incompatible changes can be introduced without changing the API version.",
+      "Backward-compatible changes (e.g. new endpoints or additional optional fields) can be introduced without changing the API version.",
       "You will be informed in good time about significant changes.",
     ],
   },
@@ -41,7 +41,7 @@ export const overviewMessages: Record<Locale, typeof de> = {
     extensionTitle: "Extension des interfaces",
     extensionItems: [
       "Consultez régulièrement le journal des modifications pour rester à jour.",
-      "Des modifications non rétrocompatibles peuvent être introduites sans changer la version de l'API.",
+      "Des modifications rétrocompatibles (p. ex. nouveaux points de terminaison ou champs optionnels supplémentaires) peuvent être introduites sans changer la version de l'API.",
       "Vous serez informé à temps des changements importants.",
     ],
   },
