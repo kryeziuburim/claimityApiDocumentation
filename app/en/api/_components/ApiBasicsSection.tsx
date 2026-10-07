@@ -1,20 +1,6 @@
+import { MethodBadge } from "@/components/api/doc-primitives"
+
 export function ApiBasicsSection() {
-  const METHOD_COLORS = {
-    GET: "#61AFFE",
-    POST: "#49CC90",
-    PUT: "#FCA130",
-    DELETE: "#F93E3E",
-  } as const
-
-  const MethodBadge = ({ method }: { method: keyof typeof METHOD_COLORS }) => (
-    <span
-      className="inline-flex h-7 w-14 items-center justify-center rounded-md font-mono text-[11px] font-semibold text-white sm:w-20 sm:text-xs"
-      style={{ backgroundColor: METHOD_COLORS[method] }}
-    >
-      {method}
-    </span>
-  )
-
   return (
     <div className="space-y-6">
       <div>
