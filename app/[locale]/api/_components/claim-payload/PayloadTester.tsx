@@ -145,9 +145,11 @@ export function PayloadTester({ t, claimPayloads, schemas }: PayloadTesterProps)
         data: normalized,
       })
     } catch (error) {
+      // fetch only rejects on network/CORS failures; the browser's message ("Failed to fetch") is not localized.
+      console.error("Claim payload validation request failed", error)
       setValidationState({
         status: "error",
-        message: error instanceof Error ? error.message : t.networkError,
+        message: t.networkError,
         errors: null,
       })
     }
