@@ -8,7 +8,8 @@ import { Footer } from "@/components/footer"
 import { OpenApiProvider } from "@/components/api/OpenApiProvider"
 import { LanguageSwitcher } from "@/components/language-switcher"
 import { locales, type Locale } from "@/lib/i18n"
-import { ClaimPayloadSection, getClaimPayloads } from "./ClaimPayloadSection"
+import { ClaimPayloadSection } from "./claim-payload/ClaimPayloadSection"
+import { getClaimPayloads } from "./claim-payload/payloads"
 import { apiPageClientMessages } from "./ApiPageClient.messages"
 
 // Ausgelagerte Bereichs-Komponenten (je Kapitel)
