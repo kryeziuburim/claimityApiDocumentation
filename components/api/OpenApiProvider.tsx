@@ -2,7 +2,9 @@
 
 import React, { createContext, useContext, useEffect, useMemo, useState } from "react"
 
-export type OpenApiSpec = any
+import type { OpenApiDocument } from "./openapi-utils"
+
+export type OpenApiSpec = OpenApiDocument
 
 type OpenApiContextValue = {
   spec: OpenApiSpec | null
@@ -35,10 +37,11 @@ export function OpenApiProvider({
         setError(null)
         const res = await fetch(url, { cache: "no-store" })
         if (!res.ok) throw new Error(`Failed to load OpenAPI spec: ${res.status} ${res.statusText}`)
-        const json = await res.json()
+        // Our own static asset (validated in CI by lib/openapi-spec.test.ts), so no runtime validation here.
+        const json = (await res.json()) as OpenApiSpec
         if (!cancelled) setSpec(json)
-      } catch (e: any) {
-        if (!cancelled) setError(e?.message ?? String(e))
+      } catch (e) {
+        if (!cancelled) setError(e instanceof Error ? e.message : String(e))
       } finally {
         if (!cancelled) setLoading(false)
       }

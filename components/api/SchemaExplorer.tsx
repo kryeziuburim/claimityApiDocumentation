@@ -5,7 +5,7 @@ import { useLocale } from "@/hooks/use-locale"
 import { ChevronRight } from "lucide-react"
 import type { Locale } from "@/lib/i18n"
 import { cn } from "@/lib/utils"
-import { refName, resolveRef, schemaTypeLabel, safeString } from "./openapi-utils"
+import { refName, resolveRef, schemaTypeLabel, safeString, type ResolvedSchemaNode, type SchemaNode } from "./openapi-utils"
 
 type Lang = Locale
 
@@ -48,8 +48,9 @@ const i18n: Record<Lang, {
 }
 
 type SchemaExplorerProps = {
-  spec: any
-  schema: any
+  /** Document root that `$ref`s are resolved against (the OpenAPI spec, or the schema itself). */
+  spec: object
+  schema: SchemaNode
   title?: string
   depth?: number
   maxDepth?: number
@@ -83,12 +84,10 @@ export function SchemaExplorer({
     return (
       <div className="rounded-md border border-border bg-muted/30 p-3">
         <div className="mb-2 text-sm font-medium">{schemaTitle}</div>
-        <div className="text-sm text-muted-foreground">{t.type} {schemaTypeLabel(spec, normalized)}</div>
+        <div className="text-sm text-muted-foreground">{t.type} {schemaTypeLabel(normalized)}</div>
       </div>
     )
   }
-
-  const keys = Object.keys(props)
 
   const isRoot = depth === 0
   const containerClasses = cn(
@@ -104,7 +103,7 @@ export function SchemaExplorer({
   const bodyWrapperClasses = "overflow-x-auto"
 
   const renderPropertyRows = (
-    currentSchema: any,
+    currentSchema: SchemaNode,
     currentTitle: string,
     currentDepth: number,
     parentPath: string
@@ -115,7 +114,7 @@ export function SchemaExplorer({
 
     return propKeys.map((field) => {
       const fieldSchema = currentProps[field]
-      const type = schemaTypeLabel(spec, fieldSchema)
+      const type = schemaTypeLabel(fieldSchema)
       const isReq = currentRequired.includes(field)
       const nullable = !!fieldSchema?.nullable
       const enumVals = Array.isArray(fieldSchema?.enum) ? fieldSchema.enum : null
@@ -126,13 +125,13 @@ export function SchemaExplorer({
         enumVals && enumVals.length ? (
           <div className="flex justify-start">
             <div className="flex flex-wrap gap-1 text-[11px] font-mono text-muted-foreground">
-              {enumVals.map((value: string, idx: number) => {
+              {enumVals.map((value, idx) => {
                 return (
                   <span
-                    key={`${fieldPath}-enum-${idx}-${value}`}
+                    key={`${fieldPath}-enum-${idx}-${String(value)}`}
                     className="rounded border border-border/60 bg-muted/20 px-2 py-0.5"
                   >
-                    {value}
+                    {String(value)}
                   </span>
                 )
               })}
@@ -219,7 +218,7 @@ export function SchemaExplorer({
           </tr>
 
           {canExpand && open
-            ? renderChildRows(fieldSchema, childTitle(field, fieldSchema), currentDepth + 1, fieldPath)
+            ? renderChildRows(fieldSchema, field, currentDepth + 1, fieldPath)
             : null}
         </React.Fragment>
       )
@@ -227,12 +226,12 @@ export function SchemaExplorer({
   }
 
   const renderChildRows = (
-    childSchema: any,
+    childSchema: SchemaNode,
     childLabel: string,
     nextDepth: number,
     parentPath: string
   ): React.ReactNode => {
-    const expandedSchema = expandChildSchema(childSchema, spec)
+    const expandedSchema = expandChildSchema(childSchema)
     const normalizedChild = normalizeSchemaWithRef(spec, expandedSchema)
     if (!normalizedChild) {
       return (
@@ -248,7 +247,7 @@ export function SchemaExplorer({
       return (
         <tr key={`${childLabel}-${nextDepth}-leaf`} className="border-t border-border/40">
           <td colSpan={6} className="pl-6 py-3 text-xs text-muted-foreground">
-            {childLabel}: {schemaTypeLabel(spec, normalizedChild)}
+            {childLabel}: {schemaTypeLabel(normalizedChild)}
           </td>
         </tr>
       )
@@ -261,7 +260,7 @@ export function SchemaExplorer({
     <div className={containerClasses}>
       <div className={headerClasses}>
         <div className={cn(isRoot ? "text-sm font-semibold" : "text-xs font-semibold text-foreground/80")}>{schemaTitle}</div>
-        <div className={cn("text-xs text-muted-foreground", !isRoot && "text-[11px]")}>{t.type} {schemaTypeLabel(spec, normalized)}</div>
+        <div className={cn("text-xs text-muted-foreground", !isRoot && "text-[11px]")}>{t.type} {schemaTypeLabel(normalized)}</div>
       </div>
 
       <div className={bodyWrapperClasses}>
@@ -289,23 +288,17 @@ export function SchemaExplorer({
   )
 }
 
-function childTitle(field: string, schema: any) {
-  // if (schema?.$ref) return `${field}: ${refName(schema.$ref)}`
-  // if (schema?.type === "array" && schema?.items?.$ref) return `${field}: array<${refName(schema.items.$ref)}>`
-  return field
-}
-
-function expandChildSchema(schema: any, spec: any) {
+function expandChildSchema(schema: SchemaNode | undefined): SchemaNode | undefined {
   if (!schema) return schema
   if (schema.$ref) return schema
   if (schema.type === "array") return schema.items
   return schema
 }
 
-function normalizeSchemaWithRef(spec: any, schema: any) {
+function normalizeSchemaWithRef(spec: object, schema: SchemaNode | undefined): ResolvedSchemaNode | null {
   if (!schema) return null
   if (schema.$ref) {
-    const resolved = resolveRef(spec, schema.$ref)
+    const resolved = resolveRef(spec, schema.$ref) as SchemaNode | null
     if (!resolved) return null
     return { ...resolved, __refName: refName(schema.$ref) }
   }

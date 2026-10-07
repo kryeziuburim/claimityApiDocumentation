@@ -6,14 +6,18 @@ import { ChevronDown } from "lucide-react"
 import type { Locale } from "@/lib/i18n"
 import { cn } from "@/lib/utils"
 import { SchemaExplorer } from "./SchemaExplorer"
+import type { OpenAPIV3 } from "openapi-types"
+
 import {
-  HttpMethod,
   generateExample,
   getOperation,
   getServersBaseUrl,
+  isReference,
   listParameters,
   pickJsonSchemaFromContent,
   prettyJson,
+  type HttpMethod,
+  type SchemaNode,
 } from "./openapi-utils"
 import { useOpenApi } from "./OpenApiProvider"
 
@@ -158,7 +162,7 @@ export function EndpointDetails({
   const params = useMemo(() => listParameters(op), [op])
 
   const grouped = useMemo(() => {
-    const g: Record<string, any[]> = { path: [], query: [], header: [] }
+    const g: Record<string, OpenAPIV3.ParameterObject[]> = { path: [], query: [], header: [] }
     for (const p of params) {
       if (p?.in && g[p.in]) g[p.in].push(p)
     }
@@ -166,8 +170,8 @@ export function EndpointDetails({
   }, [params])
 
   const requestSchema = useMemo(() => {
-    const content = op?.requestBody?.content
-    return pickJsonSchemaFromContent(content)
+    const body = op?.requestBody
+    return pickJsonSchemaFromContent(body && !isReference(body) ? body.content : undefined)
   }, [op])
 
   const headerRows = useMemo<HeaderRow[]>(() => {
@@ -183,7 +187,10 @@ export function EndpointDetails({
   }, [requestSchema])
 
   const responses = useMemo(() => {
-    const entries = Object.entries((op?.responses ?? {}) as Record<string, any>) as [string, any][]
+    // The spec defines responses inline; `$ref` responses would be skipped.
+    const entries = Object.entries(op?.responses ?? {}).filter(
+      (entry): entry is [string, OpenAPIV3.ResponseObject] => !isReference(entry[1])
+    )
     entries.sort(([a], [b]) => {
       if (a === "default") return 1
       if (b === "default") return -1
@@ -455,7 +462,9 @@ function HeaderList({ rows }: { rows: HeaderRow[] }) {
   )
 }
 
-function ParamTable({ params, t }: { params: any[]; t: (typeof i18n)[Lang] }) {
+const schemaOf = (param: OpenAPIV3.ParameterObject): SchemaNode | undefined => param.schema
+
+function ParamTable({ params, t }: { params: OpenAPIV3.ParameterObject[]; t: (typeof i18n)[Lang] }) {
   return (
     <div className="overflow-x-auto rounded-xl border border-border/60 bg-background/80">
       <table className="w-full text-left text-xs sm:text-sm">
@@ -472,12 +481,12 @@ function ParamTable({ params, t }: { params: any[]; t: (typeof i18n)[Lang] }) {
             <tr key={`${p.in}-${p.name}`} className="border-t border-border/40">
               <td className="px-2.5 py-2 font-mono text-[11px] sm:px-3 sm:text-xs">{p.name}</td>
               <td className="px-2.5 py-2 font-mono text-[11px] sm:px-3 sm:text-xs">
-                {p.schema?.type}
-                {p.schema?.format ? ` (${p.schema.format})` : ""}
+                {schemaOf(p)?.type}
+                {schemaOf(p)?.format ? ` (${schemaOf(p)?.format})` : ""}
               </td>
               <td className="px-2.5 py-2 text-center sm:px-3">{p.required ? "✓" : ""}</td>
               <td className="px-2.5 py-2 font-mono text-[11px] text-muted-foreground sm:px-3 sm:text-xs">
-                {p.schema?.default != null ? String(p.schema.default) : ""}
+                {schemaOf(p)?.default != null ? String(schemaOf(p)?.default) : ""}
               </td>
             </tr>
           ))}
@@ -505,7 +514,7 @@ function CodeBlock({ title, children, accentColor }: { title: string; children: 
   )
 }
 
-function ErrorMatrix({ responses, t }: { responses: [string, any][]; t: (typeof i18n)[Lang] }) {
+function ErrorMatrix({ responses, t }: { responses: [string, OpenAPIV3.ResponseObject][]; t: (typeof i18n)[Lang] }) {
   const errors = responses.filter(([code]) => code === "default" || Number(code) >= 400)
   if (!errors.length) return <div className="text-sm text-muted-foreground">{t.noErrors}</div>
 
@@ -521,7 +530,7 @@ function ErrorMatrix({ responses, t }: { responses: [string, any][]; t: (typeof 
         </thead>
         <tbody>
           {errors.map(([code, resp]) => {
-            const schema = resp?.content ? (resp.content["application/json"]?.schema ?? null) : null
+            const schema: SchemaNode | null = resp?.content ? (resp.content["application/json"]?.schema ?? null) : null
             const schemaLabel = schema?.$ref ? schema.$ref.split("/").pop() : schema?.type ?? ""
             return (
               <tr key={code} className="border-t border-border/40">
