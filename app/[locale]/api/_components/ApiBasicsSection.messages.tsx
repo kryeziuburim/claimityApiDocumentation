@@ -275,7 +275,7 @@ export const apiBasicsMessages: Record<Locale, typeof de> = {
     requestFormatTitle: "Format de requête",
     requestFormatText: (
       <>
-        Chaque requête se compose de **Méthode**, **URL**, **Paramètres de requête** optionnels, **En-têtes** et (pour <span className="font-mono">POST</span>/<span className="font-mono">PUT</span>) un{" "}
+        Chaque requête se compose de <strong>Méthode</strong>, <strong>URL</strong>, <strong>Paramètres de requête</strong> optionnels, <strong>En-têtes</strong> et (pour <span className="font-mono">POST</span>/<span className="font-mono">PUT</span>) un{" "}
         <strong>Corps JSON</strong>.
       </>
     ),

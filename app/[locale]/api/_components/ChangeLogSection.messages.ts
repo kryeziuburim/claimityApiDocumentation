@@ -90,7 +90,7 @@ export const changeLogMessages: Record<Locale, typeof de> = {
         date: "2026-08-02",
         breaking: true,
         changes:
-          "Refonte des filtres de synchronisation : updatedSince devient lastChangedSince (les deux points de terminaison /v1/insurers/claims et /v1/experts/cases) — le filtre porte désormais le nom du champ qu'il filtre (LastChangedAt). Nouveau : lastReportApprovedSince sur /v1/insurers/claims ne renvoie que les sinistres dont la dernière approbation de rapport est au/apres l'instant donné (les sinistres sans rapport approuvé ne correspondent jamais). completedFrom/completedTo restent inchangés et filtrent le moment de la clôture la plus récente.",
+          "Refonte des filtres de synchronisation : updatedSince devient lastChangedSince (les deux points de terminaison /v1/insurers/claims et /v1/experts/cases) — le filtre porte désormais le nom du champ qu'il filtre (LastChangedAt). Nouveau : lastReportApprovedSince sur /v1/insurers/claims ne renvoie que les sinistres dont la dernière approbation de rapport est au/après l'instant donné (les sinistres sans rapport approuvé ne correspondent jamais). completedFrom/completedTo restent inchangés et filtrent le moment de la clôture la plus récente.",
       },
       {
         date: "2026-07-15",

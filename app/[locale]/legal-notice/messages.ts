@@ -10,7 +10,7 @@ const de = {
   emailLabel: "E-Mail:",
   registerTitle: "Handelsregister",
   registerLabel: "Handelsregister:",
-  registerOffice: "Handelsregisteramt des Kanton Zürich",
+  registerOffice: "Handelsregisteramt des Kantons Zürich",
   uidLabel: "UID:",
   representativesTitle: "Vertretungsberechtigte Personen",
   management: "Geschäftsführung: Burim Kryeziu",

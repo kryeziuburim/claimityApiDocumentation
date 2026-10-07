@@ -58,7 +58,7 @@ const de = {
       <strong>Client ID</strong> (z. B. <span className="font-mono">org-expo-00001</span>) auslesbar aus den Claimity Organisationseinstellungen
     </>,
     <>
-      <strong>Private RSA Key</strong> aus den Claimity Organisationseinstellungen (sicher aufbewaren und niemals teilen)
+      <strong>Private RSA Key</strong> aus den Claimity Organisationseinstellungen (sicher aufbewahren und niemals teilen)
     </>,
   ],
   tokenEndpointTitle: "Token Endpoint",
@@ -67,7 +67,7 @@ const de = {
   optional: "(optional)",
   assertionIntro: (
     <>
-      Die Assertion ist ein kurzlebiges JWT (10 Minuten) und wird mit deinem <strong>RSA Private Key</strong> signiert.
+      Die Assertion ist ein kurzlebiges JWT (10 Minuten) und wird mit Ihrem <strong>RSA Private Key</strong> signiert.
     </>
   ),
   jtiValue: "UUID (einzigartig)",

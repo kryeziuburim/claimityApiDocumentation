@@ -17,7 +17,7 @@ const de = {
     {
       title: "DPoP-Header vorbereiten",
       description:
-        "Zum Senden einer Anfrage an die API ist es notwendig, einen DPoP-Header zu erstellen. Dieser Header wird mit dem Private Key signiert und sichert die Anfrage gegen potentiellen Sichereheitsrisiken.",
+        "Zum Senden einer Anfrage an die API ist es notwendig, einen DPoP-Header zu erstellen. Dieser Header wird mit dem Private Key signiert und sichert die Anfrage gegen potenzielle Sicherheitsrisiken.",
     },
     {
       title: "Erste Anfrage",

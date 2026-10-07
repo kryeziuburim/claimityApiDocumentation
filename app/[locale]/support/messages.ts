@@ -15,7 +15,7 @@ const de = {
       question:
         "Es gibt sehr viele Fälle in meiner Organisation, wie behalte ich die Übersicht über meine Verantwortlichkeiten?",
       answer:
-        "Sie könnnen in der Fallliste neben dem Suchfeld nach Fällen filtern, die an sie zugewiesen sind. So können sie den Überblick über ihre Verantwortlichkeiten behalten.",
+        "Sie können in der Fallliste neben dem Suchfeld nach Fällen filtern, die Ihnen zugewiesen sind. So behalten Sie den Überblick über Ihre Verantwortlichkeiten.",
     },
     {
       question: "Wie füge ich weitere Nutzer zu Claimity hinzu?",
