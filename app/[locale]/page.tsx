@@ -9,6 +9,8 @@ import { type Locale } from "@/lib/i18n"
 import { pageMetadata } from "@/lib/metadata"
 
 import { homeMessages } from "./messages"
+import { JsonLd } from "@/components/json-ld"
+import { organizationJsonLd, websiteJsonLd } from "@/lib/structured-data"
 
 type Props = { params: Promise<{ locale: Locale }> }
 
@@ -29,6 +31,7 @@ export default async function Home({ params }: Props) {
 
   return (
     <div className="min-h-screen bg-slate-950 text-slate-50">
+      <JsonLd data={[organizationJsonLd(), websiteJsonLd(locale, t.meta.title)]} />
       {/* Hero + Tiles Section */}
       <section className="relative overflow-hidden">
         {/* Background Glow */}

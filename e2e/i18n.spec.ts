@@ -11,7 +11,12 @@ test.describe("localized pages", () => {
         const response = await page.goto(`/${locale}/${path}`)
         expect(response?.status()).toBe(200)
         // The served HTML already carries the right language (scripts/set-html-lang.ts), not only after hydration.
-        expect(await response?.text()).toMatch(new RegExp(`<html[^>]* lang="${HTML_LANG[locale]}"`))
+        const html = (await response?.text()) ?? ""
+        expect(html).toMatch(new RegExp(`<html[^>]* lang="${HTML_LANG[locale]}"`))
+        // Structured data is present and valid JSON.
+        const jsonLd = [...html.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)]
+        expect(jsonLd.length).toBeGreaterThan(0)
+        for (const [, json] of jsonLd) expect(() => JSON.parse(json)).not.toThrow()
         await expect(page.locator("h1, h2").first()).toBeVisible()
         await expect.poll(() => page.evaluate(() => document.documentElement.lang)).toBe(HTML_LANG[locale])
       })

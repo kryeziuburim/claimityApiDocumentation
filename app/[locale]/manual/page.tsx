@@ -8,6 +8,9 @@ import { type Locale } from "@/lib/i18n"
 import { pageMetadata } from "@/lib/metadata"
 
 import { manualMessages } from "./messages"
+import { JsonLd } from "@/components/json-ld"
+import { breadcrumbJsonLd } from "@/lib/structured-data"
+import { homeMessages } from "../messages"
 
 type Props = { params: Promise<{ locale: Locale }> }
 
@@ -26,6 +29,9 @@ export default async function ManualPage({ params }: Props) {
 
   return (
     <div className="min-h-screen bg-white text-gray-900">
+      <JsonLd
+        data={breadcrumbJsonLd(locale, homeMessages[locale].meta.title, { path: "manual/", name: t.meta.title })}
+      />
       <section className="relative overflow-hidden">
         {/* Subtle Background Glow (Light) */}
         <div className="pointer-events-none absolute inset-x-0 top-[-12rem] -z-10 transform-gpu overflow-hidden blur-3xl">
