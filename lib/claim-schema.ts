@@ -1,47 +1,52 @@
-/* eslint-disable @typescript-eslint/no-explicit-any -- JSON Schema documents are untyped input. */
+import { isRecord, itemSchemaOf, type JsonSchema } from "./json-schema"
 
 // The claim schemas factor shared definitions (dates, country enum, contact blocks) into `$defs` and
 // reference them with `$ref`. Every renderer walks the schema structurally, so a `{ "$ref": ... }`
 // node would render as an empty field. Inlining the targets once, at load time, keeps all of them
 // working without each having to understand references.
-export function dereferenceSchema(root: any): any {
-  const resolvePointer = (pointer: string): any => {
+export function dereferenceSchema(root: unknown): JsonSchema {
+  const resolvePointer = (pointer: string): unknown => {
     if (!pointer.startsWith("#")) return null
     return pointer
       .slice(1)
       .split("/")
       .filter(Boolean)
-      .reduce((node: any, rawSegment: string) => {
-        if (node === null || node === undefined) return null
+      .reduce<unknown>((node, rawSegment) => {
+        if (!isRecord(node)) return null
         const segment = rawSegment.replace(/~1/g, "/").replace(/~0/g, "~")
         return node[segment] ?? null
       }, root)
   }
 
   // `seen` breaks reference cycles; a self-referential schema would otherwise recurse forever.
-  const inline = (node: any, seen: Set<string>): any => {
+  const inline = (node: unknown, seen: Set<string>): unknown => {
     if (Array.isArray(node)) return node.map((item) => inline(item, seen))
-    if (!node || typeof node !== "object") return node
+    if (!isRecord(node)) return node
 
-    if (typeof node.$ref === "string") {
-      if (seen.has(node.$ref)) return {}
-      const target = resolvePointer(node.$ref)
+    const { $ref, ...siblings } = node
+    if (typeof $ref === "string") {
+      if (seen.has($ref)) return {}
+      const target = resolvePointer($ref)
       if (!target) return {}
-      const { $ref, ...siblings } = node
-      return { ...inline(target, new Set([...seen, $ref])), ...inline(siblings, seen) }
+      // A pointer into a schema targets a subschema (an object); spreading keeps whatever it is as before.
+      return { ...(inline(target, new Set([...seen, $ref])) as object), ...inlineEntries(siblings, seen) }
     }
 
-    return Object.fromEntries(Object.entries(node).map(([key, value]) => [key, inline(value, seen)]))
+    return inlineEntries(node, seen)
   }
+
+  const inlineEntries = (node: Record<string, unknown>, seen: Set<string>): Record<string, unknown> =>
+    Object.fromEntries(Object.entries(node).map(([key, value]) => [key, inline(value, seen)]))
 
   const resolved = inline(root, new Set())
   // $defs has served its purpose once everything is inlined, and keeping it would make the renderers
   // report the shared definitions as if they were payload fields.
-  if (resolved && typeof resolved === "object") delete resolved.$defs
-  return resolved
+  if (isRecord(resolved)) delete resolved.$defs
+  // The input is parsed JSON that is trusted to be a schema document; this is the boundary where it gets its type.
+  return resolved as JsonSchema
 }
 
-export function buildExamplePayload(schema: any): any {
+export function buildExamplePayload(schema: JsonSchema | null | undefined): unknown {
   if (!schema) return null
   if (schema.const !== undefined) return schema.const
   if (schema.default !== undefined) return schema.default
@@ -59,7 +64,7 @@ export function buildExamplePayload(schema: any): any {
   const type = Array.isArray(schema.type) ? schema.type[0] : schema.type
 
   if (type === "object" || schema.properties) {
-    const result: Record<string, any> = {}
+    const result: Record<string, unknown> = {}
     Object.entries(schema.properties ?? {}).forEach(([key, value]) => {
       result[key] = buildExamplePayload(value)
     })
@@ -67,7 +72,7 @@ export function buildExamplePayload(schema: any): any {
   }
 
   if (type === "array" || schema.items) {
-    const itemSchema = Array.isArray(schema.items) ? schema.items[0] : schema.items
+    const itemSchema = itemSchemaOf(schema.items)
     const sampleItem = buildExamplePayload(itemSchema)
     return sampleItem === undefined ? [] : [sampleItem]
   }
@@ -75,7 +80,7 @@ export function buildExamplePayload(schema: any): any {
   return samplePrimitiveValue(type, schema)
 }
 
-function samplePrimitiveValue(type: string | undefined, schema: any): any {
+function samplePrimitiveValue(type: string | undefined, schema: JsonSchema): unknown {
   if (Array.isArray(schema.enum) && schema.enum.length) {
     return schema.enum[0]
   }

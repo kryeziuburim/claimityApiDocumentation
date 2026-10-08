@@ -1,4 +1,5 @@
-/* eslint-disable @typescript-eslint/no-explicit-any -- JSON Schema documents are untyped input. */
+import { itemSchemaOf, type JsonSchema } from "@/lib/json-schema"
+
 import type { ClaimPayloadRuleMessages } from "./ClaimPayloadSection.messages"
 
 export type ClaimRule = {
@@ -15,7 +16,7 @@ export type ClaimRuleGroup = {
 
 const GENERIC_TRIGGER = "__generic__"
 
-export function buildClaimRuleGroups(schema: any, t: ClaimPayloadRuleMessages): ClaimRuleGroup[] {
+export function buildClaimRuleGroups(schema: JsonSchema, t: ClaimPayloadRuleMessages): ClaimRuleGroup[] {
   const entries = Array.isArray(schema?.allOf) ? schema.allOf : []
   const conditionalGroups = new Map<string, ClaimRule[]>()
   const exclusions: ClaimRule[] = []
@@ -25,7 +26,7 @@ export function buildClaimRuleGroups(schema: any, t: ClaimPayloadRuleMessages): 
     pushRuleToGroup(conditionalGroups, "driverAtIncident", driverSummaryRule)
   }
 
-  entries.forEach((entry: any) => {
+  entries.forEach((entry) => {
     if (entry?.if) {
       pushRuleToGroup(conditionalGroups, extractTriggerField(entry.if), {
         type: "if",
@@ -67,7 +68,7 @@ function pushRuleToGroup(map: Map<string, ClaimRule[]>, field: string, rule: Cla
   }
 }
 
-function extractTriggerField(ifClause: any): string {
+function extractTriggerField(ifClause: JsonSchema): string {
   if (ifClause?.properties && typeof ifClause.properties === "object") {
     const keys = Object.keys(ifClause.properties)
     if (keys.length) return keys[0]
@@ -78,7 +79,7 @@ function extractTriggerField(ifClause: any): string {
   return GENERIC_TRIGGER
 }
 
-function buildDriverAtIncidentSummary(schema: any, t: ClaimPayloadRuleMessages): ClaimRule | null {
+function buildDriverAtIncidentSummary(schema: JsonSchema, t: ClaimPayloadRuleMessages): ClaimRule | null {
   const details: string[] = []
 
   const insuredLimit = describeDriverYesLimit(
@@ -114,9 +115,9 @@ function describeDriverYesLimit(
   t: ClaimPayloadRuleMessages,
   contextLabel: string,
   objectName: string,
-  objectSchema: any,
+  objectSchema: JsonSchema | undefined,
   arrayName: string,
-  arraySchema: any
+  arraySchema: JsonSchema | undefined
 ): string | null {
   if (!objectSchema || !arraySchema) return null
   const restrictsDriverYes = arraySchema?.contains?.properties?.driverAtIncident?.const === "yes"
@@ -131,13 +132,13 @@ export type FormatHint = {
   description: string
 }
 
-export function extractFormatHints(schema: any, t: ClaimPayloadRuleMessages): FormatHint[] {
+export function extractFormatHints(schema: JsonSchema, t: ClaimPayloadRuleMessages): FormatHint[] {
   const registry = new Map<string, string>()
   traverseForFormats(schema, "payloadJson", registry, t)
   return Array.from(registry.entries()).map(([path, description]) => ({ path, description }))
 }
 
-function traverseForFormats(node: any, currentPath: string, registry: Map<string, string>, t: ClaimPayloadRuleMessages) {
+function traverseForFormats(node: JsonSchema | undefined, currentPath: string, registry: Map<string, string>, t: ClaimPayloadRuleMessages) {
   if (!node) return
 
   const description = describeFormatDetail(node, t)
@@ -156,21 +157,21 @@ function traverseForFormats(node: any, currentPath: string, registry: Map<string
     traverseForFormats(value, nextPath, registry, t)
   })
 
-  const itemSchema = Array.isArray(node.items) ? node.items[0] : node.items
+  const itemSchema = itemSchemaOf(node.items)
   if (itemSchema) {
     const nextPath = `${currentPath}[]`
     traverseForFormats(itemSchema, nextPath, registry, t)
   }
 
   const combos = [...(node.oneOf ?? []), ...(node.anyOf ?? []), ...(node.allOf ?? [])]
-  combos.forEach((child: any) => traverseForFormats(child, currentPath, registry, t))
+  combos.forEach((child) => traverseForFormats(child, currentPath, registry, t))
 
   if (node.then) traverseForFormats(node.then, currentPath, registry, t)
   if (node.else) traverseForFormats(node.else, currentPath, registry, t)
   if (node.if) traverseForFormats(node.if, currentPath, registry, t)
 }
 
-function describeFormatDetail(schema: any, t: ClaimPayloadRuleMessages): string | null {
+function describeFormatDetail(schema: JsonSchema, t: ClaimPayloadRuleMessages): string | null {
   if (schema.format) {
     switch (schema.format) {
       case "date":
@@ -207,7 +208,7 @@ function describeFormatDetail(schema: any, t: ClaimPayloadRuleMessages): string 
   return null
 }
 
-function describeRuleCondition(condition: any, t: ClaimPayloadRuleMessages, parentPath = ""): string {
+function describeRuleCondition(condition: JsonSchema | undefined, t: ClaimPayloadRuleMessages, parentPath = ""): string {
   if (!condition) return t.conditionFallback
   const parts: string[] = []
 
@@ -231,7 +232,7 @@ function describeRuleCondition(condition: any, t: ClaimPayloadRuleMessages, pare
   }
 
   const comboChildren = [...(condition.allOf ?? []), ...(condition.anyOf ?? []), ...(condition.oneOf ?? [])]
-  comboChildren.forEach((child: any) => {
+  comboChildren.forEach((child) => {
     const described = describeRuleCondition(child, t, parentPath)
     if (described && described !== t.conditionFallback) {
       parts.push(described)
@@ -241,7 +242,7 @@ function describeRuleCondition(condition: any, t: ClaimPayloadRuleMessages, pare
   return parts.length ? parts.join(t.and) : t.conditionFallback
 }
 
-function describeSchemaRequirements(path: string, schema: any, t: ClaimPayloadRuleMessages): string[] {
+function describeSchemaRequirements(path: string, schema: JsonSchema | undefined, t: ClaimPayloadRuleMessages): string[] {
   if (!schema) return []
   const facts: string[] = []
 
@@ -272,7 +273,7 @@ function describeSchemaRequirements(path: string, schema: any, t: ClaimPayloadRu
   return facts
 }
 
-function describeArrayContains(path: string, schema: any, t: ClaimPayloadRuleMessages): string {
+function describeArrayContains(path: string, schema: JsonSchema, t: ClaimPayloadRuleMessages): string {
   const minContains = typeof schema.minContains === "number" ? schema.minContains : undefined
   const maxContains = typeof schema.maxContains === "number" ? schema.maxContains : undefined
   let descriptor: string
@@ -300,12 +301,12 @@ function describeArrayContains(path: string, schema: any, t: ClaimPayloadRuleMes
   return t.arrayContains(path, verb, descriptor, elementLabel, optionalNote, requirement)
 }
 
-function formatSchemaValue(value: any): string {
+function formatSchemaValue(value: unknown): string {
   if (value === null) return "null"
   return String(value)
 }
 
-function formatValueList(values: any[]): string {
+function formatValueList(values: unknown[]): string {
   return values.map((value) => `\`${formatSchemaValue(value)}\``).join(", ")
 }
 
@@ -313,7 +314,7 @@ function formatFieldList(fields: string[]): string {
   return fields.map((field) => `\`${field}\``).join(", ")
 }
 
-function describeRuleConsequences(thenClause: any, t: ClaimPayloadRuleMessages): string[] {
+function describeRuleConsequences(thenClause: JsonSchema | undefined, t: ClaimPayloadRuleMessages): string[] {
   if (!thenClause) return [t.additionalRequirements]
   const lines: string[] = []
   if (Array.isArray(thenClause.required) && thenClause.required.length) {
@@ -327,7 +328,7 @@ function describeRuleConsequences(thenClause: any, t: ClaimPayloadRuleMessages):
   return lines.length ? lines : [t.additionalRequirements]
 }
 
-function describeConsequenceFacts(path: string, schema: any, t: ClaimPayloadRuleMessages): string[] {
+function describeConsequenceFacts(path: string, schema: JsonSchema | undefined, t: ClaimPayloadRuleMessages): string[] {
   if (!schema || typeof schema !== "object") return []
   const facts: string[] = []
 
@@ -350,14 +351,14 @@ function describeConsequenceFacts(path: string, schema: any, t: ClaimPayloadRule
   return facts
 }
 
-function describeRuleNot(node: any, t: ClaimPayloadRuleMessages): string {
+function describeRuleNot(node: JsonSchema, t: ClaimPayloadRuleMessages): string {
   const driverConflict = describeDriverConflict(node, t)
   if (driverConflict) {
     return driverConflict
   }
   if (node?.allOf) {
     const segments = node.allOf
-      .map((segment: any) => describeRuleCondition(segment, t))
+      .map((segment) => describeRuleCondition(segment, t))
       .filter(Boolean)
     if (segments.length) {
       return t.combinationOf(segments.join(" + "))
@@ -379,31 +380,30 @@ type DriverConflict = {
   arraySegment: DriverSegment
 }
 
-function describeDriverConflict(node: any, t: ClaimPayloadRuleMessages): string | null {
+function describeDriverConflict(node: JsonSchema, t: ClaimPayloadRuleMessages): string | null {
   const conflict = getDriverConflict(node)
   if (!conflict) return null
   return t.driverConflict(formatDriverSegment(conflict.objectSegment), formatDriverSegment(conflict.arraySegment))
 }
 
-function getDriverConflict(node: any): DriverConflict | null {
+function getDriverConflict(node: JsonSchema): DriverConflict | null {
   if (!Array.isArray(node?.allOf) || node.allOf.length !== 2) return null
-  const segments = node.allOf.map((segment: any) => extractDriverSegment(segment))
-  if (segments.some((segment: DriverSegment | null) => segment === null)) return null
-  const typedSegments = segments as DriverSegment[]
+  const segments = node.allOf.map((segment) => extractDriverSegment(segment))
+  const typedSegments = segments.filter((segment): segment is DriverSegment => segment !== null)
+  if (typedSegments.length !== segments.length) return null
   const objectSegment = typedSegments.find((segment) => segment.kind === "object")
   const arraySegment = typedSegments.find((segment) => segment.kind === "array")
   if (!objectSegment || !arraySegment) return null
   return { objectSegment, arraySegment }
 }
 
-function extractDriverSegment(segment: any): DriverSegment | null {
+function extractDriverSegment(segment: JsonSchema): DriverSegment | null {
   if (!segment?.properties) return null
   for (const [key, schema] of Object.entries(segment.properties)) {
-    const typed = schema as any
-    if (typed?.properties?.driverAtIncident?.const === "yes") {
+    if (schema?.properties?.driverAtIncident?.const === "yes") {
       return { subject: key, kind: "object" }
     }
-    if (typed?.contains?.properties?.driverAtIncident?.const === "yes") {
+    if (schema?.contains?.properties?.driverAtIncident?.const === "yes") {
       return { subject: key, kind: "array" }
     }
   }

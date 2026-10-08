@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any -- JSON Schema documents are untyped input. */
 import fs from "node:fs"
 import path from "node:path"
 
@@ -7,6 +6,7 @@ import addFormats from "ajv-formats"
 import { describe, expect, it } from "vitest"
 
 import { buildExamplePayload, dereferenceSchema } from "./claim-schema"
+import { isRecord } from "./json-schema"
 
 const SCHEMA_DIR = path.join(__dirname, "..", "public", "assets", "schemas")
 const schemaFiles = fs.readdirSync(SCHEMA_DIR).filter((f) => f.endsWith(".schema.json"))
@@ -26,8 +26,8 @@ function createAjv() {
 }
 
 /** Every subschema that carries `examples`, as a JSON pointer into the root schema. */
-function collectExamples(node: any, pointer = ""): { pointer: string; examples: unknown[] }[] {
-  if (!node || typeof node !== "object") return []
+function collectExamples(node: unknown, pointer = ""): { pointer: string; examples: unknown[] }[] {
+  if (!isRecord(node)) return []
   const found = Array.isArray(node.examples) && !Array.isArray(node) ? [{ pointer, examples: node.examples }] : []
   for (const [key, child] of Object.entries(node)) {
     if (key === "examples" || key === "const" || key === "enum" || key === "default") continue

@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-explicit-any -- JSON Schema documents are untyped input. */
+import { itemSchemaOf, type JsonSchema } from "@/lib/json-schema"
 
 export type SchemaStats = {
   totalFields: number
@@ -6,7 +6,7 @@ export type SchemaStats = {
   objectNodes: number
   arrayNodes: number
 }
-export function buildSchemaStats(schema: any): SchemaStats {
+export function buildSchemaStats(schema: JsonSchema): SchemaStats {
   const stats: SchemaStats = {
     totalFields: 0,
     requiredFields: 0,
@@ -18,7 +18,7 @@ export function buildSchemaStats(schema: any): SchemaStats {
   return stats
 }
 
-function collectSchemaStats(node: any, stats: SchemaStats, visited: WeakSet<object>) {
+function collectSchemaStats(node: JsonSchema | undefined, stats: SchemaStats, visited: WeakSet<object>) {
   if (!node || typeof node !== "object") return
   if (visited.has(node)) return
   visited.add(node)
@@ -40,7 +40,7 @@ function collectSchemaStats(node: any, stats: SchemaStats, visited: WeakSet<obje
 
   Object.values(props).forEach((child) => collectSchemaStats(child, stats, visited))
 
-  const itemSchema = Array.isArray(node.items) ? node.items[0] : node.items
+  const itemSchema = itemSchemaOf(node.items)
   if (itemSchema) collectSchemaStats(itemSchema, stats, visited)
 
   const combos = [...(node.oneOf ?? []), ...(node.anyOf ?? []), ...(node.allOf ?? [])]

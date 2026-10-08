@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-explicit-any -- JSON Schema documents are untyped input. */
+import { isRecord } from "@/lib/json-schema"
 
 export const VALIDATION_ENDPOINT = "https://app.claimity.ch/v1/insurers/claims:validate"
 
@@ -13,17 +13,18 @@ export type ValidationState =
   | { status: "error"; message: string; statusCode?: number; errors?: Record<string, string[]> | null }
   | { status: "success"; statusCode: number; data: ValidationResult }
 
-export function normalizeValidationResponse(payload: any): ValidationResult {
-  const validValue = typeof payload?.Valid === "boolean" ? payload.Valid : Boolean(payload?.valid)
-  const errors = normalizeValidationErrors(payload?.Errors ?? payload?.errors)
+export function normalizeValidationResponse(payload: unknown): ValidationResult {
+  const body = isRecord(payload) ? payload : undefined
+  const validValue = typeof body?.Valid === "boolean" ? body.Valid : Boolean(body?.valid)
+  const errors = normalizeValidationErrors(body?.Errors ?? body?.errors)
   return {
     valid: validValue,
     errors,
   }
 }
 
-export function normalizeValidationErrors(errors: any): Record<string, string[]> | null {
-  if (!errors || typeof errors !== "object") {
+export function normalizeValidationErrors(errors: unknown): Record<string, string[]> | null {
+  if (!isRecord(errors)) {
     return null
   }
   const normalized: Record<string, string[]> = {}

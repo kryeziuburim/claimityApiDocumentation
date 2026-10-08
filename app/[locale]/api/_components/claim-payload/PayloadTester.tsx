@@ -1,6 +1,5 @@
 "use client"
 
-/* eslint-disable @typescript-eslint/no-explicit-any -- the validation endpoint's response body is untyped. */
 import { useCallback, useState } from "react"
 import { FileJson, Loader2, ShieldCheck, SquareStack } from "lucide-react"
 
@@ -11,6 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Textarea } from "@/components/ui/textarea"
 import { useToast } from "@/hooks/use-toast"
 import { buildExamplePayload } from "@/lib/claim-schema"
+import { isRecord } from "@/lib/json-schema"
 
 import type { ClaimPayloadMessages } from "./ClaimPayloadSection.messages"
 import type { ClaimPayloadMeta } from "./payloads"
@@ -120,7 +120,7 @@ export function PayloadTester({ t, claimPayloads, schemas }: PayloadTesterProps)
         }),
       })
 
-      let body: any = null
+      let body: unknown = null
       try {
         body = await response.json()
       } catch {
@@ -128,12 +128,13 @@ export function PayloadTester({ t, claimPayloads, schemas }: PayloadTesterProps)
       }
 
       if (!response.ok) {
-        const detail = body?.detail ?? body?.title ?? body?.message ?? body?.error
+        const errorBody = isRecord(body) ? body : undefined
+        const detail = errorBody?.detail ?? errorBody?.title ?? errorBody?.message ?? errorBody?.error
         setValidationState({
           status: "error",
           statusCode: response.status,
           message: detail ? String(detail) : t.requestFailed(response.status),
-          errors: normalizeValidationErrors(body?.Errors ?? body?.errors),
+          errors: normalizeValidationErrors(errorBody?.Errors ?? errorBody?.errors),
         })
         return
       }

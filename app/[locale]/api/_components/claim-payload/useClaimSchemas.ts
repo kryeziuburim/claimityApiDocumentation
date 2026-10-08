@@ -1,15 +1,15 @@
 "use client"
 
-/* eslint-disable @typescript-eslint/no-explicit-any -- JSON Schema documents are untyped input. */
 import { useEffect, useState } from "react"
 
 import { dereferenceSchema } from "@/lib/claim-schema"
+import type { JsonSchema } from "@/lib/json-schema"
 
 import type { ClaimPayloadMeta } from "./payloads"
 
 export type SchemaLoadState = {
   loading: boolean
-  schema: any | null
+  schema: JsonSchema | null
   error: string | null
 }
 
