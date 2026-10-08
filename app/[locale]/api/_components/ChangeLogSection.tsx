@@ -8,8 +8,8 @@ export function ChangeLogSection({ locale }: { locale: Locale }) {
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="mb-4 text-2xl font-bold tracking-tight text-balance sm:text-3xl">{t.title}</h2>
-        <p className="text-sm leading-relaxed text-muted-foreground text-pretty md:text-base">{t.intro}</p>
+        <h2 className="text-xl sm:text-2xl mb-4 font-bold tracking-tight text-balance">{t.title}</h2>
+        <p className="text-sm leading-relaxed text-muted-foreground text-pretty">{t.intro}</p>
       </div>
 
       <div className="space-y-4">
@@ -24,7 +24,7 @@ export function ChangeLogSection({ locale }: { locale: Locale }) {
               </div>
             </div>
             <div className="flex-1">
-              <p className="text-sm leading-relaxed text-pretty sm:text-base">{item.changes}</p>
+              <p className="text-sm leading-relaxed text-pretty">{item.changes}</p>
             </div>
           </div>
         ))}

@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react"
 import { ChevronRight } from "lucide-react"
 
-import { METHOD_COLORS } from "@/components/api/method-colors"
+import { methodBadgeStyle } from "@/components/api/method-colors"
 import { cn } from "@/lib/utils"
 
 import type { NavItem } from "./navigation"
@@ -15,23 +15,13 @@ type ApiSidebarProps = {
   childToParent: Record<string, string>
   activeId: string
   onNavigate: (id: string) => void
-  /** Desktop: shown once the reader is past the hero. */
-  visible: boolean
-  /** Mobile: off-canvas menu state. */
+  /** Mobile: off-canvas menu state. On desktop the sidebar is always shown. */
   mobileOpen: boolean
   /** Moves the fixed sidebar up so it doesn't cover the footer. */
   footerLiftPx: number
 }
 
-export function ApiSidebar({
-  items,
-  childToParent,
-  activeId,
-  onNavigate,
-  visible,
-  mobileOpen,
-  footerLiftPx,
-}: ApiSidebarProps) {
+export function ApiSidebar({ items, childToParent, activeId, onNavigate, mobileOpen, footerLiftPx }: ApiSidebarProps) {
   // UX: Es soll immer nur genau 1 "Accordion"-Parent gleichzeitig offen sein.
   const [expandedItem, setExpandedItem] = useState<string | null>(null)
   const scrollRef = useRef<HTMLDivElement | null>(null)
@@ -79,20 +69,18 @@ export function ApiSidebar({
     <aside
       id={API_SIDEBAR_ID}
       className={cn(
-        "fixed inset-y-0 left-0 z-30 w-full max-w-[18rem] border-r border-border bg-sidebar transition-[transform,opacity] duration-[350ms] ease-out lg:max-w-none lg:w-64",
+        "fixed bottom-0 left-0 top-0 z-50 flex w-full max-w-[18rem] flex-col border-r border-border bg-sidebar transition-transform duration-300 ease-out lg:top-16 lg:z-30 lg:w-64 lg:max-w-none lg:translate-x-0",
         mobileOpen ? "translate-x-0" : "-translate-x-full",
-        visible ? "lg:translate-x-0 lg:opacity-100" : "lg:-translate-x-full lg:opacity-0",
       )}
-      style={visible && footerLiftPx > 0 ? { bottom: footerLiftPx } : undefined}
+      style={footerLiftPx > 0 ? { bottom: footerLiftPx } : undefined}
     >
-      <div
-        ref={scrollRef}
-        className="api-sidebar-scroll flex h-screen flex-col overflow-y-auto py-6 lg:h-[calc(100vh-4rem)]"
-        style={footerLiftPx > 0 && visible ? { height: `calc(100vh - 4rem - ${footerLiftPx}px)` } : undefined}
-      >
-        <nav className="space-y-1 px-4" role="navigation" aria-label="API Navigation">
+      <div ref={scrollRef} className="api-sidebar-scroll min-h-0 flex-1 overflow-y-auto py-5">
+        <nav className="space-y-0.5 px-3" role="navigation" aria-label="API Navigation">
           {items.map((item) => {
             const isItemActive = activeId === item.id || !!item.children?.some((c) => c.id === activeId)
+            // A chapter without children is highlighted like an entry; one with children only gets bold,
+            // its active child carries the highlight.
+            const isLeafActive = isItemActive && !item.children
             return (
               <div key={item.id}>
                 <button
@@ -105,28 +93,30 @@ export function ApiSidebar({
                     }
                   }}
                   className={cn(
-                    "flex w-full items-start gap-3 rounded-md px-3 py-2 text-sm font-medium leading-snug transition-colors",
-                    isItemActive
-                      ? "bg-sidebar-accent font-semibold text-sidebar-accent-foreground"
-                      : "text-sidebar-foreground hover:bg-sidebar-accent/50",
+                    "flex w-full items-start gap-3 rounded-md px-3 py-2 text-sm leading-snug transition-colors",
+                    isLeafActive
+                      ? "bg-teal-50 font-semibold text-teal-900"
+                      : isItemActive
+                        ? "font-semibold text-sidebar-foreground hover:bg-sidebar-accent"
+                        : "font-medium text-muted-foreground hover:bg-sidebar-accent hover:text-sidebar-foreground",
                   )}
                   aria-expanded={item.children ? expandedItem === item.id : undefined}
                   aria-controls={item.children ? `subnav-${item.id}` : undefined}
                   aria-current={isItemActive ? "page" : undefined}
                 >
-                  <item.icon className="mt-0.5 h-4 w-4 shrink-0" />
+                  <item.icon className={cn("mt-0.5 h-4 w-4 shrink-0", isItemActive && "text-primary")} />
                   <span className="min-w-0 flex-1 text-left">{item.title}</span>
                   {item.children && (
                     <ChevronRight
                       className={cn(
-                        "mt-0.5 h-4 w-4 shrink-0 transition-transform",
+                        "mt-0.5 h-4 w-4 shrink-0 opacity-60 transition-transform",
                         expandedItem === item.id && "rotate-90",
                       )}
                     />
                   )}
                 </button>
                 {item.children && expandedItem === item.id && (
-                  <div id={`subnav-${item.id}`} className="ml-3 mt-1 space-y-1 border-l border-border pl-2">
+                  <div id={`subnav-${item.id}`} className="mb-2 ml-5 mt-0.5 border-l border-border">
                     {item.children.map((child) => {
                       const methodLabel = child.method === "DELETE" ? "DEL" : child.method
                       const isChildActive = activeId === child.id
@@ -139,10 +129,10 @@ export function ApiSidebar({
                             onNavigate(child.id)
                           }}
                           className={cn(
-                            "flex w-full items-start gap-2 rounded-md px-3 py-1.5 text-[13px] leading-snug transition-colors",
+                            "-ml-px flex w-full items-start gap-2 border-l-2 py-1.5 pl-3 pr-2 text-[13px] leading-snug transition-colors",
                             isChildActive
-                              ? "bg-sidebar-accent font-semibold text-sidebar-accent-foreground"
-                              : "text-muted-foreground hover:bg-sidebar-accent/30 hover:text-sidebar-foreground",
+                              ? "border-brand font-medium text-teal-900"
+                              : "border-transparent text-muted-foreground hover:border-border hover:text-sidebar-foreground",
                           )}
                           aria-current={isChildActive ? "page" : undefined}
                         >
@@ -151,10 +141,10 @@ export function ApiSidebar({
                               className={cn(
                                 // Fixe Breite, damit GET/PUT/DEL genauso breit sind wie POST.
                                 // (Die Sidebar wirkt dadurch visuell ruhiger und "aligned".)
-                                "mt-[1px] inline-flex h-5 w-9 shrink-0 items-center justify-center rounded-md px-0",
-                                "font-mono text-[11px] font-semibold text-white",
+                                "mt-px inline-flex h-[18px] w-9 shrink-0 items-center justify-center rounded border",
+                                "font-mono text-[10px] font-semibold",
                               )}
-                              style={{ backgroundColor: METHOD_COLORS[child.method] }}
+                              style={methodBadgeStyle(child.method)}
                             >
                               {methodLabel}
                             </span>

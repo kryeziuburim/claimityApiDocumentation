@@ -18,15 +18,6 @@ const timestampItems: FieldItem[] = [
   },
 ]
 
-const amountItems: FieldItem[] = [
-  { field: "CostEstimateAmount", text: "Kostenvoranschlag der Werkstatt." },
-  { field: "ApprovedAmount", text: "Durch das Gutachten freigegebener Betrag." },
-  {
-    field: "SavingsAmount",
-    text: "Einsparung = CostEstimateAmount − ApprovedAmount; nur wenn beide gesetzt sind und der Kostenvoranschlag höher ist, sonst null.",
-  },
-]
-
 const de = {
   title: "Versicherer",
   intro: "Endpoints für Versicherer zum Erstellen/Validieren/Abrufen von Schäden, Dokumenten und Report-Übersichten.",
@@ -41,10 +32,6 @@ const de = {
     "Als neuen Cursor das Maximum der gesehenen LastChangedAt speichern.",
     "Nur an neuen genehmigten Reports interessiert? Gleicher Ablauf mit lastReportApprovedSince und LastReportApprovedAt.",
   ],
-  amountsTitle: "Beträge (CHF)",
-  amountsIntro:
-    "Claim-Liste und Claim-Details liefern die vom Experten erfassten Beträge in CHF (null = noch nicht erfasst).",
-  amountItems,
   claimsTitle: "Schäden",
   claimDocsTitle: "Schadendokumente",
   claimReportsTitle: "Reports zu Claims",
@@ -90,17 +77,6 @@ export const insurerMessages: Record<Locale, typeof de> = {
       "Store the maximum LastChangedAt you saw as the new cursor.",
       "Only interested in newly approved reports? Same flow with lastReportApprovedSince and LastReportApprovedAt.",
     ],
-    amountsTitle: "Amounts (CHF)",
-    amountsIntro:
-      "Claim list and claim details carry the amounts entered by the expert in CHF (null = not entered yet).",
-    amountItems: [
-      { field: "CostEstimateAmount", text: "The workshop's cost estimate." },
-      { field: "ApprovedAmount", text: "The amount approved by the expert report." },
-      {
-        field: "SavingsAmount",
-        text: "Savings = CostEstimateAmount − ApprovedAmount; only when both are set and the estimate is higher, otherwise null.",
-      },
-    ],
     claimsTitle: "Claims",
     claimDocsTitle: "Claim Documents",
     claimReportsTitle: "Reports on Claims",
@@ -144,17 +120,6 @@ export const insurerMessages: Record<Locale, typeof de> = {
       "Enregistrer comme nouveau curseur le maximum des LastChangedAt observés.",
       "Seuls les nouveaux rapports approuvés vous intéressent ? Même déroulement avec lastReportApprovedSince et LastReportApprovedAt.",
     ],
-    amountsTitle: "Montants (CHF)",
-    amountsIntro:
-      "La liste et le détail des sinistres fournissent les montants saisis par l'expert en CHF (null = pas encore saisi).",
-    amountItems: [
-      { field: "CostEstimateAmount", text: "Devis du garage." },
-      { field: "ApprovedAmount", text: "Montant validé par l'expertise." },
-      {
-        field: "SavingsAmount",
-        text: "Économie = CostEstimateAmount − ApprovedAmount ; uniquement si les deux sont renseignés et que le devis est plus élevé, sinon null.",
-      },
-    ],
     claimsTitle: "Sinistres",
     claimDocsTitle: "Documents de sinistre",
     claimReportsTitle: "Rapports sur les sinistres",
@@ -197,17 +162,6 @@ export const insurerMessages: Record<Locale, typeof de> = {
       "Elaborare i risultati in modo idempotente — il confronto è inclusivo, il valore limite può ricomparire.",
       "Salvare come nuovo cursore il valore massimo di LastChangedAt ricevuto.",
       "Le interessano solo i nuovi rapporti approvati? Stessa procedura con lastReportApprovedSince e LastReportApprovedAt.",
-    ],
-    amountsTitle: "Importi (CHF)",
-    amountsIntro:
-      "L'elenco dei sinistri e i dettagli del sinistro forniscono gli importi registrati dal perito in CHF (null = non ancora registrato).",
-    amountItems: [
-      { field: "CostEstimateAmount", text: "Preventivo dell'officina." },
-      { field: "ApprovedAmount", text: "Importo approvato dalla perizia." },
-      {
-        field: "SavingsAmount",
-        text: "Risparmio = CostEstimateAmount − ApprovedAmount; solo se entrambi sono impostati e il preventivo è più alto, altrimenti null.",
-      },
     ],
     claimsTitle: "Sinistri",
     claimDocsTitle: "Documenti del sinistro",

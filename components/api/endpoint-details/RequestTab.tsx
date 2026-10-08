@@ -14,7 +14,6 @@ export function RequestTab({
   grouped,
   requestSchema,
   reqExample,
-  accentColor,
 }: {
   t: EndpointDetailsMessages
   spec: OpenApiDocument | null
@@ -22,7 +21,6 @@ export function RequestTab({
   grouped: Record<string, OpenAPIV3.ParameterObject[]>
   requestSchema: SchemaNode | null
   reqExample: unknown
-  accentColor: string
 }) {
   return (
     <div className="space-y-4">
@@ -51,9 +49,7 @@ export function RequestTab({
             maxDepth={SCHEMA_EXPLORER_MAX_DEPTH}
             fieldLinks={PAYLOAD_FIELD_LINKS}
           />
-          <CodeBlock title={t.exampleBody} accentColor={accentColor}>
-            {reqExample ? prettyJson(reqExample) : null}
-          </CodeBlock>
+          <CodeBlock title={t.exampleBody}>{reqExample ? prettyJson(reqExample) : null}</CodeBlock>
         </DetailBlock>
       )}
     </div>

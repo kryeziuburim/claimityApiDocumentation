@@ -9,20 +9,35 @@ import { PAYLOAD_FIELD_LINKS, SCHEMA_EXPLORER_MAX_DEPTH } from "./constants"
 import type { EndpointDetailsMessages } from "./EndpointDetails.messages"
 import { CodeBlock } from "./primitives"
 
+/** Status code with a colored dot: green for 2xx, amber for 4xx, red for 5xx. */
+function StatusCode({ code }: { code: string }) {
+  const dot = code.startsWith("2")
+    ? "bg-emerald-500"
+    : code.startsWith("4")
+      ? "bg-amber-500"
+      : code.startsWith("5")
+        ? "bg-red-500"
+        : "bg-slate-400"
+  return (
+    <span className="inline-flex shrink-0 items-center gap-1.5 rounded-md border border-border bg-background px-2 py-0.5 font-mono text-xs font-semibold text-foreground">
+      <span className={cn("h-1.5 w-1.5 rounded-full", dot)} aria-hidden="true" />
+      {code}
+    </span>
+  )
+}
+
 export function ResponseTab({
   t,
   spec,
   responses,
   activeResponse,
   setActiveResponse,
-  accentColor,
 }: {
   t: EndpointDetailsMessages
   spec: OpenApiDocument | null
   responses: [string, OpenAPIV3.ResponseObject][]
   activeResponse: string | null
   setActiveResponse: Dispatch<SetStateAction<string | null>>
-  accentColor: string
 }) {
   return (
     <div className="space-y-4">
@@ -35,18 +50,20 @@ export function ResponseTab({
         const keepMounted = code.startsWith("2")
 
         return (
-          <div key={code} className="overflow-hidden rounded-xl border border-border/60 bg-muted/15 sm:rounded-xl">
+          <div key={code} className="overflow-hidden rounded-xl border border-border/70 bg-card">
             <button
               type="button"
               onClick={() => setActiveResponse((prev) => (prev === code ? null : code))}
-              className="flex w-full items-center justify-between gap-3 px-3 py-2.5 text-left sm:px-4 sm:py-3"
+              className="flex w-full items-center justify-between gap-3 px-3 py-2.5 text-left transition-colors hover:bg-muted/40 sm:px-4 sm:py-3"
               aria-expanded={isOpen}
             >
-              <div>
-                <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Response {code}</p>
+              <div className="flex min-w-0 items-center gap-3">
+                <StatusCode code={code} />
                 {resp?.description ? <p className="text-sm text-muted-foreground">{resp.description}</p> : null}
               </div>
-              <ChevronDown className={cn("h-4 w-4 transition-transform", isOpen && "rotate-180")} />
+              <ChevronDown
+                className={cn("h-4 w-4 shrink-0 text-muted-foreground transition-transform", isOpen && "rotate-180")}
+              />
             </button>
 
             {isOpen || keepMounted ? (
@@ -60,9 +77,7 @@ export function ResponseTab({
                       maxDepth={SCHEMA_EXPLORER_MAX_DEPTH}
                       fieldLinks={PAYLOAD_FIELD_LINKS}
                     />
-                    <CodeBlock title={t.exampleResponse} accentColor={accentColor}>
-                      {example ? prettyJson(example) : null}
-                    </CodeBlock>
+                    <CodeBlock title={t.exampleResponse}>{example ? prettyJson(example) : null}</CodeBlock>
                   </div>
                 ) : (
                   <div className="text-sm text-muted-foreground">{t.noJsonSchema}</div>

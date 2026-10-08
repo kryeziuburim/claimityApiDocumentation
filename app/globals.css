@@ -10,7 +10,10 @@
   --card-foreground: oklch(0.145 0 0);
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0);
+  /* Brand cyan #3fc1c9 is too light for text (2.2:1 on white): it is used for accents (bars, rings,
+     highlights); --primary is a darker step of the same hue that meets AA for text and white labels. */
+  --brand: #3fc1c9;
+  --primary: #166870;
   --primary-foreground: oklch(0.985 0 0);
   --secondary: oklch(0.97 0 0);
   --secondary-foreground: oklch(0.205 0 0);
@@ -22,7 +25,7 @@
   --destructive-foreground: oklch(0.577 0.245 27.325);
   --border: oklch(0.922 0 0);
   --input: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
+  --ring: var(--brand);
   --chart-1: oklch(0.646 0.222 41.116);
   --chart-2: oklch(0.6 0.118 184.704);
   --chart-3: oklch(0.398 0.07 227.392);
@@ -115,19 +118,21 @@
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
 
-  /* Define custom teal colors directly in Tailwind theme with #329AA1 as base */
-  --color-teal-50: #e8f4f5;
-  --color-teal-100: #d1e9eb;
-  --color-teal-200: #a3d3d7;
-  --color-teal-300: #75bdc3;
-  --color-teal-400: #4db8be;
-  --color-teal-500: #3aacb3;
-  /* 600/700 darkened from #329aa1/#2a8289 so white text and teal-50 badges meet WCAG AA (4.5:1). */
-  --color-teal-600: #2a8086;
-  --color-teal-700: #26777d;
-  --color-teal-800: #226a71;
-  --color-teal-900: #1a5259;
-  --color-teal-950: #123a41;
+  --color-brand: var(--brand);
+
+  /* Teal scale built around the brand color #3fc1c9 (= 400). From 600 on, white text and text on
+     teal-50 meet WCAG AA (4.5:1). */
+  --color-teal-50: #ebf8f9;
+  --color-teal-100: #d3f2f4;
+  --color-teal-200: #a9e5e9;
+  --color-teal-300: #79d6dc;
+  --color-teal-400: #3fc1c9;
+  --color-teal-500: #2aa8b0;
+  --color-teal-600: #1a7a81;
+  --color-teal-700: #166870;
+  --color-teal-800: #145960;
+  --color-teal-900: #12484e;
+  --color-teal-950: #0b3236;
 }
 
 @layer base {
@@ -138,11 +143,20 @@
   /* Verhindert horizontales Scrollen global */
   html,
   body {
-    overflow-x: hidden;
+    overflow-x: clip;
+  }
+
+  /* Anchor targets land below the sticky site header (components/header.tsx, h-16). */
+  html {
+    scroll-padding-top: 4rem;
   }
 
   body {
     @apply bg-background text-foreground;
+  }
+
+  ::selection {
+    background-color: color-mix(in oklab, var(--brand) 35%, transparent);
   }
 
   /* Sichere Zeilenumbrüche für typische Text-Elemente in allen Sprachen */
@@ -193,7 +207,7 @@
   scrollbar-gutter: stable;
   overscroll-behavior: contain;
   scrollbar-width: thin; /* Firefox */
-  scrollbar-color: hsl(var(--border)) transparent; /* Firefox */
+  scrollbar-color: var(--border) transparent; /* Firefox */
 }
 
 .api-sidebar-scroll::-webkit-scrollbar {
@@ -205,12 +219,12 @@
 }
 
 .api-sidebar-scroll::-webkit-scrollbar-thumb {
-  background-color: color-mix(in oklab, hsl(var(--border)) 70%, transparent);
+  background-color: color-mix(in oklab, var(--border) 70%, transparent);
   border-radius: 9999px;
   border: 3px solid transparent;
   background-clip: content-box;
 }
 
 .api-sidebar-scroll::-webkit-scrollbar-thumb:hover {
-  background-color: color-mix(in oklab, hsl(var(--ring)) 60%, transparent);
+  background-color: color-mix(in oklab, var(--ring) 60%, transparent);
 }

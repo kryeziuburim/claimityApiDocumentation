@@ -1,11 +1,11 @@
 "use client"
 
-import React, { useMemo, useState } from "react"
+import React, { useState } from "react"
 import { ChevronDown } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { EndpointDetails } from "@/components/api/EndpointDetails"
 import type { HttpMethod } from "@/components/api/openapi-utils"
-import { METHOD_COLORS } from "@/components/api/method-colors"
+import { MethodBadge } from "@/components/api/doc-primitives"
 
 type EndpointCardProps = {
   method: HttpMethod
@@ -29,21 +29,12 @@ export function EndpointCard({
   note,
 }: EndpointCardProps) {
   const [open, setOpen] = useState<boolean>(defaultOpen)
-  const methodColor = useMemo(
-    () => (METHOD_COLORS as Partial<Record<HttpMethod, string>>)[method] ?? "#475569",
-    [method],
-  )
   const hasDetails = enableDetails
 
   const headerContent = (
     <div className="flex flex-col gap-3">
       <div className="flex w-full items-center gap-2 sm:gap-3">
-        <span
-          className="flex h-8 w-16 items-center justify-center rounded-md font-mono text-[11px] font-semibold uppercase tracking-wide text-white sm:w-20 sm:text-xs"
-          style={{ backgroundColor: methodColor }}
-        >
-          {method}
-        </span>
+        <MethodBadge method={method} className="self-start sm:mt-px" />
 
         <div className="min-w-0 flex-1">
           <div className="flex flex-wrap items-center gap-2">
@@ -62,7 +53,12 @@ export function EndpointCard({
         </div>
 
         {hasDetails ? (
-          <ChevronDown className={cn("h-5 w-5 text-muted-foreground transition-transform", open && "rotate-180")} />
+          <ChevronDown
+            className={cn(
+              "h-5 w-5 shrink-0 self-start text-muted-foreground transition-transform",
+              open && "rotate-180",
+            )}
+          />
         ) : null}
       </div>
     </div>
@@ -71,15 +67,15 @@ export function EndpointCard({
   return (
     <div
       className={cn(
-        "rounded-xl border border-border/70 bg-muted/30 transition-shadow",
-        hasDetails && open && "border-border/70",
+        "rounded-xl border border-border/70 bg-card transition-[border-color,box-shadow]",
+        hasDetails && (open ? "border-brand/60 shadow-sm" : "hover:border-border hover:shadow-sm"),
       )}
     >
       {hasDetails ? (
         <button
           type="button"
           onClick={() => setOpen((v) => !v)}
-          className="w-full rounded-xl bg-transparent p-4 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2a8289] sm:p-5"
+          className="w-full rounded-xl bg-transparent p-4 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand sm:p-5"
           aria-expanded={open}
         >
           {headerContent}
@@ -90,7 +86,7 @@ export function EndpointCard({
 
       {/* Always rendered (hidden while collapsed) so the details are part of the exported HTML. */}
       {hasDetails ? (
-        <div hidden={!open} className="border-t border-border bg-card/80 px-4 pb-4 pt-3 sm:px-5">
+        <div hidden={!open} className="border-t border-border px-4 pb-5 pt-3 sm:px-5">
           <EndpointDetails method={method} path={path} className="mt-2" />
         </div>
       ) : null}

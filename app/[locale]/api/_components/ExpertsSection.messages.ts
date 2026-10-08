@@ -14,25 +14,12 @@ const timestampItems: FieldItem[] = [
   },
 ]
 
-const amountItems: FieldItem[] = [
-  { field: "CostEstimateAmount", text: "Kostenvoranschlag der Werkstatt." },
-  { field: "ApprovedAmount", text: "Durch das Gutachten freigegebener Betrag." },
-  {
-    field: "SavingsAmount",
-    text: "Einsparung = CostEstimateAmount − ApprovedAmount; nur wenn beide gesetzt sind und der Kostenvoranschlag höher ist, sonst null.",
-  },
-]
-
 const de = {
   title: "Experten",
   intro: "Endpoints für Experten zum Arbeiten mit Fällen, Dokumenten und Gutachten-/Report-Submissions.",
   timestampsTitle: "Zeitstempel & inkrementelle Synchronisierung",
   timestampsIntro: "Zeitstempel und Sync-Filter (inklusiv >=), benannt nach dem Feld, das sie filtern:",
   timestampItems,
-  amountsTitle: "Beträge (CHF)",
-  amountsIntro:
-    "Fall-Liste und Fall-Details liefern drei Beträge in CHF (null = noch nicht erfasst). Gesetzt werden sie über PUT /v1/experts/cases/{caseId}/amounts.",
-  amountItems,
   casesTitle: "Fälle",
   caseDocsTitle: "Falldokumente",
   reportsTitle: "Reports & Submissions",
@@ -73,17 +60,6 @@ export const expertsMessages: Record<Locale, typeof de> = {
       {
         field: "LastChangedAt",
         text: "Last partner-relevant change (status, documents, reports, comments, amounts). Filter: lastChangedSince.",
-      },
-    ],
-    amountsTitle: "Amounts (CHF)",
-    amountsIntro:
-      "Case list and case details carry three amounts in CHF (null = not entered yet). Set them with PUT /v1/experts/cases/{caseId}/amounts.",
-    amountItems: [
-      { field: "CostEstimateAmount", text: "The workshop's cost estimate." },
-      { field: "ApprovedAmount", text: "The amount approved by the expert report." },
-      {
-        field: "SavingsAmount",
-        text: "Savings = CostEstimateAmount − ApprovedAmount; only when both are set and the estimate is higher, otherwise null.",
       },
     ],
     casesTitle: "Cases",
@@ -127,17 +103,6 @@ export const expertsMessages: Record<Locale, typeof de> = {
         text: "Dernière modification pertinente pour le partenaire (statut, documents, rapports, commentaires, montants). Filtre : lastChangedSince.",
       },
     ],
-    amountsTitle: "Montants (CHF)",
-    amountsIntro:
-      "La liste et le détail des dossiers fournissent trois montants en CHF (null = pas encore saisi). Ils se définissent via PUT /v1/experts/cases/{caseId}/amounts.",
-    amountItems: [
-      { field: "CostEstimateAmount", text: "Devis du garage." },
-      { field: "ApprovedAmount", text: "Montant validé par l'expertise." },
-      {
-        field: "SavingsAmount",
-        text: "Économie = CostEstimateAmount − ApprovedAmount ; uniquement si les deux sont renseignés et que le devis est plus élevé, sinon null.",
-      },
-    ],
     casesTitle: "Dossiers",
     caseDocsTitle: "Documents du dossier",
     reportsTitle: "Rapports & Soumissions",
@@ -175,17 +140,6 @@ export const expertsMessages: Record<Locale, typeof de> = {
       {
         field: "LastChangedAt",
         text: "Ultima modifica rilevante per il partner (stato, documenti, rapporti, commenti, importi). Filtro: lastChangedSince.",
-      },
-    ],
-    amountsTitle: "Importi (CHF)",
-    amountsIntro:
-      "L'elenco dei casi e i dettagli del caso forniscono tre importi in CHF (null = non ancora registrato). Vengono impostati tramite PUT /v1/experts/cases/{caseId}/amounts.",
-    amountItems: [
-      { field: "CostEstimateAmount", text: "Preventivo dell'officina." },
-      { field: "ApprovedAmount", text: "Importo approvato dalla perizia." },
-      {
-        field: "SavingsAmount",
-        text: "Risparmio = CostEstimateAmount − ApprovedAmount; solo se entrambi sono impostati e il preventivo è più alto, altrimenti null.",
       },
     ],
     casesTitle: "Casi",

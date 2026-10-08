@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useLayoutEffect, useRef, useState, type RefObject } from "react"
+import { useEffect, useRef, useState, type RefObject } from "react"
 
 const DESKTOP_MIN_WIDTH = 1024
 
@@ -73,42 +73,6 @@ export function useFooterLift(): number {
   }, [])
 
   return footerLiftPx
-}
-
-/**
- * Left padding the content needs so the fixed sidebar (w-64) doesn't overlap it.
- * Layout-Shift nur dann, wenn die Sidebar den Content tatsächlich überlappen würde; auf sehr großen
- * Screens bleibt der Content unverändert.
- */
-export function useDesktopContentOffset(contentRef: RefObject<HTMLElement | null>): number {
-  const [offsetPx, setOffsetPx] = useState(0)
-
-  useLayoutEffect(() => {
-    const SIDEBAR_WIDTH_PX = 256
-    const GAP_PX = 44
-
-    const update = () => {
-      // Unterhalb lg wird die Sidebar ohnehin per Mobile-Menü genutzt.
-      if (window.innerWidth < DESKTOP_MIN_WIDTH) {
-        setOffsetPx(0)
-        return
-      }
-
-      const el = contentRef.current
-      if (!el) return
-
-      const left = el.getBoundingClientRect().left
-      const needed = Math.max(0, SIDEBAR_WIDTH_PX + GAP_PX - left)
-
-      setOffsetPx(needed < 1 ? 0 : Math.ceil(needed))
-    }
-
-    update()
-    window.addEventListener("resize", update)
-    return () => window.removeEventListener("resize", update)
-  }, [contentRef])
-
-  return offsetPx
 }
 
 /** Prevents the page behind an open overlay (the mobile menu) from scrolling. */

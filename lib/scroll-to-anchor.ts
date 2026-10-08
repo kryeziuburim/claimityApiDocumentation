@@ -4,9 +4,9 @@ const USER_SCROLL_EVENTS = ["wheel", "touchstart", "keydown", "mousedown"] as co
  * Scrolls to the element with the given id and keeps it aligned while the page settles.
  *
  * - Waits for the element if it isn't mounted or visible yet (e.g. the content of a tab that was just selected).
- * - Late layout changes above the target (images, web fonts, the sidebar padding that appears once the
- *   page is scrolled past the hero) would otherwise push it out of view; while the document resizes the
- *   target is re-aligned, for at most `settleMs` and only until the user scrolls themselves.
+ * - Late layout changes above the target (images, web fonts, lazily rendered content) would otherwise
+ *   push it out of view; while the document resizes the target is re-aligned, for at most `settleMs`
+ *   and only until the user scrolls themselves.
  *
  * Returns a function that cancels the pending scroll.
  */

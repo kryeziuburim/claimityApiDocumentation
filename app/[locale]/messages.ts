@@ -8,6 +8,7 @@ const de = {
     socialDescription: "Hilfe-Center der Claimity Plattform.",
   },
   badge: "Claimity Hilfe-Center",
+  quickLinksTitle: "Beliebte Themen",
   title: "Alles, was Sie für Claimity brauchen – an einem Ort.",
   intro:
     "Ob erste Schritte, tiefere Produktfragen oder technische Integration: Wählen Sie den Bereich, der zu Ihrem aktuellen Bedarf passt.",
@@ -57,6 +58,7 @@ export const homeMessages: Record<Locale, typeof de> = {
       socialDescription: "Claimity Platform Help Center.",
     },
     badge: "Claimity Help Center",
+    quickLinksTitle: "Popular topics",
     title: "Everything you need for Claimity – in one place.",
     intro:
       "Whether first steps, deeper product questions, or technical integration: Choose the area that fits your current needs.",
@@ -99,6 +101,7 @@ export const homeMessages: Record<Locale, typeof de> = {
       socialDescription: "Centre d'aide de la plateforme Claimity.",
     },
     badge: "Centre d'aide Claimity",
+    quickLinksTitle: "Sujets populaires",
     title: "Tout ce dont vous avez besoin pour Claimity – au même endroit.",
     intro:
       "Que ce soit pour les premiers pas, des questions approfondies sur le produit ou l'intégration technique : choisissez le domaine qui correspond à vos besoins actuels.",
@@ -145,6 +148,7 @@ export const homeMessages: Record<Locale, typeof de> = {
       socialDescription: "Centro assistenza della piattaforma Claimity.",
     },
     badge: "Centro assistenza Claimity",
+    quickLinksTitle: "Argomenti popolari",
     title: "Tutto ciò che Le serve per Claimity – in un unico posto.",
     intro:
       "Che si tratti dei primi passi, di domande approfondite sul prodotto o dell'integrazione tecnica: scelga l'area più adatta alle Sue esigenze attuali.",

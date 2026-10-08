@@ -1,12 +1,14 @@
 import { expect, navState, test, topOf, waitForClaimSchemas } from "./fixtures"
 
-// Sections are scrolled to with scroll-mt-24 (96px); payload tab sections have no margin.
+// Anchors land below the sticky header (scroll-padding-top 64px); sections add scroll-mt-8 (96px in total),
+// payload tab sections have no margin.
+const HEADER_HEIGHT = 64
 const SECTION_TOP = 96
 
 test.describe("API page navigation", () => {
   test("sidebar entry scrolls to its section and is highlighted (not the next one)", async ({ page }) => {
     await page.goto("/de/api/")
-    // The sidebar only appears once the page is scrolled past the hero.
+    // Start inside the content, past the hero.
     await page.evaluate(() => document.getElementById("overview")!.scrollIntoView())
     await page.locator('[data-nav-id="insurer"]').click()
     await page.locator('[data-nav-id="insurer-claims-create"]').click()
@@ -32,7 +34,7 @@ test.describe("API page navigation", () => {
     await page.locator("#claim-payloads").getByRole("tab", { name: "Sachverständiger" }).click()
 
     await expect.poll(() => navState(page)).toEqual({ hash: "#payloads-appraiser", activeNav: "payloads-appraiser" })
-    await expect.poll(() => topOf(page, "payloads-appraiser")).toBeCloseTo(0, -1)
+    await expect.poll(() => topOf(page, "payloads-appraiser")).toBeCloseTo(HEADER_HEIGHT, -1)
   })
 
   test("deep link to a payload tab selects and shows it", async ({ page }) => {
@@ -41,7 +43,7 @@ test.describe("API page navigation", () => {
     await expect(page.locator("#claim-payloads").getByRole("tab", { selected: true })).toHaveText(
       "Bekämpfung Versicherungsmissbrauch",
     )
-    await expect.poll(() => topOf(page, "payloads-fraud"), { timeout: 10_000 }).toBeCloseTo(0, -1)
+    await expect.poll(() => topOf(page, "payloads-fraud"), { timeout: 10_000 }).toBeCloseTo(HEADER_HEIGHT, -1)
     await expect.poll(() => navState(page)).toEqual({ hash: "#payloads-fraud", activeNav: "payloads-fraud" })
   })
 
@@ -60,6 +62,6 @@ test.describe("API page navigation", () => {
       location.hash = "payloads-special"
     })
     await expect(page.locator("#claim-payloads").getByRole("tab", { selected: true })).toHaveText("Spezialexpertisen")
-    await expect.poll(() => topOf(page, "payloads-special")).toBeCloseTo(0, -1)
+    await expect.poll(() => topOf(page, "payloads-special")).toBeCloseTo(HEADER_HEIGHT, -1)
   })
 })

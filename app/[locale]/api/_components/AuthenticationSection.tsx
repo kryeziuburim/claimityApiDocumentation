@@ -11,16 +11,16 @@ export function AuthenticationSection({ locale }: { locale: Locale }) {
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="mb-4 text-2xl font-bold tracking-tight text-balance sm:text-3xl">{t.title}</h2>
-        <p className="text-sm leading-relaxed text-muted-foreground text-pretty md:text-base">{t.intro}</p>
+        <h2 className="text-xl sm:text-2xl mb-4 font-bold tracking-tight text-balance">{t.title}</h2>
+        <p className="text-sm leading-relaxed text-muted-foreground text-pretty">{t.intro}</p>
       </div>
 
       {/* Auth Flow (Sequence) */}
       <div
         id="auth-flow"
-        className="space-y-4 rounded-lg border border-border bg-card p-4 scroll-mt-24 sm:space-y-5 sm:p-6"
+        className="space-y-4 rounded-lg border border-border bg-card p-4 scroll-mt-8 sm:space-y-5 sm:p-6"
       >
-        <h3 className="text-lg font-semibold sm:text-xl">{t.flowTitle}</h3>
+        <h3 className="text-base sm:text-lg font-semibold">{t.flowTitle}</h3>
         <p className="text-sm leading-relaxed text-muted-foreground text-pretty">{t.flowIntro}</p>
 
         <div className="grid gap-4 md:grid-cols-[440px_1fr] md:items-start md:gap-6">
@@ -50,11 +50,11 @@ export function AuthenticationSection({ locale }: { locale: Locale }) {
       {/* Anchor 1 */}
       <div
         id="auth-access-token"
-        className="space-y-4 rounded-lg border border-border bg-card p-4 scroll-mt-24 sm:space-y-5 sm:p-6"
+        className="space-y-4 rounded-lg border border-border bg-card p-4 scroll-mt-8 sm:space-y-5 sm:p-6"
       >
-        <h3 className="text-lg font-semibold sm:text-xl">{t.accessTokenTitle}</h3>
+        <h3 className="text-base sm:text-lg font-semibold">{t.accessTokenTitle}</h3>
 
-        <p className="leading-relaxed text-muted-foreground text-pretty">{t.accessTokenIntro}</p>
+        <p className="text-sm leading-relaxed text-muted-foreground text-pretty">{t.accessTokenIntro}</p>
 
         <div className="rounded-lg bg-muted p-4">
           <h4 className="mb-2 text-sm font-semibold">{t.prerequisitesTitle}</h4>
@@ -106,7 +106,7 @@ export function AuthenticationSection({ locale }: { locale: Locale }) {
           <summary className="cursor-pointer text-sm font-semibold">JWT Client Assertion (RS256)</summary>
           <div className="mt-3 grid gap-4 md:grid-cols-2 md:items-start">
             <div className="space-y-3 break-words text-sm text-muted-foreground">
-              <p className="text-pretty">{t.assertionIntro}</p>
+              <p className="text-sm text-pretty">{t.assertionIntro}</p>
               <ul className="space-y-2">
                 <li className="flex gap-2">
                   <span className="text-primary">•</span>
@@ -168,11 +168,11 @@ export function AuthenticationSection({ locale }: { locale: Locale }) {
       {/* Anchor 2 */}
       <div
         id="auth-dpop"
-        className="space-y-4 rounded-lg border border-border bg-card p-4 scroll-mt-24 sm:space-y-5 sm:p-6"
+        className="space-y-4 rounded-lg border border-border bg-card p-4 scroll-mt-8 sm:space-y-5 sm:p-6"
       >
-        <h3 className="text-lg font-semibold sm:text-xl">{t.sendRequestsTitle}</h3>
+        <h3 className="text-base sm:text-lg font-semibold">{t.sendRequestsTitle}</h3>
 
-        <p className="leading-relaxed text-muted-foreground text-pretty">{t.sendRequestsIntro}</p>
+        <p className="text-sm leading-relaxed text-muted-foreground text-pretty">{t.sendRequestsIntro}</p>
 
         <h4 className="text-sm font-semibold">{t.requiredHeadersTitle}</h4>
         <KvpTable
@@ -228,7 +228,7 @@ export function AuthenticationSection({ locale }: { locale: Locale }) {
           </ul>
         </details>
 
-        <div id="auth-correlation" className="space-y-3 border-t border-border pt-4 scroll-mt-24">
+        <div id="auth-correlation" className="space-y-3 border-t border-border pt-4 scroll-mt-8">
           <h4 className="text-sm font-semibold">{t.correlationTitle}</h4>
           {t.correlationParagraphs.map((paragraph, index) => (
             <p key={index} className="text-sm text-muted-foreground text-pretty">

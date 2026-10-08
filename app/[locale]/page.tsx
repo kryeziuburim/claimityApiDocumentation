@@ -1,16 +1,17 @@
 import type { Metadata } from "next"
 import Link from "next/link"
 import type { LucideIcon } from "lucide-react"
-import { MinimalFooter } from "@/components/minimal-footer"
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card"
-import { BookOpen, Code, ArrowRight, MailPlus } from "lucide-react"
-import { LanguageSwitcher } from "@/components/language-switcher"
+import { ArrowRight, BookOpen, Code, FileJson, History, Lock, MailPlus, ShieldCheck } from "lucide-react"
+
+import { Footer } from "@/components/footer"
+import { Header } from "@/components/header"
+import { JsonLd } from "@/components/json-ld"
 import { type Locale } from "@/lib/i18n"
 import { pageMetadata } from "@/lib/metadata"
-
-import { homeMessages } from "./messages"
-import { JsonLd } from "@/components/json-ld"
 import { organizationJsonLd, websiteJsonLd } from "@/lib/structured-data"
+
+import { apiPageClientMessages } from "./api/_components/ApiPageClient.messages"
+import { homeMessages } from "./messages"
 
 type Props = { params: Promise<{ locale: Locale }> }
 
@@ -25,71 +26,124 @@ const cards: { key: keyof (typeof homeMessages)[Locale]["cards"]; path: string; 
   { key: "support", path: "support/", icon: MailPlus },
 ]
 
+/** Shortcuts into the API docs; labels are the API sidebar's. */
+const quickLinks: { navKey: keyof (typeof apiPageClientMessages)[Locale]["nav"]; anchor: string; icon: LucideIcon }[] =
+  [
+    { navKey: "authentication", anchor: "authentication", icon: Lock },
+    { navKey: "payloads", anchor: "payloads", icon: FileJson },
+    { navKey: "payloadValidation", anchor: "claim-payload-validation", icon: ShieldCheck },
+    { navKey: "changelog", anchor: "changelog", icon: History },
+  ]
+
 export default async function Home({ params }: Props) {
   const { locale } = await params
   const t = homeMessages[locale]
+  const nav = apiPageClientMessages[locale].nav
+  // "Everything you need – in one place.": the part after the dash is set in the brand color.
+  const [titleLead, titleAccent] = t.title.split(/\s+[–-]\s+/)
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-50">
+    <div className="min-h-screen bg-background text-foreground">
       <JsonLd data={[organizationJsonLd(), websiteJsonLd(locale, t.meta.title)]} />
-      {/* Hero + Tiles Section */}
-      <section className="relative overflow-hidden">
-        {/* Background Glow */}
+      <Header />
 
-        <div className="relative mx-auto max-w-7xl px-6 pb-16 pt-10 md:pb-24 md:pt-16 lg:pb-28 lg:pt-20">
-          {/* Language Switcher top right */}
-          <div className="absolute right-6 top-6 z-10">
-            <LanguageSwitcher variant="dark" />
-          </div>
-          {/* Hero */}
-          <div className="w-full">
-            <h1 className="mt-4 text-3xl font-semibold tracking-tight text-slate-50 md:text-4xl lg:text-5xl">
-              {t.title}
-            </h1>
-            <p className="mt-4 text-sm md:text-base text-slate-200/80">{t.intro}</p>
-          </div>
-
-          {/* Cards */}
-          <div className="mt-10 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {cards.map(({ key, path, icon: Icon }) => {
-              const card = t.cards[key]
-              return (
-                <Link key={key} href={`/${locale}/${path}`} aria-label={card.ariaLabel} className="group block h-full">
-                  <Card className="flex h-full flex-col justify-between border-slate-800/60 bg-white/10 transition-colors hover:border-teal-400/70 hover:bg-white/15">
-                    <CardHeader className="flex flex-row items-start gap-4">
-                      <div className="relative flex h-12 w-12 items-center justify-center rounded-xl bg-teal-500/10">
-                        <Icon className="relative h-6 w-6 text-[#7AE3E9]" />
-                      </div>
-                      <div>
-                        <CardTitle className="text-lg text-slate-50">{card.title}</CardTitle>
-                        <CardDescription className="text-slate-300">{card.description}</CardDescription>
-                      </div>
-                    </CardHeader>
-                    <CardContent className="space-y-3 text-sm text-slate-200/80">
-                      <p>{card.body}</p>
-                      <ul className="space-y-1.5">
-                        {card.items.map((item) => (
-                          <li key={item} className="flex items-center gap-2">
-                            <span className="h-1.5 w-1.5 rounded-full bg-teal-400" />
-                            {item}
-                          </li>
-                        ))}
-                      </ul>
-                    </CardContent>
-                    <div className="flex items-center justify-between border-t border-slate-800/70 px-6 py-3 text-sm font-medium text-teal-200">
-                      <span>{card.cta}</span>
-                      <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
-                    </div>
-                  </Card>
-                </Link>
-              )
-            })}
+      {/* Hero band: light brand gradient with a faint dot grid and a soft glow on the right */}
+      <section className="relative overflow-hidden border-b border-border bg-gradient-to-b from-teal-50/50 to-background">
+        <div
+          className="pointer-events-none absolute inset-0 bg-[radial-gradient(#a9e5e9_1px,transparent_1px)] bg-[size:22px_22px] [mask-image:linear-gradient(to_bottom,black,transparent_85%)]"
+          aria-hidden="true"
+        />
+        <div
+          className="pointer-events-none absolute -right-40 -top-40 h-96 w-96 rounded-full bg-brand/10 blur-3xl"
+          aria-hidden="true"
+        />
+        <div className="relative mx-auto max-w-7xl px-6 pb-12 pt-12 md:pb-16 md:pt-16">
+          <span className="inline-flex items-center gap-2 rounded-full border border-teal-200 bg-background/80 px-3 py-1 text-xs font-semibold text-primary backdrop-blur">
+            <span className="h-1.5 w-1.5 rounded-full bg-brand" aria-hidden="true" />
+            {t.badge}
+          </span>
+          <h1 className="mt-4 max-w-3xl text-3xl font-semibold tracking-tight text-foreground md:text-4xl">
+            {titleLead}
+            {titleAccent ? <span className="text-primary"> – {titleAccent}</span> : null}
+          </h1>
+          <p className="mt-4 max-w-2xl text-sm leading-relaxed text-muted-foreground md:text-base">{t.intro}</p>
+          <div className="mt-6 flex flex-wrap gap-3">
+            <Link
+              href={`/${locale}/api/`}
+              className="inline-flex h-10 items-center gap-2 rounded-md bg-primary px-4 text-sm font-medium text-primary-foreground shadow-sm transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2"
+            >
+              {t.cards.api.cta}
+              <ArrowRight className="h-4 w-4" aria-hidden="true" />
+            </Link>
+            <Link
+              href={`/${locale}/manual/`}
+              className="inline-flex h-10 items-center gap-2 rounded-md border border-border bg-background px-4 text-sm font-medium text-foreground shadow-sm transition-colors hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand"
+            >
+              {t.cards.manual.cta}
+            </Link>
           </div>
         </div>
       </section>
 
-      {/* Footer */}
-      <MinimalFooter />
+      <main className="mx-auto max-w-7xl px-6 pb-16 pt-10 md:pb-20 md:pt-12">
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          {cards.map(({ key, path, icon: Icon }) => {
+            const card = t.cards[key]
+            return (
+              <Link
+                key={key}
+                href={`/${locale}/${path}`}
+                aria-label={card.ariaLabel}
+                className="group flex h-full flex-col rounded-xl border border-border bg-card p-5 transition-all duration-200 hover:-translate-y-0.5 hover:border-brand/60 hover:shadow-lg hover:shadow-teal-900/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand sm:p-6"
+              >
+                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-br from-teal-400 to-teal-700 shadow-sm shadow-teal-700/20">
+                  <Icon className="h-5 w-5 text-white" aria-hidden="true" />
+                </div>
+                <h2 className="mt-4 text-base font-semibold text-foreground">{card.title}</h2>
+                <p className="mt-1 text-sm leading-relaxed text-muted-foreground">{card.description}</p>
+                <ul className="mt-4 space-y-1.5 border-t border-border pt-4 text-sm text-foreground">
+                  {card.items.map((item) => (
+                    <li key={item} className="flex items-center gap-2">
+                      <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-brand" aria-hidden="true" />
+                      <span>{item}</span>
+                    </li>
+                  ))}
+                </ul>
+                <div className="mt-auto flex items-center gap-2 pt-6 text-sm font-medium text-primary">
+                  <span>{card.cta}</span>
+                  <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" aria-hidden="true" />
+                </div>
+              </Link>
+            )
+          })}
+        </div>
+
+        {/* Popular topics: shortcuts into the API docs */}
+        <section className="mt-12 md:mt-14">
+          <h2 className="mb-4 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+            {t.quickLinksTitle}
+          </h2>
+          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+            {quickLinks.map(({ navKey, anchor, icon: Icon }) => (
+              <Link
+                key={anchor}
+                href={`/${locale}/api/#${anchor}`}
+                className="group flex items-center gap-3 rounded-lg border border-border bg-card px-4 py-3 text-sm font-medium text-foreground transition-colors hover:border-brand/60 hover:bg-teal-50/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand"
+              >
+                <Icon className="h-4 w-4 shrink-0 text-primary" aria-hidden="true" />
+                <span className="min-w-0 flex-1">{nav[navKey]}</span>
+                <span className="font-mono text-[11px] text-muted-foreground">API</span>
+                <ArrowRight
+                  className="h-4 w-4 shrink-0 text-muted-foreground transition-transform group-hover:translate-x-0.5 group-hover:text-primary"
+                  aria-hidden="true"
+                />
+              </Link>
+            ))}
+          </div>
+        </section>
+      </main>
+
+      <Footer />
     </div>
   )
 }

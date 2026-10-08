@@ -1,5 +1,6 @@
 import { ChevronDown } from "lucide-react"
 
+import { CopyButton } from "@/components/api/copy-button"
 import { cn } from "@/lib/utils"
 import type { ExampleBlock } from "./useEndpointData"
 
@@ -7,32 +8,32 @@ export function ExamplesTab({
   exampleBlocks,
   activeExample,
   setActiveExample,
-  accentColor,
 }: {
   exampleBlocks: ExampleBlock[]
   activeExample: string | null
   setActiveExample: (key: string) => void
-  accentColor: string
 }) {
   return (
-    <div className="space-y-4">
+    <div className="space-y-3">
       {exampleBlocks.map(({ key, title, content }) => {
         const isOpen = activeExample === key
         return (
-          <div key={key} className="overflow-hidden rounded-xl border border-border/60 bg-muted/15 sm:rounded-xl">
-            <button
-              type="button"
-              onClick={() => setActiveExample(key)}
-              className="flex w-full items-center justify-between gap-3 px-3 py-2 text-left text-[11px] font-semibold uppercase tracking-wide text-foreground sm:px-4 sm:text-xs"
-              aria-expanded={isOpen}
-              style={{ backgroundColor: accentColor }}
-            >
-              <span>{title}</span>
-              <ChevronDown className={cn("h-4 w-4 transition-transform", isOpen && "rotate-180")} />
-            </button>
+          <div key={key} className="overflow-hidden rounded-xl border border-slate-800 bg-slate-900">
+            <div className="flex items-center gap-2 pr-2">
+              <button
+                type="button"
+                onClick={() => setActiveExample(key)}
+                className="flex min-w-0 flex-1 items-center gap-2 py-2 pl-4 text-left text-xs font-medium text-slate-300 hover:text-white"
+                aria-expanded={isOpen}
+              >
+                <ChevronDown className={cn("h-4 w-4 shrink-0 transition-transform", !isOpen && "-rotate-90")} />
+                <span>{title}</span>
+              </button>
+              {isOpen ? <CopyButton text={content} /> : null}
+            </div>
             {isOpen ? (
-              <pre className="border-t border-border/40 bg-background/90 p-3 text-[11px] leading-relaxed text-muted-foreground sm:p-4 sm:text-xs">
-                <code className="font-mono text-foreground">{content}</code>
+              <pre className="overflow-x-auto border-t border-white/10 p-4 text-xs leading-relaxed">
+                <code className="font-mono text-slate-100">{content}</code>
               </pre>
             ) : null}
           </div>

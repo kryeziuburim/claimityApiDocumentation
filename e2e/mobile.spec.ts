@@ -56,7 +56,7 @@ test.describe("API page menu (off-canvas sidebar)", () => {
     await page.locator('[data-nav-id="payloads-special"]').click()
 
     await expect(page.locator("#claim-payloads").getByRole("tab", { selected: true })).toHaveText("Spezialexpertisen")
-    await expect.poll(() => topOf(page, "payloads-special")).toBeCloseTo(0, -1)
+    await expect.poll(() => topOf(page, "payloads-special")).toBeCloseTo(64, -1) // below the sticky header
   })
 
   test("language switcher works on mobile", async ({ page }) => {

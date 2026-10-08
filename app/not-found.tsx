@@ -60,9 +60,9 @@ export default function NotFound() {
           <section className="mx-auto max-w-7xl px-6 py-20 lg:py-28">
             <div className="relative w-full max-w-2xl mx-auto">
               <div className="relative rounded-xl bg-white ring-1 ring-gray-200  p-10 text-center">
-                <h1 className="text-4xl sm:text-5xl font-bold text-gray-900 mb-4">{T.title}</h1>
+                <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">{T.title}</h1>
 
-                <p className="text-lg text-gray-600 mb-8 leading-relaxed">{T.lead}</p>
+                <p className="text-base text-gray-600 mb-8 leading-relaxed">{T.lead}</p>
 
                 <div className="flex flex-wrap gap-4 justify-center">
                   <Button size="lg" asChild className="bg-teal-600 hover:bg-teal-700 text-white h-11 px-6 rounded-lg">

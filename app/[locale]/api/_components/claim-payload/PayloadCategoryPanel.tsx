@@ -51,7 +51,7 @@ export function PayloadCategoryPanel({ payload, state, t, copiedKey, onCopy }: P
       <div className="space-y-2 sm:flex sm:flex-wrap sm:items-start sm:justify-between sm:gap-4">
         <div className="sm:max-w-[75%]">
           <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">{t.category}</p>
-          <h3 className="text-2xl font-semibold tracking-tight text-balance">{payload.label}</h3>
+          <h3 className="text-lg font-semibold tracking-tight text-balance">{payload.label}</h3>
           <p className="mt-2 text-sm text-muted-foreground">{t.categoryIntro(payload.badgeLabel)}</p>
         </div>
       </div>

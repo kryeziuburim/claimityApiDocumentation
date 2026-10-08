@@ -1,28 +1,32 @@
 import React from "react"
+import { CodeBlock as DocCodeBlock } from "@/components/api/doc-primitives"
 import { cn } from "@/lib/utils"
 
 export type HeaderRow = { k: string; v: string }
+
+/** Container for TabButtons: a segmented control. */
+export function TabBar({ children }: { children: React.ReactNode }) {
+  return <div className="mb-4 inline-flex flex-wrap gap-1 rounded-lg bg-muted p-1">{children}</div>
+}
 
 export function TabButton({
   active,
   onClick,
   children,
-  accentColor,
 }: {
   active: boolean
   onClick: () => void
   children: React.ReactNode
-  accentColor: string
 }) {
   return (
     <button
       type="button"
       onClick={onClick}
+      aria-pressed={active}
       className={cn(
-        "rounded-md border border-border/60 px-3 py-1.5 text-[11px] font-semibold transition sm:px-4 sm:text-xs",
-        active ? "text-foreground " : "text-muted-foreground hover:text-foreground",
+        "rounded-md px-3 py-1.5 text-xs font-medium transition-colors sm:px-4",
+        active ? "bg-background text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground",
       )}
-      style={active ? { backgroundColor: accentColor, borderColor: accentColor } : undefined}
     >
       {children}
     </button>
@@ -62,28 +66,7 @@ export function HeaderList({ rows }: { rows: HeaderRow[] }) {
   )
 }
 
-export function CodeBlock({
-  title,
-  children,
-  accentColor,
-}: {
-  title: string
-  children: string | null
-  accentColor: string
-}) {
+export function CodeBlock({ title, children }: { title: string; children: string | null }) {
   if (!children) return null
-
-  return (
-    <div className="overflow-hidden rounded-xl border border-border/70 bg-background/80 sm:rounded-xl">
-      <div
-        className="px-3 py-2 text-[11px] font-semibold uppercase tracking-wide text-foreground sm:px-4 sm:text-xs"
-        style={{ backgroundColor: accentColor }}
-      >
-        {title}
-      </div>
-      <pre className="overflow-x-auto p-3 text-[11px] leading-relaxed text-muted-foreground sm:p-4 sm:text-xs">
-        <code className="font-mono text-foreground">{children}</code>
-      </pre>
-    </div>
-  )
+  return <DocCodeBlock title={title}>{children}</DocCodeBlock>
 }

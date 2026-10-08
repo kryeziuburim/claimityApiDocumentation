@@ -1,8 +1,9 @@
 "use client"
 
 import { useCallback, useState } from "react"
-import { FileJson, Loader2, ShieldCheck, SquareStack } from "lucide-react"
+import { Eraser, FileJson, Loader2, ShieldCheck } from "lucide-react"
 
+import { MethodBadge } from "@/components/api/doc-primitives"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Label } from "@/components/ui/label"
@@ -22,6 +23,8 @@ import {
   type ValidationState,
 } from "./validation"
 import { ValidationResultView } from "./ValidationResultView"
+
+const VALIDATION_PATH = new URL(VALIDATION_ENDPOINT).pathname
 
 type PayloadTesterProps = {
   t: ClaimPayloadMessages
@@ -167,73 +170,42 @@ export function PayloadTester({ t, claimPayloads, schemas }: PayloadTesterProps)
           : "--"
 
   return (
-    <section
-      id="claim-payload-validation"
-      className="space-y-6 rounded-xl border border-border/60 bg-card/80 p-4  sm:p-6"
-    >
-      <div className="space-y-2">
-        <h3 className="text-2xl font-semibold tracking-tight">{t.testTitle}</h3>
-        <p className="text-sm text-muted-foreground">{t.testIntro}</p>
+    <section id="claim-payload-validation" className="space-y-4">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+        <div className="space-y-1.5">
+          <h3 className="text-lg font-semibold tracking-tight">{t.testTitle}</h3>
+          <p className="text-sm text-muted-foreground">{t.testIntro}</p>
+        </div>
+        <div className="inline-flex shrink-0 items-center gap-2 self-start rounded-lg border border-border bg-card px-2 py-1.5 sm:self-auto">
+          <MethodBadge method="POST" className="h-5 w-12 text-[10px] sm:w-12" />
+          <span className="font-mono text-xs text-foreground">{VALIDATION_PATH}</span>
+        </div>
       </div>
 
-      <div className="grid gap-6 lg:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)]">
-        <div className="space-y-4">
-          <div className="space-y-2">
-            <Label htmlFor="payload-category-select">{t.category}</Label>
-            <Select value={testCategory} onValueChange={handleTestCategoryChange}>
-              <SelectTrigger id="payload-category-select" className="h-11 w-full rounded-lg border-border/70">
-                <SelectValue placeholder={t.selectCategory} />
-              </SelectTrigger>
-              <SelectContent className="rounded-lg">
-                {claimPayloads.map((option) => (
-                  <SelectItem key={option.key} value={option.key}>
-                    {option.label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="payload-json-editor">{t.payloadJsonLabel}</Label>
-            <Textarea
-              id="payload-json-editor"
-              value={payloadInput}
-              onChange={(event) => {
-                resetValidationState()
-                setPayloadInput(event.currentTarget.value)
-              }}
-              spellCheck={false}
-              rows={16}
-              className="w-full max-w-full rounded-lg border-border/70 font-mono text-xs leading-relaxed sm:text-[13px]"
-              placeholder="{}"
-            />
-            <p className="text-xs text-muted-foreground">{t.expectsValidJson}</p>
-          </div>
-
-          <div className="flex flex-col gap-3 sm:flex-row">
+      <div className="overflow-hidden rounded-xl border border-border bg-card shadow-sm">
+        {/* Toolbar */}
+        <div className="flex flex-wrap items-center gap-2 border-b border-border bg-muted/40 px-3 py-2">
+          <Label htmlFor="payload-category-select" className="text-xs font-medium text-muted-foreground">
+            {t.category}
+          </Label>
+          <Select value={testCategory} onValueChange={handleTestCategoryChange}>
+            <SelectTrigger id="payload-category-select" className="h-8 w-full bg-background text-sm sm:w-64">
+              <SelectValue placeholder={t.selectCategory} />
+            </SelectTrigger>
+            <SelectContent className="rounded-lg">
+              {claimPayloads.map((option) => (
+                <SelectItem key={option.key} value={option.key}>
+                  {option.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+          <div className="flex w-full gap-1 sm:ml-auto sm:w-auto">
             <Button
               type="button"
-              className="w-full gap-2 sm:w-auto"
-              onClick={() => void handleValidatePayload()}
-              disabled={validationIsLoading}
-            >
-              {validationIsLoading ? (
-                <>
-                  <Loader2 className="h-4 w-4 animate-spin" />
-                  <span>{t.validationRunning}</span>
-                </>
-              ) : (
-                <>
-                  <ShieldCheck className="h-4 w-4" />
-                  <span>{t.validatePayload}</span>
-                </>
-              )}
-            </Button>
-            <Button
-              type="button"
-              variant="outline"
-              className="w-full gap-2 sm:w-auto"
+              variant="ghost"
+              size="sm"
+              className="gap-1.5"
               onClick={handleInsertExample}
               disabled={!schemas[testCategory]?.schema || validationIsLoading}
             >
@@ -243,24 +215,73 @@ export function PayloadTester({ t, claimPayloads, schemas }: PayloadTesterProps)
             <Button
               type="button"
               variant="ghost"
-              className="w-full gap-2 sm:w-auto"
+              size="sm"
+              className="gap-1.5"
               onClick={handleResetPayload}
               disabled={!payloadInput || validationIsLoading}
             >
-              <SquareStack className="h-4 w-4" />
+              <Eraser className="h-4 w-4" />
               {t.clearInput}
             </Button>
           </div>
         </div>
 
-        <div className="space-y-4 rounded-xl border border-border/60 bg-background/70 p-4">
-          <div className="flex items-center justify-between gap-2">
-            <p className="text-sm font-semibold text-foreground">{t.response}</p>
-            <Badge variant="outline" className="rounded-full border-border/60 text-xs">
-              {responseStatusLabel}
-            </Badge>
+        <div className="grid lg:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)]">
+          {/* Editor */}
+          <div className="flex min-w-0 flex-col bg-slate-900">
+            <div className="flex items-center justify-between border-b border-white/10 px-4 py-2">
+              <Label htmlFor="payload-json-editor" className="text-xs font-medium text-slate-400">
+                {t.payloadJsonLabel}
+              </Label>
+              <span className="font-mono text-[11px] text-slate-400">application/json</span>
+            </div>
+            <Textarea
+              id="payload-json-editor"
+              value={payloadInput}
+              onChange={(event) => {
+                resetValidationState()
+                setPayloadInput(event.currentTarget.value)
+              }}
+              spellCheck={false}
+              rows={18}
+              className="field-sizing-fixed! h-[26rem] min-h-40 w-full max-w-full flex-1 resize-y overflow-auto rounded-none border-0 bg-transparent px-4 py-3 font-mono text-xs leading-relaxed text-slate-100 shadow-none placeholder:text-slate-500 focus-visible:ring-0 sm:text-[13px] dark:bg-transparent"
+              placeholder="{}"
+            />
+            <div className="flex flex-col gap-3 border-t border-white/10 px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
+              <p className="text-xs text-slate-400">{t.expectsValidJson}</p>
+              <Button
+                type="button"
+                className="w-full gap-2 bg-teal-400 text-slate-950 hover:bg-teal-300 sm:w-auto"
+                onClick={() => void handleValidatePayload()}
+                disabled={validationIsLoading}
+              >
+                {validationIsLoading ? (
+                  <>
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                    <span>{t.validationRunning}</span>
+                  </>
+                ) : (
+                  <>
+                    <ShieldCheck className="h-4 w-4" />
+                    <span>{t.validatePayload}</span>
+                  </>
+                )}
+              </Button>
+            </div>
           </div>
-          <ValidationResultView state={validationState} t={t} />
+
+          {/* Response */}
+          <div className="flex min-w-0 flex-col border-t border-border lg:border-l lg:border-t-0">
+            <div className="flex items-center justify-between gap-2 border-b border-border px-4 py-2">
+              <p className="text-xs font-medium text-muted-foreground">{t.response}</p>
+              <Badge variant="outline" className="rounded-full border-border font-mono text-[11px]">
+                {responseStatusLabel}
+              </Badge>
+            </div>
+            <div className="flex-1 p-4">
+              <ValidationResultView state={validationState} t={t} />
+            </div>
+          </div>
         </div>
       </div>
     </section>

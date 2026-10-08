@@ -2,111 +2,132 @@
 
 import Link from "next/link"
 import Image from "next/image"
-import { Button } from "@/components/ui/button"
-import { Menu } from "lucide-react"
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet"
+import { usePathname } from "next/navigation"
+import { ArrowUpRight, Menu } from "lucide-react"
+
 import { LanguageSwitcher } from "@/components/language-switcher"
 import { footerMessages } from "@/components/footer.messages"
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet"
 import { useLocale } from "@/hooks/use-locale"
 import type { Locale } from "@/lib/i18n"
+import { cn } from "@/lib/utils"
 
-const headerMessages: Record<Locale, { navTitle: string; clientLogin: string }> = {
-  de: { navTitle: "Navigation", clientLogin: "Anmelden" },
-  en: { navTitle: "Navigation", clientLogin: "Login" },
-  fr: { navTitle: "Navigation", clientLogin: "Connexion" },
-  it: { navTitle: "Navigazione", clientLogin: "Accedi" },
+const headerMessages: Record<Locale, { navTitle: string; clientLogin: string; helpCenter: string }> = {
+  de: { navTitle: "Navigation", clientLogin: "Anmelden", helpCenter: "Hilfe-Center" },
+  en: { navTitle: "Navigation", clientLogin: "Login", helpCenter: "Help Center" },
+  fr: { navTitle: "Navigation", clientLogin: "Connexion", helpCenter: "Centre d'aide" },
+  it: { navTitle: "Navigazione", clientLogin: "Accedi", helpCenter: "Centro assistenza" },
 }
 
+/** Sticky site header: logo, links to the help center areas, login and language. Height: h-16 (4rem). */
 export function Header() {
   const locale = useLocale()
+  const pathname = usePathname() || "/"
   const base = `/${locale}`
   // Nav labels are shared with the footer.
   const L = { ...footerMessages[locale], ...headerMessages[locale] }
 
-  const homeHref = `${base}/`
-  const supportHref = `${base}/support`
-  const manualHref = `${base}/manual`
-  const apiHref = `${base}/api`
-
   const menu = [
-    { href: supportHref, label: L.support },
-    { href: manualHref, label: L.manual },
-    { href: apiHref, label: L.api },
+    { href: `${base}/manual/`, label: L.manual },
+    { href: `${base}/api/`, label: L.api },
+    { href: `${base}/support/`, label: L.support },
   ]
+  const isActive = (href: string) => pathname.replace(/\/?$/, "/").startsWith(href)
 
   return (
-    <>
-      {/* Mobile: fixed; ab md: sticky */}
-      <header className="fixed top-0 inset-x-0 z-50 bg-white border-b border-gray-200 ">
-        <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
-          {/* Logo */}
-          <Link href={homeHref} aria-label="Claimity home" className="flex items-center gap-3">
-            <Image src="/logo.png" alt="Claimity Logo" width={100} height={32} priority />
+    <header className="sticky top-0 z-40 h-16 border-b backdrop-blur-md border-border bg-background/80 supports-[backdrop-filter]:bg-background/70">
+      {/* Three columns so the navigation sits exactly in the middle, independent of the side widths. */}
+      <div className="grid h-full grid-cols-[1fr_auto_1fr] items-center gap-4 px-4 sm:px-6 lg:px-8">
+        <Link
+          href={`${base}/`}
+          aria-label="Claimity home"
+          className="flex shrink-0 items-center gap-3 justify-self-start"
+        >
+          <Image
+            src="/logo.png"
+            alt="Claimity Logo"
+            width={84}
+            height={27}
+            className="h-[27px] w-[84px] object-contain"
+          />
+          <span className="hidden h-5 w-px sm:block bg-border" aria-hidden="true" />
+          <span className="hidden text-sm font-medium sm:block text-muted-foreground">{L.helpCenter}</span>
+        </Link>
+
+        <nav className="hidden items-center gap-1 md:flex" aria-label={L.navTitle}>
+          {menu.map((item) => {
+            const active = isActive(item.href)
+            return (
+              <Link
+                key={item.href}
+                href={item.href}
+                aria-current={active ? "page" : undefined}
+                className={cn(
+                  "relative rounded-md px-3 py-2 text-sm font-medium transition-colors",
+                  active ? "text-foreground" : "text-muted-foreground hover:text-foreground",
+                  active &&
+                    "after:absolute after:inset-x-3 after:-bottom-[13px] after:h-0.5 after:rounded-full after:bg-brand",
+                )}
+              >
+                {item.label}
+              </Link>
+            )
+          })}
+        </nav>
+
+        <div className="col-start-3 flex items-center gap-2 justify-self-end">
+          <LanguageSwitcher />
+          <Link
+            href="https://app.claimity.ch"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="hidden h-9 items-center gap-1 rounded-md bg-primary px-4 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand md:inline-flex"
+          >
+            {L.clientLogin}
+            <ArrowUpRight className="h-4 w-4" aria-hidden="true" />
           </Link>
 
-          {/* Navigation Menu */}
-          {/* <nav className="hidden md:flex items-center gap-8">
-          {menu.map((item) => (
-            <Link
-              key={item.href}
-              href={item.href}
-              className="text-sm font-small text-gray-700 hover:text-gray-900 transition-colors"
+          <Sheet>
+            <SheetTrigger
+              aria-label="Open menu"
+              className="inline-flex h-9 w-9 items-center justify-center rounded-md md:hidden text-foreground hover:bg-muted"
             >
-              {item.label}
-            </Link>
-          ))}
-        </nav> */}
-
-          {/* CTAs + Language */}
-          <div className="hidden md:flex items-center gap-4">
-            <Button asChild className="bg-teal-600 hover:bg-teal-700 text-white rounded-lg px-6">
-              <Link href="https://app.claimity.ch" target="_blank" rel="noopener noreferrer">
-                {L.clientLogin}
-              </Link>
-            </Button>
-            <LanguageSwitcher />
-          </div>
-
-          {/* Mobile Menu */}
-          <div className="md:hidden">
-            <Sheet>
-              <SheetTrigger asChild>
-                <Button variant="ghost" size="icon" aria-label="Open menu" className="text-gray-900 hover:bg-gray-100">
-                  <Menu className="h-6 w-6" />
-                </Button>
-              </SheetTrigger>
-              <SheetContent side="right" className="w-[280px] sm:w-[320px]">
-                <SheetHeader>
-                  <SheetTitle className="text-gray-900 font-semibold">{L.navTitle}</SheetTitle>
-                </SheetHeader>
-                <nav className="mt-4 grid gap-2">
-                  {menu.map((item) => (
-                    <Link
-                      key={item.href}
-                      href={item.href}
-                      className="py-2 text-base font-medium text-gray-900 hover:text-gray-700 ml-4"
-                    >
-                      {item.label}
-                    </Link>
-                  ))}
-                </nav>
-                <div className="mt-6 grid gap-2">
-                  <Button asChild className="justify-start bg-teal-600 hover:bg-teal-700 text-white ml-4 mr-4">
-                    <Link href="https://app.claimity.ch" target="_blank" rel="noopener noreferrer">
-                      {L.clientLogin}
-                    </Link>
-                  </Button>
-                  <div className="px-4">
-                    <LanguageSwitcher />
-                  </div>
-                </div>
-              </SheetContent>
-            </Sheet>
-          </div>
+              <Menu className="h-5 w-5" />
+            </SheetTrigger>
+            <SheetContent side="right" className="w-[280px] sm:w-[320px]">
+              <SheetHeader>
+                <SheetTitle className="font-semibold text-foreground">{L.navTitle}</SheetTitle>
+              </SheetHeader>
+              <nav className="grid gap-1 px-4">
+                {menu.map((item) => (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    aria-current={isActive(item.href) ? "page" : undefined}
+                    className={cn(
+                      "rounded-md px-3 py-2 text-base font-medium text-foreground hover:bg-muted",
+                      isActive(item.href) && "bg-teal-50 text-teal-900",
+                    )}
+                  >
+                    {item.label}
+                  </Link>
+                ))}
+              </nav>
+              <div className="px-4 pt-4">
+                <Link
+                  href="https://app.claimity.ch"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex h-10 w-full items-center justify-center gap-1 rounded-md bg-primary px-4 text-sm font-medium text-primary-foreground hover:bg-primary/90"
+                >
+                  {L.clientLogin}
+                  <ArrowUpRight className="h-4 w-4" aria-hidden="true" />
+                </Link>
+              </div>
+            </SheetContent>
+          </Sheet>
         </div>
-      </header>
-      {/* Spacer nur auf Mobile, um den fixed Header auszugleichen */}
-      <div className="h-16" aria-hidden="true" />
-    </>
+      </div>
+    </header>
   )
 }

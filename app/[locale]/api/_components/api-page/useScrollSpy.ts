@@ -54,7 +54,7 @@ export function useScrollSpy({
       },
       {
         root: null,
-        // The band starts just above where scrollIntoView puts a section (scroll-mt-24 = 96px), so the
+        // The band starts just above where scrollIntoView puts a section (header 64px + scroll-mt-8 = 96px), so the
         // section navigated to is inside it rather than the one below it.
         rootMargin: "-90px 0px -70% 0px",
         threshold: [0, 0.25, 0.5, 0.75, 1],

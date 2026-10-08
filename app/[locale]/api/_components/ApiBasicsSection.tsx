@@ -1,4 +1,4 @@
-import { MethodBadge } from "@/components/api/doc-primitives"
+import { CodeBlock, MethodBadge } from "@/components/api/doc-primitives"
 import type { Locale } from "@/lib/i18n"
 
 import { apiBasicsMessages } from "./ApiBasicsSection.messages"
@@ -11,13 +11,13 @@ export function ApiBasicsSection({ locale }: { locale: Locale }) {
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="mb-4 text-2xl font-bold tracking-tight text-balance sm:text-3xl">{t.title}</h2>
-        <p className="text-sm leading-relaxed text-muted-foreground text-pretty md:text-base">{t.intro}</p>
+        <h2 className="text-xl sm:text-2xl mb-4 font-bold tracking-tight text-balance">{t.title}</h2>
+        <p className="text-sm leading-relaxed text-muted-foreground text-pretty">{t.intro}</p>
       </div>
 
-      <div id="basics-request-format" className="rounded-lg border border-border bg-card p-4 scroll-mt-24 sm:p-6">
-        <h3 className="mb-3 text-lg font-semibold sm:text-xl">{t.requestFormatTitle}</h3>
-        <p className="mb-4 leading-relaxed text-muted-foreground text-pretty">{t.requestFormatText}</p>
+      <div id="basics-request-format" className="rounded-lg border border-border bg-card p-4 scroll-mt-8 sm:p-6">
+        <h3 className="text-base sm:text-lg mb-3 font-semibold">{t.requestFormatTitle}</h3>
+        <p className="text-sm mb-4 leading-relaxed text-muted-foreground text-pretty">{t.requestFormatText}</p>
 
         <div className="mt-5 grid gap-4 md:grid-cols-2">
           <div className="rounded-lg bg-muted/30 p-4">
@@ -89,10 +89,10 @@ export function ApiBasicsSection({ locale }: { locale: Locale }) {
         </div>
       </div>
 
-      <div id="basics-response-format" className="rounded-lg border border-border bg-card p-4 scroll-mt-24 sm:p-6">
-        <h3 className="mb-4 text-lg font-semibold sm:text-xl">{t.responseFormatTitle}</h3>
+      <div id="basics-response-format" className="rounded-lg border border-border bg-card p-4 scroll-mt-8 sm:p-6">
+        <h3 className="text-base sm:text-lg mb-4 font-semibold">{t.responseFormatTitle}</h3>
 
-        <p className="mb-4 leading-relaxed text-muted-foreground text-pretty">{t.responseFormatText}</p>
+        <p className="text-sm mb-4 leading-relaxed text-muted-foreground text-pretty">{t.responseFormatText}</p>
 
         <div className="grid gap-4 md:grid-cols-2">
           <div className="rounded-lg bg-muted/30 p-4">
@@ -111,18 +111,13 @@ export function ApiBasicsSection({ locale }: { locale: Locale }) {
               </li>
             </ul>
 
-            <div className="mt-3 rounded-md bg-background p-3">
-              <div className="mb-2 text-xs font-medium text-muted-foreground">{t.exampleObjectTitle}</div>
-              <pre className="overflow-x-auto text-xs">
-                <code className="font-mono">{`HTTP/1.1 200 OK
+            <CodeBlock className="mt-3" title={t.exampleObjectTitle}>{`HTTP/1.1 200 OK
 Content-Type: application/json
 
 {
   "id": "…",
   "…": "…"
-}`}</code>
-              </pre>
-            </div>
+}`}</CodeBlock>
           </div>
 
           <div className="rounded-lg bg-muted/30 p-4">
@@ -143,10 +138,7 @@ Content-Type: application/json
               </li>
             </ul>
 
-            <div className="mt-3 rounded-md bg-background p-3">
-              <div className="mb-2 text-xs font-medium text-muted-foreground">{t.exampleProblemTitle}</div>
-              <pre className="overflow-x-auto text-xs">
-                <code className="font-mono">{`HTTP/1.1 400 Bad Request
+            <CodeBlock className="mt-3" title={t.exampleProblemTitle}>{`HTTP/1.1 400 Bad Request
 Content-Type: application/json
 
 {
@@ -154,17 +146,15 @@ Content-Type: application/json
   "title": "Bad Request",
   "status": 400,
   "detail": "…"
-}`}</code>
-              </pre>
-            </div>
+}`}</CodeBlock>
           </div>
         </div>
       </div>
 
-      <div id="basics-rate-limiting" className="rounded-lg border border-border bg-card p-4 scroll-mt-24 sm:p-6">
-        <h3 className="mb-4 text-lg font-semibold sm:text-xl">{t.rateLimitTitle}</h3>
+      <div id="basics-rate-limiting" className="rounded-lg border border-border bg-card p-4 scroll-mt-8 sm:p-6">
+        <h3 className="text-base sm:text-lg mb-4 font-semibold">{t.rateLimitTitle}</h3>
 
-        <p className="mb-4 leading-relaxed text-muted-foreground text-pretty">{t.rateLimitIntro}</p>
+        <p className="text-sm mb-4 leading-relaxed text-muted-foreground text-pretty">{t.rateLimitIntro}</p>
 
         <div className="space-y-4">
           {/* Policies side by side */}
@@ -264,9 +254,9 @@ Content-Type: application/json
         </div>
       </div>
 
-      <div id="basics-idempotency" className="rounded-lg border border-border bg-card p-4 scroll-mt-24 sm:p-6">
-        <h3 className="mb-3 text-lg font-semibold sm:text-xl">{t.idempotencyTitle}</h3>
-        <p className="mb-4 leading-relaxed text-muted-foreground text-pretty">{t.idempotencyIntro}</p>
+      <div id="basics-idempotency" className="rounded-lg border border-border bg-card p-4 scroll-mt-8 sm:p-6">
+        <h3 className="text-base sm:text-lg mb-3 font-semibold">{t.idempotencyTitle}</h3>
+        <p className="text-sm mb-4 leading-relaxed text-muted-foreground text-pretty">{t.idempotencyIntro}</p>
         <ul className="space-y-2 text-sm text-muted-foreground">
           {t.idempotencyItems.map((item) => (
             <li key={item} className="flex gap-2">
@@ -277,9 +267,9 @@ Content-Type: application/json
         </ul>
       </div>
 
-      <div id="basics-errors" className="rounded-lg border border-border bg-card p-4 scroll-mt-24 sm:p-6">
-        <h3 className="mb-3 text-lg font-semibold sm:text-xl">{t.errorCatalogTitle}</h3>
-        <p className="mb-4 leading-relaxed text-muted-foreground text-pretty">{t.errorCatalogIntro}</p>
+      <div id="basics-errors" className="rounded-lg border border-border bg-card p-4 scroll-mt-8 sm:p-6">
+        <h3 className="text-base sm:text-lg mb-3 font-semibold">{t.errorCatalogTitle}</h3>
+        <p className="text-sm mb-4 leading-relaxed text-muted-foreground text-pretty">{t.errorCatalogIntro}</p>
         <div className="mb-4 overflow-x-auto">
           <table className="w-full min-w-[480px] border-collapse text-sm">
             <thead>
@@ -298,10 +288,7 @@ Content-Type: application/json
             </tbody>
           </table>
         </div>
-        <div className="rounded-lg border border-border bg-muted/30 p-3">
-          <div className="mb-2 text-xs font-medium text-muted-foreground">{t.validationExampleTitle}</div>
-          <pre className="overflow-x-auto text-xs leading-relaxed">
-            <code className="font-mono">{`HTTP/1.1 400 Bad Request
+        <CodeBlock className="mt-3" title={t.validationExampleTitle}>{`HTTP/1.1 400 Bad Request
 Content-Type: application/problem+json
 
 {
@@ -315,9 +302,7 @@ Content-Type: application/problem+json
       "incidentDate: the incident date cannot be in the future — got 2099-01-15, today is 2026-08-02 (Europe/Zurich)."
     ]
   }
-}`}</code>
-          </pre>
-        </div>
+}`}</CodeBlock>
       </div>
     </div>
   )

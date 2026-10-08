@@ -29,7 +29,7 @@ export default function RootLayout({
       <head>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
       </head>
-      <body className={`font-sans antialiased overflow-x-hidden`}>
+      <body className={`font-sans antialiased overflow-x-clip`}>
         <HtmlLangSetter />
         <HydrationMarker />
         <Suspense fallback={null}>{children}</Suspense>

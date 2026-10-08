@@ -5,11 +5,10 @@ import { useLocale } from "@/hooks/use-locale"
 import { cn } from "@/lib/utils"
 
 import type { HttpMethod } from "./openapi-utils"
-import { DEFAULT_ACCENT_COLOR, METHOD_ACCENTS } from "./endpoint-details/constants"
 import { endpointDetailsMessages } from "./endpoint-details/EndpointDetails.messages"
 import { ErrorsTab } from "./endpoint-details/ErrorsTab"
 import { ExamplesTab } from "./endpoint-details/ExamplesTab"
-import { TabButton } from "./endpoint-details/primitives"
+import { TabBar, TabButton } from "./endpoint-details/primitives"
 import { RequestTab } from "./endpoint-details/RequestTab"
 import { ResponseTab } from "./endpoint-details/ResponseTab"
 import { useEndpointData } from "./endpoint-details/useEndpointData"
@@ -24,7 +23,6 @@ export function EndpointDetails({ method, path, className }: { method: HttpMetho
   const [tab, setTab] = useState<"request" | "response" | "errors" | "examples">("request")
   const [selectedResponse, setActiveResponse] = useState<string | null>(null)
   const [selectedExample, setActiveExample] = useState<string | null>(null)
-  const accentColor = METHOD_ACCENTS[method] ?? DEFAULT_ACCENT_COLOR
 
   // Derived during render: a selection that is no longer in the (spec-dependent) list falls back
   // to none / the first example, without an effect that re-syncs the state.
@@ -59,20 +57,20 @@ export function EndpointDetails({ method, path, className }: { method: HttpMetho
 
   return (
     <div className={cn("mt-2 sm:mt-3", className)}>
-      <div className="mb-3 flex flex-wrap items-center gap-1.5 sm:mb-4 sm:gap-2">
-        <TabButton active={tab === "request"} onClick={() => setTab("request")} accentColor={accentColor}>
+      <TabBar>
+        <TabButton active={tab === "request"} onClick={() => setTab("request")}>
           Request
         </TabButton>
-        <TabButton active={tab === "response"} onClick={() => setTab("response")} accentColor={accentColor}>
+        <TabButton active={tab === "response"} onClick={() => setTab("response")}>
           Response
         </TabButton>
-        <TabButton active={tab === "errors"} onClick={() => setTab("errors")} accentColor={accentColor}>
+        <TabButton active={tab === "errors"} onClick={() => setTab("errors")}>
           Errors
         </TabButton>
-        <TabButton active={tab === "examples"} onClick={() => setTab("examples")} accentColor={accentColor}>
+        <TabButton active={tab === "examples"} onClick={() => setTab("examples")}>
           Examples
         </TabButton>
-      </div>
+      </TabBar>
 
       {/* Request and response stay in the DOM (hidden when inactive) so parameters, fields and their
           descriptions are part of the exported HTML; errors and examples are rendered on demand. */}
@@ -84,7 +82,6 @@ export function EndpointDetails({ method, path, className }: { method: HttpMetho
           grouped={grouped}
           requestSchema={requestSchema}
           reqExample={reqExample}
-          accentColor={accentColor}
         />
       </div>
 
@@ -95,19 +92,13 @@ export function EndpointDetails({ method, path, className }: { method: HttpMetho
           responses={responses}
           activeResponse={activeResponse}
           setActiveResponse={setActiveResponse}
-          accentColor={accentColor}
         />
       </div>
 
       {tab === "errors" && <ErrorsTab t={t} responses={responses} />}
 
       {tab === "examples" && (
-        <ExamplesTab
-          exampleBlocks={exampleBlocks}
-          activeExample={activeExample}
-          setActiveExample={setActiveExample}
-          accentColor={accentColor}
-        />
+        <ExamplesTab exampleBlocks={exampleBlocks} activeExample={activeExample} setActiveExample={setActiveExample} />
       )}
     </div>
   )

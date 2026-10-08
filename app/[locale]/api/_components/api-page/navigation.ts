@@ -120,16 +120,3 @@ const CHILD_TO_PARENT_BY_LOCALE = Object.fromEntries(
 export function getApiNavigation(locale: Locale) {
   return { items: NAVIGATION_ITEMS_BY_LOCALE[locale], childToParent: CHILD_TO_PARENT_BY_LOCALE[locale] }
 }
-
-// Sidebar-Einblendung ab dem ersten Bereich ("Übersicht") und alle nachfolgenden Kapitel.
-export const SIDEBAR_CHAPTERS = new Set([
-  "overview",
-  "first-steps",
-  "reporting",
-  "changelog",
-  "authentication",
-  "api-basics",
-  "experts",
-  "insurer",
-  "payloads",
-])

@@ -1,9 +1,10 @@
 import type { Metadata } from "next"
 import Link from "next/link"
 import { Footer } from "@/components/footer"
-import { LanguageSwitcher } from "@/components/language-switcher"
+import { footerMessages } from "@/components/footer.messages"
+import { Header } from "@/components/header"
 import { Button } from "@/components/ui/button"
-import { FileDown, Users, ShieldCheck, Mail, FormInput } from "lucide-react"
+import { ArrowRight, Code, FileDown, FormInput, HelpCircle, LifeBuoy, Mail, ShieldCheck, Users } from "lucide-react"
 import { type Locale } from "@/lib/i18n"
 import { pageMetadata } from "@/lib/metadata"
 
@@ -11,6 +12,7 @@ import { manualMessages } from "./messages"
 import { JsonLd } from "@/components/json-ld"
 import { breadcrumbJsonLd } from "@/lib/structured-data"
 import { homeMessages } from "../messages"
+import { supportMessages } from "../support/messages"
 
 type Props = { params: Promise<{ locale: Locale }> }
 
@@ -26,68 +28,73 @@ export default async function ManualPage({ params }: Props) {
     { key: "experts", icon: Users, ...t.experts },
     { key: "insurers", icon: ShieldCheck, ...t.insurers },
   ]
+  const support = supportMessages[locale]
+  const furtherLinks = [
+    { href: `/${locale}/support/#faq`, label: support.faqTitle, icon: HelpCircle },
+    { href: `/${locale}/support/#ticket`, label: support.ticketTitle, icon: LifeBuoy },
+    { href: `/${locale}/api/`, label: footerMessages[locale].api, icon: Code },
+  ]
 
   return (
     <div className="min-h-screen bg-white text-gray-900">
       <JsonLd
         data={breadcrumbJsonLd(locale, homeMessages[locale].meta.title, { path: "manual/", name: t.meta.title })}
       />
+      <Header />
       <section className="relative overflow-hidden">
         {/* Subtle Background Glow (Light) */}
 
-        <div className="relative mx-auto max-w-7xl px-6 pb-16 pt-10 md:pb-20 md:pt-16 lg:pb-24 lg:pt-20">
-          <div className="absolute right-6 top-6 z-10">
-            <LanguageSwitcher />
-          </div>
-
+        {/* Hero like the API page; the sections are closer together than the API chapters. */}
+        <div className="relative mx-auto max-w-7xl px-6 pb-16 pt-10 md:pb-20 md:pt-14">
           {/* Hero */}
-          <div className="w-full">
-            <h1 className="mt-4 text-3xl font-semibold tracking-tight text-gray-900 md:text-4xl lg:text-5xl">
-              {t.title}
-            </h1>
-            <p className="mt-4 text-sm md:text-base text-gray-600">{t.intro}</p>
+          <div className="border-b border-border pb-8">
+            <p className="text-sm font-semibold text-primary">{t.eyebrow}</p>
+            <h1 className="mt-2 text-2xl font-semibold tracking-tight text-foreground md:text-3xl">{t.title}</h1>
+            <p className="mt-3 max-w-2xl text-sm text-muted-foreground">{t.intro}</p>
           </div>
 
-          <div className="mt-8 md:mt-12">
-            <div>
-              <div className="flex items-start justify-between gap-6">
-                <div>
-                  <h2 className="mt-1 text-xl font-semibold text-gray-900 md:mt-3">{t.downloadTitle}</h2>
-                  <p className="mt-1 text-sm text-gray-600 md:mt-2 md:text-base">{t.downloadText}</p>
-                </div>
+          <section className="pt-8 md:pt-10">
+            <div className="space-y-6">
+              <div>
+                <h2 className="mb-4 text-xl font-bold tracking-tight text-balance sm:text-2xl">{t.downloadTitle}</h2>
+                <p className="text-sm leading-relaxed text-muted-foreground text-pretty">{t.downloadText}</p>
               </div>
 
-              <div className="mt-6 grid gap-6 md:grid-cols-2">
+              <div className="grid gap-6 md:grid-cols-2">
                 {guides.map(({ key, icon: Icon, title, description, pdf }) => (
                   <div
                     key={key}
-                    className="group relative overflow-hidden rounded-xl border border-slate-200 bg-white p-6"
+                    className="group relative flex flex-col overflow-hidden rounded-xl border border-border bg-card p-5 transition-[border-color,box-shadow] hover:border-brand/60 hover:shadow-lg hover:shadow-teal-900/5 sm:p-6"
                   >
-                    <div className="relative">
-                      <div className="flex items-start gap-4">
-                        <div className="hidden h-11 w-11 items-center justify-center rounded-xl bg-teal-500/10 ring-1 ring-teal-200/60 sm:flex">
-                          <Icon className="h-5 w-5 text-teal-800" aria-hidden="true" />
-                        </div>
-                        <div className="min-w-0">
-                          <h3 className="text-lg font-semibold text-gray-900">{title}</h3>
-                          <p className="mt-1 text-sm text-gray-600">{description}</p>
-                        </div>
+                    {/* Accent bar along the top edge */}
+                    <span
+                      className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-teal-400 to-teal-700"
+                      aria-hidden="true"
+                    />
+                    <div className="flex items-center gap-4">
+                      <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-teal-400 to-teal-700 shadow-sm shadow-teal-700/20">
+                        <Icon className="h-6 w-6 text-white" aria-hidden="true" />
                       </div>
-
-                      <Button asChild className="mt-5 w-full rounded-lg bg-teal-600 px-6 text-white hover:bg-teal-700">
-                        <a href={pdf} download>
-                          <FileDown className="h-4 w-4" aria-hidden="true" />
-                          {t.downloadButton}
-                        </a>
-                      </Button>
+                      <h3 className="text-lg font-semibold text-foreground">{title}</h3>
                     </div>
+                    <p className="mt-4 text-sm leading-relaxed text-muted-foreground">{description}</p>
+
+                    <Button
+                      asChild
+                      className="mt-6 w-full rounded-lg bg-primary px-6 text-primary-foreground hover:bg-primary/90"
+                    >
+                      <a href={pdf} download>
+                        <FileDown className="h-4 w-4" aria-hidden="true" />
+                        {t.downloadButton}
+                      </a>
+                    </Button>
                   </div>
                 ))}
               </div>
-              <div className="mt-10 border-t border-slate-200 pt-8">
-                <p className="text-sm font-semibold text-gray-900 md:text-base">{t.helpTitle}</p>
-                <p className="mt-2 text-sm text-gray-600">{t.helpText}</p>
-                <div className="mt-5 flex flex-wrap gap-3">
+              <div className="pt-4">
+                <h3 className="mb-3 text-base font-semibold sm:text-lg">{t.helpTitle}</h3>
+                <p className="mb-4 text-sm leading-relaxed text-muted-foreground text-pretty">{t.helpText}</p>
+                <div className="flex flex-wrap gap-3">
                   <Button asChild className="rounded-lg bg-teal-600 px-6 text-white hover:bg-teal-700">
                     <Link href={`/${locale}/support`}>
                       <FormInput className="h-4 w-4" aria-hidden="true" />
@@ -103,7 +110,30 @@ export default async function ManualPage({ params }: Props) {
                 </div>
               </div>
             </div>
-          </div>
+          </section>
+
+          {/* Further resources: shortcuts to the other help center areas */}
+          <section className="pt-10 md:pt-12">
+            <h2 className="mb-4 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+              {t.furtherTitle}
+            </h2>
+            <div className="grid gap-3 sm:grid-cols-3">
+              {furtherLinks.map(({ href, label, icon: LinkIcon }) => (
+                <Link
+                  key={href}
+                  href={href}
+                  className="group flex items-center gap-3 rounded-lg border border-border bg-card px-4 py-3 text-sm font-medium text-foreground transition-colors hover:border-brand/60 hover:bg-teal-50/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand"
+                >
+                  <LinkIcon className="h-4 w-4 shrink-0 text-primary" aria-hidden="true" />
+                  <span className="min-w-0 flex-1">{label}</span>
+                  <ArrowRight
+                    className="h-4 w-4 shrink-0 text-muted-foreground transition-transform group-hover:translate-x-0.5 group-hover:text-primary"
+                    aria-hidden="true"
+                  />
+                </Link>
+              ))}
+            </div>
+          </section>
         </div>
       </section>
       <Footer />

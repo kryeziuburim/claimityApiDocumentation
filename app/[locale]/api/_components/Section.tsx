@@ -7,7 +7,7 @@ export function Section({ id, children }: { id: string; children: React.ReactNod
     <section
       id={id}
       className={cn(
-        "scroll-mt-24",
+        "scroll-mt-8",
         id === "overview" ? "pt-6 pb-10 sm:pt-8 sm:pb-12 md:pt-10 md:pb-16" : "py-10 sm:py-12 md:py-16",
       )}
     >
