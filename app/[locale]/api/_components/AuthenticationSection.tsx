@@ -23,10 +23,10 @@ export function AuthenticationSection({ locale }: { locale: Locale }) {
         <div className="grid gap-4 md:grid-cols-[440px_1fr] md:items-start md:gap-6">
           <div className="overflow-hidden rounded-lg bg-background">
             <Image
-              src="/assets/Auth_Sqeuence.png"
+              src="/assets/auth-sequence.webp"
               alt={t.flowImageAlt}
-              width={4347}
-              height={3645}
+              width={1600}
+              height={1342}
               className="h-auto w-full rounded-md"
               sizes="(min-width: 1024px) 440px, 100vw"
               priority
