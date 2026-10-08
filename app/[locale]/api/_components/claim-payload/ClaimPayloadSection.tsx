@@ -1,17 +1,18 @@
 "use client"
 
-import { useCallback, useEffect, useState } from "react"
+import { useCallback, useEffect, useState, useMemo } from "react"
 import { BadgeCheck, Car, Cog, ShieldAlert, SquareStack, type LucideIcon } from "lucide-react"
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import type { Locale } from "@/lib/i18n"
+import type { JsonSchema } from "@/lib/json-schema"
 import { scrollToAnchor } from "@/lib/scroll-to-anchor"
 
 import { claimPayloadMessages } from "./ClaimPayloadSection.messages"
 import { PayloadCategoryPanel } from "./PayloadCategoryPanel"
 import { PayloadTester } from "./PayloadTester"
 import { getClaimPayloads } from "./payloads"
-import { useClaimSchemas } from "./useClaimSchemas"
+import { claimSchemaStates } from "./schema-state"
 import { useCopyJson } from "./useCopyJson"
 
 const PAYLOAD_ICONS: Record<string, LucideIcon> = {
@@ -23,15 +24,25 @@ const PAYLOAD_ICONS: Record<string, LucideIcon> = {
 
 type ClaimPayloadSectionProps = {
   locale: Locale
+  /** Dereferenced claim schemas by category key, loaded at build time. */
+  schemas: Record<string, JsonSchema>
   activePayloadKey?: string
   onActivePayloadChange?: (key: string) => void
 }
 
-export function ClaimPayloadSection({ locale, activePayloadKey, onActivePayloadChange }: ClaimPayloadSectionProps) {
+export function ClaimPayloadSection({
+  locale,
+  schemas: schemaData,
+  activePayloadKey,
+  onActivePayloadChange,
+}: ClaimPayloadSectionProps) {
   const t = claimPayloadMessages[locale]
   const claimPayloads = getClaimPayloads(locale)
   const [internalActive, setInternalActive] = useState<string>(claimPayloads[0]?.key ?? "")
-  const schemas = useClaimSchemas(claimPayloads, t.schemaLoadError)
+  const schemas = useMemo(
+    () => claimSchemaStates(claimPayloads, schemaData, t.schemaLoadError),
+    [claimPayloads, schemaData, t],
+  )
   const { copiedKey, copy } = useCopyJson(t)
 
   const isControlled = activePayloadKey !== undefined && activePayloadKey !== null

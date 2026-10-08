@@ -17,7 +17,7 @@ import type { ClaimPayloadMeta } from "./payloads"
 import { buildClaimRuleGroups, extractFormatHints } from "./schema-rules"
 import { buildSchemaStats } from "./schema-stats"
 import { InlineHint, PayloadLoadingSkeleton, RuleText } from "./ui"
-import type { SchemaLoadState } from "./useClaimSchemas"
+import type { SchemaLoadState } from "./schema-state"
 
 const PAYLOAD_FIELD_LINKS = {
   payloadJson: "#claim-payloads",

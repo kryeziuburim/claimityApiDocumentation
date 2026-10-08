@@ -2,6 +2,7 @@ import type { Metadata } from "next"
 
 import { type Locale } from "@/lib/i18n"
 import { JsonLd } from "@/components/json-ld"
+import { loadClaimSchemas, loadOpenApiSpec } from "@/lib/api-docs-data"
 import { pageMetadata } from "@/lib/metadata"
 import { breadcrumbJsonLd, techArticleJsonLd } from "@/lib/structured-data"
 
@@ -27,7 +28,7 @@ export default async function Page({ params }: Props) {
           techArticleJsonLd(locale, { path: "api/", title: meta.title, description: meta.description }),
         ]}
       />
-      <ApiPageClient locale={locale} />
+      <ApiPageClient locale={locale} spec={loadOpenApiSpec()} claimSchemas={loadClaimSchemas()} />
     </>
   )
 }

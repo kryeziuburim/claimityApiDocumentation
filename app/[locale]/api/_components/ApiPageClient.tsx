@@ -3,10 +3,11 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { Menu } from "lucide-react"
 
-import { OpenApiProvider } from "@/components/api/OpenApiProvider"
+import { OpenApiProvider, type OpenApiSpec } from "@/components/api/OpenApiProvider"
 import { Footer } from "@/components/footer"
 import { LanguageSwitcher } from "@/components/language-switcher"
 import type { Locale } from "@/lib/i18n"
+import type { JsonSchema } from "@/lib/json-schema"
 import { scrollToAnchor } from "@/lib/scroll-to-anchor"
 
 import { ApiSidebar, API_SIDEBAR_ID } from "./api-page/ApiSidebar"
@@ -28,7 +29,14 @@ import { ApiBasicsSection as ApiBasicsSectionComponent } from "./ApiBasicsSectio
 import { ExpertsSection as ExpertsSectionComponent } from "./ExpertsSection"
 import { InsurerSection as InsurerSectionComponent } from "./InsurerSection"
 
-export default function ApiPageClient({ locale }: { locale: Locale }) {
+type ApiPageClientProps = {
+  locale: Locale
+  /** Loaded at build time (lib/api-docs-data.ts) so the content is part of the exported HTML. */
+  spec: OpenApiSpec
+  claimSchemas: Record<string, JsonSchema>
+}
+
+export default function ApiPageClient({ locale, spec, claimSchemas }: ApiPageClientProps) {
   const t = apiPageClientMessages[locale]
   const { items: navigationItems, childToParent } = getApiNavigation(locale)
   const claimPayloads = getClaimPayloads(locale)
@@ -182,7 +190,7 @@ export default function ApiPageClient({ locale }: { locale: Locale }) {
                 <SectionComponent id="api-basics">
                   <ApiBasicsSectionComponent locale={locale} />
                 </SectionComponent>
-                <OpenApiProvider url="/assets/openapi.json">
+                <OpenApiProvider spec={spec}>
                   <SectionComponent id="experts">
                     <ExpertsSectionComponent locale={locale} />
                   </SectionComponent>
@@ -192,6 +200,7 @@ export default function ApiPageClient({ locale }: { locale: Locale }) {
                   <SectionComponent id="payloads">
                     <ClaimPayloadSection
                       locale={locale}
+                      schemas={claimSchemas}
                       activePayloadKey={activePayloadKey}
                       onActivePayloadChange={handlePayloadTabChange}
                     />

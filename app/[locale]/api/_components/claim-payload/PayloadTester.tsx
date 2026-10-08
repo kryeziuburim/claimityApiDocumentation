@@ -14,7 +14,7 @@ import { isRecord } from "@/lib/json-schema"
 
 import type { ClaimPayloadMessages } from "./ClaimPayloadSection.messages"
 import type { ClaimPayloadMeta } from "./payloads"
-import type { SchemaLoadState } from "./useClaimSchemas"
+import type { SchemaLoadState } from "./schema-state"
 import {
   normalizeValidationErrors,
   normalizeValidationResponse,
