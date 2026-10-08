@@ -16,7 +16,8 @@ const de = {
     "Bitte beschreiben Sie Schritte zur Reproduktion. Unser Support prüft den Fall zeitnah und meldet sich schnellstmöglich bei Ihnen.",
   submitButton: "Problem melden",
   noteLabel: "Hinweis:",
-  noteText: "Die API wird auf Basis dieser Dokumentation bereitgestellt. Es gibt keine geführte Implementierung oder Code‑Support.",
+  noteText:
+    "Die API wird auf Basis dieser Dokumentation bereitgestellt. Es gibt keine geführte Implementierung oder Code‑Support.",
 }
 
 export const reportingMessages: Record<Locale, typeof de> = {
@@ -25,7 +26,11 @@ export const reportingMessages: Record<Locale, typeof de> = {
     title: "Report Issue",
     intro: "If you have encountered an error, we will help. Ensure beforehand that the problem is reproducible.",
     beforeTitle: "Before Reporting",
-    doItems: ["Check reproducibility", "Perform API tests with Postman/Insomnia", "Collect details on request and response"],
+    doItems: [
+      "Check reproducibility",
+      "Perform API tests with Postman/Insomnia",
+      "Collect details on request and response",
+    ],
     dontItem: "Do not send access data in the report",
     submitTitle: "Submit Report",
     submitText:

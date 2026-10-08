@@ -26,7 +26,7 @@ const CLAIM_PAYLOADS_BY_LOCALE = Object.fromEntries(
       ...definition,
       ...claimPayloadMessages[locale].payloads[definition.key],
     })),
-  ])
+  ]),
 ) as Record<Locale, ClaimPayloadMeta[]>
 
 /** Payload categories with their localized nav titles and labels. Keys, anchors and schema paths are locale-independent. */

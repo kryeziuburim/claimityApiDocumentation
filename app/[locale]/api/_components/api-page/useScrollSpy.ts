@@ -19,7 +19,13 @@ type ScrollSpyOptions = {
  * The section currently being read, for highlighting the sidebar, mirrored into the URL hash.
  * Returns the setter as well so explicit navigation can set it immediately.
  */
-export function useScrollSpy({ items, childToParent, payloadAnchorByKey, activePayloadKey, pastHero }: ScrollSpyOptions) {
+export function useScrollSpy({
+  items,
+  childToParent,
+  payloadAnchorByKey,
+  activePayloadKey,
+  pastHero,
+}: ScrollSpyOptions) {
   const [activeId, setActiveId] = useState<string>("overview")
 
   // Re-created when the payload tab changes: only the active tab's section is mounted,
@@ -37,7 +43,11 @@ export function useScrollSpy({ items, childToParent, payloadAnchorByKey, activeP
           else visible.delete(id)
         }
         const next = pickActiveSection(
-          [...visible].map(([id, el]) => ({ id, top: el.getBoundingClientRect().top, isChildAnchor: id in childToParent }))
+          [...visible].map(([id, el]) => ({
+            id,
+            top: el.getBoundingClientRect().top,
+            isChildAnchor: id in childToParent,
+          })),
         )
         if (!next) return
         setActiveId(next === "payloads" ? (payloadAnchorByKey[activePayloadKey] ?? next) : next)
@@ -48,7 +58,7 @@ export function useScrollSpy({ items, childToParent, payloadAnchorByKey, activeP
         // section navigated to is inside it rather than the one below it.
         rootMargin: "-90px 0px -70% 0px",
         threshold: [0, 0.25, 0.5, 0.75, 1],
-      }
+      },
     )
 
     ids.forEach((id) => {

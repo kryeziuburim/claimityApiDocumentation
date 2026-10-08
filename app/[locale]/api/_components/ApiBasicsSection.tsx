@@ -24,13 +24,16 @@ export function ApiBasicsSection({ locale }: { locale: Locale }) {
             <h4 className="mb-2 text-sm font-semibold">{t.urlStructureTitle}</h4>
             <div className="text-sm text-muted-foreground">
               <div>
-                <span className="font-medium text-foreground">{t.baseUrlLabel}</span> <span className="font-mono">https://app.claimity.ch</span>
+                <span className="font-medium text-foreground">{t.baseUrlLabel}</span>{" "}
+                <span className="font-mono">https://app.claimity.ch</span>
               </div>
               <div className="mt-1">
-                <span className="font-medium text-foreground">{t.pathLabel}</span> <span className="font-mono">{t.pathValue}</span>
+                <span className="font-medium text-foreground">{t.pathLabel}</span>{" "}
+                <span className="font-mono">{t.pathValue}</span>
               </div>
               <div className="mt-1">
-                <span className="font-medium text-foreground">{t.queryLabel}</span> {t.eg} <span className="font-mono">?page=1&size=50</span>
+                <span className="font-medium text-foreground">{t.queryLabel}</span> {t.eg}{" "}
+                <span className="font-mono">?page=1&size=50</span>
               </div>
             </div>
 
@@ -98,7 +101,8 @@ export function ApiBasicsSection({ locale }: { locale: Locale }) {
               <li className="flex gap-2">
                 <span className="text-primary">•</span>
                 <span>
-                  <strong>2xx</strong> ({t.eg} <span className="font-mono">200</span>, <span className="font-mono">201</span>, <span className="font-mono">204</span>)
+                  <strong>2xx</strong> ({t.eg} <span className="font-mono">200</span>,{" "}
+                  <span className="font-mono">201</span>, <span className="font-mono">204</span>)
                 </span>
               </li>
               <li className="flex gap-2">
@@ -127,7 +131,10 @@ Content-Type: application/json
               <li className="flex gap-2">
                 <span className="text-primary">•</span>
                 <span>
-                  <strong>4xx/5xx</strong> ({t.eg} <span className="font-mono">400</span>, <span className="font-mono">401</span>, <span className="font-mono">403</span>, <span className="font-mono">404</span>, <span className="font-mono">429</span>, <span className="font-mono">500</span>)
+                  <strong>4xx/5xx</strong> ({t.eg} <span className="font-mono">400</span>,{" "}
+                  <span className="font-mono">401</span>, <span className="font-mono">403</span>,{" "}
+                  <span className="font-mono">404</span>, <span className="font-mono">429</span>,{" "}
+                  <span className="font-mono">500</span>)
                 </span>
               </li>
               <li className="flex gap-2">
@@ -312,7 +319,6 @@ Content-Type: application/problem+json
           </pre>
         </div>
       </div>
-
     </div>
   )
 }

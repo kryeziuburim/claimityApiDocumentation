@@ -15,7 +15,7 @@ export function usePastHero(sentinelRef: RefObject<HTMLElement | null>): boolean
       ([entry]) => {
         setPastHero(!entry.isIntersecting)
       },
-      { root: null, threshold: [0], rootMargin: "-86px 0px 0px 0px" }
+      { root: null, threshold: [0], rootMargin: "-86px 0px 0px 0px" },
     )
     observer.observe(el)
     return () => observer.disconnect()

@@ -41,9 +41,7 @@ export function ResponseTab({
             >
               <div>
                 <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Response {code}</p>
-                {resp?.description ? (
-                  <p className="text-sm text-muted-foreground">{resp.description}</p>
-                ) : null}
+                {resp?.description ? <p className="text-sm text-muted-foreground">{resp.description}</p> : null}
               </div>
               <ChevronDown className={cn("h-4 w-4 transition-transform", isOpen && "rotate-180")} />
             </button>

@@ -55,9 +55,7 @@ export function PayloadCategoryPanel({ payload, state, t, copiedKey, onCopy }: P
         <div className="sm:max-w-[75%]">
           <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">{t.category}</p>
           <h3 className="text-2xl font-semibold tracking-tight text-balance">{payload.label}</h3>
-          <p className="mt-2 text-sm text-muted-foreground">
-            {t.categoryIntro(payload.badgeLabel)}
-          </p>
+          <p className="mt-2 text-sm text-muted-foreground">{t.categoryIntro(payload.badgeLabel)}</p>
         </div>
       </div>
 
@@ -70,50 +68,56 @@ export function PayloadCategoryPanel({ payload, state, t, copiedKey, onCopy }: P
           <AlertDescription>{state.error}</AlertDescription>
         </Alert>
       ) : schema ? (
-          <div className="space-y-6">
-            <div className="grid gap-4 sm:gap-6 lg:grid-cols-[minmax(0,2fr)_minmax(0,1.1fr)]">
-              <Card className="hidden min-w-0 border-border/60 md:block">
-                <CardHeader>
-                  <CardTitle className="text-base font-semibold">{t.contextTitle}</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4 text-sm text-muted-foreground">
+        <div className="space-y-6">
+          <div className="grid gap-4 sm:gap-6 lg:grid-cols-[minmax(0,2fr)_minmax(0,1.1fr)]">
+            <Card className="hidden min-w-0 border-border/60 md:block">
+              <CardHeader>
+                <CardTitle className="text-base font-semibold">{t.contextTitle}</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4 text-sm text-muted-foreground">
                 <p>
                   {t.contextPrefix}
                   <span className="font-medium text-foreground">{payload.label}</span>
                   {t.contextSuffix(stats?.totalFields ?? 0, stats?.requiredFields ?? 0)}
                 </p>
                 <div className="grid gap-3">
-                  <InlineHint icon={Info} label={t.formatRequirements} value={formatHints.length ? t.formatHintCount(formatHints.length) : t.noSpecialRequirements} />
-                  <InlineHint icon={ShieldCheck} label={t.rulesAndDependencies} value={ruleCount ? t.ruleCount(ruleCount) : t.noAdditionalRules} />
+                  <InlineHint
+                    icon={Info}
+                    label={t.formatRequirements}
+                    value={formatHints.length ? t.formatHintCount(formatHints.length) : t.noSpecialRequirements}
+                  />
+                  <InlineHint
+                    icon={ShieldCheck}
+                    label={t.rulesAndDependencies}
+                    value={ruleCount ? t.ruleCount(ruleCount) : t.noAdditionalRules}
+                  />
                 </div>
               </CardContent>
             </Card>
 
-              <Card className="min-w-0 border-border/60 bg-muted/40">
-                <CardHeader>
-                  <CardTitle className="text-base font-semibold">{t.actionsTitle}</CardTitle>
-                </CardHeader>
+            <Card className="min-w-0 border-border/60 bg-muted/40">
+              <CardHeader>
+                <CardTitle className="text-base font-semibold">{t.actionsTitle}</CardTitle>
+              </CardHeader>
               <CardContent className="space-y-4">
                 <div className="flex flex-col gap-2">
                   <Button
                     size="sm"
-                      className="w-full gap-2 sm:w-auto"
-                      onClick={() => void onCopy(payload.key, payload.label, exampleJson)}
-                      disabled={!exampleJson}
-                    >
-                      <ClipboardCheck className="h-4 w-4" />
-                      {t.copyJson}
-                    </Button>
-                    <Button variant="outline" size="sm" className="gap-2" asChild>
-                      <a href={payload.schemaPath} download>
+                    className="w-full gap-2 sm:w-auto"
+                    onClick={() => void onCopy(payload.key, payload.label, exampleJson)}
+                    disabled={!exampleJson}
+                  >
+                    <ClipboardCheck className="h-4 w-4" />
+                    {t.copyJson}
+                  </Button>
+                  <Button variant="outline" size="sm" className="gap-2" asChild>
+                    <a href={payload.schemaPath} download>
                       <Download className="h-4 w-4" />
                       {t.downloadSchema}
                     </a>
                   </Button>
                 </div>
-                <p className="text-sm text-muted-foreground">
-                  {t.schemasNote}
-                </p>
+                <p className="text-sm text-muted-foreground">{t.schemasNote}</p>
               </CardContent>
             </Card>
           </div>
@@ -136,11 +140,13 @@ export function PayloadCategoryPanel({ payload, state, t, copiedKey, onCopy }: P
                           onClick={() => void onCopy(payload.key, payload.label, exampleJson)}
                           className={cn(
                             "block w-full rounded-2xl bg-background/90 p-4 text-left text-xs leading-relaxed text-foreground transition hover:bg-muted/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50",
-                            copiedKey === payload.key && "ring-2 ring-primary/60"
+                            copiedKey === payload.key && "ring-2 ring-primary/60",
                           )}
                           aria-label={t.copyExampleAria(payload.label)}
                         >
-                          <pre className="w-full overflow-x-auto whitespace-pre text-left text-wrap text-xs">{exampleJson}</pre>
+                          <pre className="w-full overflow-x-auto whitespace-pre text-left text-wrap text-xs">
+                            {exampleJson}
+                          </pre>
                         </button>
                       </ScrollArea>
                       <span className="pointer-events-none absolute right-4 top-4 inline-flex items-center gap-1 rounded-full bg-background/95 px-3 py-1 text-[11px] font-medium text-foreground shadow">
@@ -202,13 +208,13 @@ export function PayloadCategoryPanel({ payload, state, t, copiedKey, onCopy }: P
                         {t.datePlausibilityRules.map((rule) => (
                           <li key={rule} className="flex gap-2">
                             <span className="text-primary">•</span>
-                            <span className="text-pretty"><RuleText text={rule} /></span>
+                            <span className="text-pretty">
+                              <RuleText text={rule} />
+                            </span>
                           </li>
                         ))}
                       </ul>
-                      <p className="mt-3 text-xs text-muted-foreground/80">
-                        {t.datePlausibilityNote}
-                      </p>
+                      <p className="mt-3 text-xs text-muted-foreground/80">{t.datePlausibilityNote}</p>
                     </div>
                   </div>
                   {ruleGroups.length ? (
@@ -228,9 +234,14 @@ export function PayloadCategoryPanel({ payload, state, t, copiedKey, onCopy }: P
                               </p>
                               <ul className="mt-3 space-y-2 text-sm text-muted-foreground">
                                 {rule.details.map((detail, detailIndex) => (
-                                  <li key={`${payload.key}-${group.key}-rule-${index}-${detailIndex}`} className="flex gap-2">
+                                  <li
+                                    key={`${payload.key}-${group.key}-rule-${index}-${detailIndex}`}
+                                    className="flex gap-2"
+                                  >
                                     <span className="text-primary">•</span>
-                                    <span className="text-pretty"><RuleText text={detail} /></span>
+                                    <span className="text-pretty">
+                                      <RuleText text={detail} />
+                                    </span>
                                   </li>
                                 ))}
                               </ul>
@@ -245,25 +256,25 @@ export function PayloadCategoryPanel({ payload, state, t, copiedKey, onCopy }: P
                 </AccordionContent>
               </AccordionItem>
 
-            <AccordionItem value="schema" className="px-4 sm:px-6">
-              <AccordionTrigger className="text-base font-semibold">
-                <span className="inline-flex items-center gap-2">
-                  <SquareStack className="h-4 w-4 text-primary" />
-                  {t.schemaExplorer}
-                </span>
-              </AccordionTrigger>
-              <AccordionContent className="px-1">
-                <div className="overflow-x-auto rounded-xl border border-border/40">
-                  <SchemaExplorer
-                    spec={schema}
-                    schema={schema}
-                    title={t.payloadSchemaTitle}
-                    maxDepth={6}
-                    fieldLinks={PAYLOAD_FIELD_LINKS}
-                  />
-                </div>
-              </AccordionContent>
-            </AccordionItem>
+              <AccordionItem value="schema" className="px-4 sm:px-6">
+                <AccordionTrigger className="text-base font-semibold">
+                  <span className="inline-flex items-center gap-2">
+                    <SquareStack className="h-4 w-4 text-primary" />
+                    {t.schemaExplorer}
+                  </span>
+                </AccordionTrigger>
+                <AccordionContent className="px-1">
+                  <div className="overflow-x-auto rounded-xl border border-border/40">
+                    <SchemaExplorer
+                      spec={schema}
+                      schema={schema}
+                      title={t.payloadSchemaTitle}
+                      maxDepth={6}
+                      fieldLinks={PAYLOAD_FIELD_LINKS}
+                    />
+                  </div>
+                </AccordionContent>
+              </AccordionItem>
             </Accordion>
           </div>
         </div>

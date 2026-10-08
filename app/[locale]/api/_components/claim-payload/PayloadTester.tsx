@@ -45,7 +45,7 @@ export function PayloadTester({ t, claimPayloads, schemas }: PayloadTesterProps)
       resetValidationState()
       setTestCategory(value)
     },
-    [resetValidationState]
+    [resetValidationState],
   )
 
   const handleInsertExample = useCallback(() => {
@@ -173,9 +173,7 @@ export function PayloadTester({ t, claimPayloads, schemas }: PayloadTesterProps)
     >
       <div className="space-y-2">
         <h3 className="text-2xl font-semibold tracking-tight">{t.testTitle}</h3>
-        <p className="text-sm text-muted-foreground">
-          {t.testIntro}
-        </p>
+        <p className="text-sm text-muted-foreground">{t.testIntro}</p>
       </div>
 
       <div className="grid gap-6 lg:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)]">
@@ -208,11 +206,9 @@ export function PayloadTester({ t, claimPayloads, schemas }: PayloadTesterProps)
               spellCheck={false}
               rows={16}
               className="w-full max-w-full rounded-2xl border-border/70 font-mono text-xs leading-relaxed sm:text-[13px]"
-              placeholder='{}'
+              placeholder="{}"
             />
-            <p className="text-xs text-muted-foreground">
-              {t.expectsValidJson}
-            </p>
+            <p className="text-xs text-muted-foreground">{t.expectsValidJson}</p>
           </div>
 
           <div className="flex flex-col gap-3 sm:flex-row">

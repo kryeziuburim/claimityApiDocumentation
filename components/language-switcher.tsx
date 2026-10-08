@@ -54,7 +54,7 @@ export function LanguageSwitcher({ variant = "light" }: { variant?: keyof typeof
       const { search, hash } = window.location
       router.push(`${switchLocaleInPath(pathname, target)}${search}${hash}`)
     },
-    [current, pathname, router]
+    [current, pathname, router],
   )
 
   const currentLang = languageInfo[current]
@@ -77,7 +77,9 @@ export function LanguageSwitcher({ variant = "light" }: { variant?: keyof typeof
             aria-checked={lang.code === current}
             className={styles.item}
           >
-            <span className="text-lg mt-0" aria-hidden="true"><Flag country={lang.country} /></span>
+            <span className="text-lg mt-0" aria-hidden="true">
+              <Flag country={lang.country} />
+            </span>
             <span className="ml-2 mt-0">{lang.label}</span>
           </DropdownMenuItem>
         ))}

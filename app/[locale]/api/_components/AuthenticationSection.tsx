@@ -16,7 +16,10 @@ export function AuthenticationSection({ locale }: { locale: Locale }) {
       </div>
 
       {/* Auth Flow (Sequence) */}
-      <div id="auth-flow" className="space-y-4 rounded-lg border border-border bg-card p-4 scroll-mt-24 sm:space-y-5 sm:p-6">
+      <div
+        id="auth-flow"
+        className="space-y-4 rounded-lg border border-border bg-card p-4 scroll-mt-24 sm:space-y-5 sm:p-6"
+      >
         <h3 className="text-lg font-semibold sm:text-xl">{t.flowTitle}</h3>
         <p className="text-sm leading-relaxed text-muted-foreground text-pretty">{t.flowIntro}</p>
 
@@ -45,7 +48,10 @@ export function AuthenticationSection({ locale }: { locale: Locale }) {
       </div>
 
       {/* Anchor 1 */}
-      <div id="auth-access-token" className="space-y-4 rounded-lg border border-border bg-card p-4 scroll-mt-24 sm:space-y-5 sm:p-6">
+      <div
+        id="auth-access-token"
+        className="space-y-4 rounded-lg border border-border bg-card p-4 scroll-mt-24 sm:space-y-5 sm:p-6"
+      >
         <h3 className="text-lg font-semibold sm:text-xl">{t.accessTokenTitle}</h3>
 
         <p className="leading-relaxed text-muted-foreground text-pretty">{t.accessTokenIntro}</p>
@@ -72,17 +78,20 @@ export function AuthenticationSection({ locale }: { locale: Locale }) {
               v: (
                 <div className="space-y-1 text-muted-foreground">
                   <div>
-                    <span className="font-mono">grant_type</span> = <span className="font-mono">client_credentials</span>
+                    <span className="font-mono">grant_type</span> ={" "}
+                    <span className="font-mono">client_credentials</span>
                   </div>
                   <div>
-                    <span className="font-mono">client_id</span> = <span className="font-mono">{t.clientIdPlaceholder}</span>
+                    <span className="font-mono">client_id</span> ={" "}
+                    <span className="font-mono">{t.clientIdPlaceholder}</span>
                   </div>
                   <div>
                     <span className="font-mono">client_assertion_type</span> ={` `}
                     <span className="font-mono">urn:ietf:params:oauth:client-assertion-type:jwt-bearer</span>
                   </div>
                   <div>
-                    <span className="font-mono">client_assertion</span> = <span className="font-mono">{"<JWT (RS256)>"}</span>
+                    <span className="font-mono">client_assertion</span> ={" "}
+                    <span className="font-mono">{"<JWT (RS256)>"}</span>
                   </div>
                   <div>
                     <span className="font-mono">scope</span> <span className="font-mono">{t.optional}</span>
@@ -102,13 +111,15 @@ export function AuthenticationSection({ locale }: { locale: Locale }) {
                 <li className="flex gap-2">
                   <span className="text-primary">•</span>
                   <span>
-                    <span className="font-mono">iss</span>/<span className="font-mono">sub</span> = <span className="font-mono">client_id</span>
+                    <span className="font-mono">iss</span>/<span className="font-mono">sub</span> ={" "}
+                    <span className="font-mono">client_id</span>
                   </span>
                 </li>
                 <li className="flex gap-2">
                   <span className="text-primary">•</span>
                   <span>
-                    <span className="font-mono">aud</span> = https://app.claimity.ch/realms/claimity/protocol/openid-connect/token
+                    <span className="font-mono">aud</span> =
+                    https://app.claimity.ch/realms/claimity/protocol/openid-connect/token
                   </span>
                 </li>
                 <li className="flex gap-2">
@@ -120,7 +131,8 @@ export function AuthenticationSection({ locale }: { locale: Locale }) {
                 <li className="flex gap-2">
                   <span className="text-primary">•</span>
                   <span>
-                    <span className="font-mono">iat</span>/<span className="font-mono">exp</span> = “now” / “now+600s” (10 min)
+                    <span className="font-mono">iat</span>/<span className="font-mono">exp</span> = “now” / “now+600s”
+                    (10 min)
                   </span>
                 </li>
                 <li className="flex gap-2">
@@ -154,7 +166,10 @@ export function AuthenticationSection({ locale }: { locale: Locale }) {
       </div>
 
       {/* Anchor 2 */}
-      <div id="auth-dpop" className="space-y-4 rounded-lg border border-border bg-card p-4 scroll-mt-24 sm:space-y-5 sm:p-6">
+      <div
+        id="auth-dpop"
+        className="space-y-4 rounded-lg border border-border bg-card p-4 scroll-mt-24 sm:space-y-5 sm:p-6"
+      >
         <h3 className="text-lg font-semibold sm:text-xl">{t.sendRequestsTitle}</h3>
 
         <p className="leading-relaxed text-muted-foreground text-pretty">{t.sendRequestsIntro}</p>
@@ -182,7 +197,8 @@ export function AuthenticationSection({ locale }: { locale: Locale }) {
               <li className="flex gap-2">
                 <span className="text-primary">•</span>
                 <span className="text-pretty">
-                  <span className="font-mono">ath</span> = <span className="font-mono">base64url(SHA-256(access_token))</span>
+                  <span className="font-mono">ath</span> ={" "}
+                  <span className="font-mono">base64url(SHA-256(access_token))</span>
                 </span>
               </li>
             </ul>

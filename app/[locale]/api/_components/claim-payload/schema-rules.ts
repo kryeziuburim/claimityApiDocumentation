@@ -88,7 +88,7 @@ function buildDriverAtIncidentSummary(schema: JsonSchema, t: ClaimPayloadRuleMes
     "insured",
     schema?.properties?.insured,
     "insuredPersons",
-    schema?.properties?.insuredPersons
+    schema?.properties?.insuredPersons,
   )
   if (insuredLimit) details.push(insuredLimit)
 
@@ -98,7 +98,7 @@ function buildDriverAtIncidentSummary(schema: JsonSchema, t: ClaimPayloadRuleMes
     "counterparty",
     schema?.properties?.counterparty,
     "counterpartyPersons",
-    schema?.properties?.counterpartyPersons
+    schema?.properties?.counterpartyPersons,
   )
   if (counterpartyLimit) details.push(counterpartyLimit)
 
@@ -117,7 +117,7 @@ function describeDriverYesLimit(
   objectName: string,
   objectSchema: JsonSchema | undefined,
   arrayName: string,
-  arraySchema: JsonSchema | undefined
+  arraySchema: JsonSchema | undefined,
 ): string | null {
   if (!objectSchema || !arraySchema) return null
   const restrictsDriverYes = arraySchema?.contains?.properties?.driverAtIncident?.const === "yes"
@@ -138,7 +138,12 @@ export function extractFormatHints(schema: JsonSchema, t: ClaimPayloadRuleMessag
   return Array.from(registry.entries()).map(([path, description]) => ({ path, description }))
 }
 
-function traverseForFormats(node: JsonSchema | undefined, currentPath: string, registry: Map<string, string>, t: ClaimPayloadRuleMessages) {
+function traverseForFormats(
+  node: JsonSchema | undefined,
+  currentPath: string,
+  registry: Map<string, string>,
+  t: ClaimPayloadRuleMessages,
+) {
   if (!node) return
 
   const description = describeFormatDetail(node, t)
@@ -208,7 +213,11 @@ function describeFormatDetail(schema: JsonSchema, t: ClaimPayloadRuleMessages): 
   return null
 }
 
-function describeRuleCondition(condition: JsonSchema | undefined, t: ClaimPayloadRuleMessages, parentPath = ""): string {
+function describeRuleCondition(
+  condition: JsonSchema | undefined,
+  t: ClaimPayloadRuleMessages,
+  parentPath = "",
+): string {
   if (!condition) return t.conditionFallback
   const parts: string[] = []
 
@@ -242,7 +251,11 @@ function describeRuleCondition(condition: JsonSchema | undefined, t: ClaimPayloa
   return parts.length ? parts.join(t.and) : t.conditionFallback
 }
 
-function describeSchemaRequirements(path: string, schema: JsonSchema | undefined, t: ClaimPayloadRuleMessages): string[] {
+function describeSchemaRequirements(
+  path: string,
+  schema: JsonSchema | undefined,
+  t: ClaimPayloadRuleMessages,
+): string[] {
   if (!schema) return []
   const facts: string[] = []
 
@@ -292,7 +305,8 @@ function describeArrayContains(path: string, schema: JsonSchema, t: ClaimPayload
     descriptor = t.atLeastOne
   }
 
-  const elementLabel = descriptor === t.exactlyOne || descriptor === t.atLeastOne || descriptor === t.atMostOne ? t.element : t.elements
+  const elementLabel =
+    descriptor === t.exactlyOne || descriptor === t.atLeastOne || descriptor === t.atMostOne ? t.element : t.elements
   const requirement = describeRuleCondition(schema.contains, t, `${path}[]`)
   const useMay = descriptor.startsWith(t.atMostPrefix)
   const verb = useMay ? t.may : t.must
@@ -357,9 +371,7 @@ function describeRuleNot(node: JsonSchema, t: ClaimPayloadRuleMessages): string 
     return driverConflict
   }
   if (node?.allOf) {
-    const segments = node.allOf
-      .map((segment) => describeRuleCondition(segment, t))
-      .filter(Boolean)
+    const segments = node.allOf.map((segment) => describeRuleCondition(segment, t)).filter(Boolean)
     if (segments.length) {
       return t.combinationOf(segments.join(" + "))
     }

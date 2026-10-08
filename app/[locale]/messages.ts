@@ -74,7 +74,11 @@ export const homeMessages: Record<Locale, typeof de> = {
         title: "API Integration",
         description: "Technical documentation, examples, and best practices.",
         body: "For teams wanting to seamlessly integrate Claimity into existing systems, portals, or data warehouse systems.",
-        items: ["REST Endpoints & Data Models", "Authentication, Webhooks & Security", "Example Integrations & Snippets"],
+        items: [
+          "REST Endpoints & Data Models",
+          "Authentication, Webhooks & Security",
+          "Example Integrations & Snippets",
+        ],
         cta: "Go to API Documentation",
       },
       support: {
@@ -116,7 +120,11 @@ export const homeMessages: Record<Locale, typeof de> = {
         title: "Intégration API",
         description: "Documentation technique, exemples et meilleures pratiques.",
         body: "Pour les équipes souhaitant intégrer Claimity de manière transparente dans les systèmes existants, portails ou entrepôts de données.",
-        items: ["Endpoints REST & Modèles de données", "Authentification, Webhooks & Sécurité", "Exemples d'intégrations & Snippets"],
+        items: [
+          "Endpoints REST & Modèles de données",
+          "Authentification, Webhooks & Sécurité",
+          "Exemples d'intégrations & Snippets",
+        ],
         cta: "Accéder à la documentation API",
       },
       support: {

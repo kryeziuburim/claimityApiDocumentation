@@ -17,7 +17,10 @@ export function FirstStepsSection({ locale }: { locale: Locale }) {
         {t.steps
           .map((item, index) => ({ ...item, step: String(index + 1) }))
           .map((item) => (
-            <div key={item.step} className="flex flex-col gap-3 rounded-lg border border-border bg-card p-4 sm:flex-row sm:gap-4 sm:p-5">
+            <div
+              key={item.step}
+              className="flex flex-col gap-3 rounded-lg border border-border bg-card p-4 sm:flex-row sm:gap-4 sm:p-5"
+            >
               <div
                 className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-base font-bold text-white sm:h-10 sm:w-10 sm:text-lg"
                 style={{ backgroundColor: "#2a8289" }}
@@ -50,7 +53,7 @@ export function FirstStepsSection({ locale }: { locale: Locale }) {
           className={cn(
             "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50",
             "h-9 px-4 py-2",
-            "bg-teal-600 text-white hover:bg-teal-700"
+            "bg-teal-600 text-white hover:bg-teal-700",
           )}
         >
           {t.notebooksLink}

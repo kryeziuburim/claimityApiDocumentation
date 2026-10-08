@@ -16,10 +16,10 @@ export type SchemaLoadState = {
 /** Fetches the JSON schema of every payload category and inlines its `$ref`s. */
 export function useClaimSchemas(
   payloads: ClaimPayloadMeta[],
-  loadErrorMessage: (label: string) => string
+  loadErrorMessage: (label: string) => string,
 ): Record<string, SchemaLoadState> {
   const [schemas, setSchemas] = useState<Record<string, SchemaLoadState>>(() =>
-    Object.fromEntries(payloads.map((payload) => [payload.key, { loading: true, schema: null, error: null }]))
+    Object.fromEntries(payloads.map((payload) => [payload.key, { loading: true, schema: null, error: null }])),
   )
 
   useEffect(() => {

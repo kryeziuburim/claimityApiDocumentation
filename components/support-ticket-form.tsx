@@ -96,20 +96,16 @@ const i18n: Record<
     },
     feedback: {
       success: "Vielen Dank! Ihr Ticket wurde versendet.",
-      errorGeneric:
-        "Versand fehlgeschlagen. Bitte versuchen Sie es erneut oder kontaktieren Sie uns per E-Mail.",
-      errorConfig:
-        "E-Mail-Service ist nicht konfiguriert. Bitte hinterlegen Sie die EmailJS-Umgebungsvariablen.",
+      errorGeneric: "Versand fehlgeschlagen. Bitte versuchen Sie es erneut oder kontaktieren Sie uns per E-Mail.",
+      errorConfig: "E-Mail-Service ist nicht konfiguriert. Bitte hinterlegen Sie die EmailJS-Umgebungsvariablen.",
       errorTooFrequent: "Bitte warten Sie einen Moment, bevor Sie ein weiteres Ticket senden.",
-      hint:
-        "Hinweis: Mit dem Absenden stimmen Sie der Verarbeitung Ihrer Angaben zum Zweck der Support-Bearbeitung zu.",
+      hint: "Hinweis: Mit dem Absenden stimmen Sie der Verarbeitung Ihrer Angaben zum Zweck der Support-Bearbeitung zu.",
     },
     validation: {
       nameMin: "Bitte geben Sie Ihren Namen an.",
       emailInvalid: "Bitte eine gültige E-Mail-Adresse angeben.",
       subjectMin: "Bitte ein aussagekräftiges Betreff angeben.",
-      messageMin:
-        "Bitte beschreiben Sie Ihr Anliegen (mindestens 10 Zeichen).",
+      messageMin: "Bitte beschreiben Sie Ihr Anliegen (mindestens 10 Zeichen).",
     },
   },
   en: {
@@ -136,20 +132,16 @@ const i18n: Record<
     },
     feedback: {
       success: "Thank you! Your ticket has been sent.",
-      errorGeneric:
-        "Sending failed. Please try again or contact us via email.",
-      errorConfig:
-        "Email service is not configured. Please set the EmailJS environment variables.",
+      errorGeneric: "Sending failed. Please try again or contact us via email.",
+      errorConfig: "Email service is not configured. Please set the EmailJS environment variables.",
       errorTooFrequent: "Please wait a moment before sending another ticket.",
-      hint:
-        "Note: By submitting, you agree to the processing of your data for support purposes.",
+      hint: "Note: By submitting, you agree to the processing of your data for support purposes.",
     },
     validation: {
       nameMin: "Please provide your name.",
       emailInvalid: "Please enter a valid email address.",
       subjectMin: "Please enter a meaningful subject.",
-      messageMin:
-        "Please describe your request (at least 10 characters).",
+      messageMin: "Please describe your request (at least 10 characters).",
     },
   },
   fr: {
@@ -176,20 +168,16 @@ const i18n: Record<
     },
     feedback: {
       success: "Merci ! Votre ticket a été envoyé.",
-      errorGeneric:
-        "Échec de l’envoi. Veuillez réessayer ou nous contacter par e-mail.",
-      errorConfig:
-        "Le service e-mail n’est pas configuré. Veuillez définir les variables d’environnement EmailJS.",
+      errorGeneric: "Échec de l’envoi. Veuillez réessayer ou nous contacter par e-mail.",
+      errorConfig: "Le service e-mail n’est pas configuré. Veuillez définir les variables d’environnement EmailJS.",
       errorTooFrequent: "Veuillez patienter un instant avant d’envoyer un autre ticket.",
-      hint:
-        "Remarque : En envoyant, vous acceptez le traitement de vos données à des fins de support.",
+      hint: "Remarque : En envoyant, vous acceptez le traitement de vos données à des fins de support.",
     },
     validation: {
       nameMin: "Veuillez indiquer votre nom.",
       emailInvalid: "Veuillez saisir une adresse e-mail valide.",
       subjectMin: "Veuillez saisir un objet pertinent.",
-      messageMin:
-        "Veuillez décrire votre demande (au moins 10 caractères).",
+      messageMin: "Veuillez décrire votre demande (au moins 10 caractères).",
     },
   },
 }
@@ -296,7 +284,17 @@ export function SupportTicketForm({ locale = "de" }: { locale?: Lang }) {
         setErrorMsg(t.feedback.errorGeneric)
       }
     },
-    [locale, publicKey, reset, serviceId, startedAt, t.feedback.errorGeneric, t.feedback.errorConfig, t.feedback.errorTooFrequent, templateId]
+    [
+      locale,
+      publicKey,
+      reset,
+      serviceId,
+      startedAt,
+      t.feedback.errorGeneric,
+      t.feedback.errorConfig,
+      t.feedback.errorTooFrequent,
+      templateId,
+    ],
   )
 
   return (
@@ -318,9 +316,7 @@ export function SupportTicketForm({ locale = "de" }: { locale?: Lang }) {
             {...register("name")}
             className={fieldTextSizing}
           />
-          {errors.name && (
-            <p className="text-sm text-red-600">{errors.name.message}</p>
-          )}
+          {errors.name && <p className="text-sm text-red-600">{errors.name.message}</p>}
         </div>
 
         <div className="space-y-2">
@@ -335,9 +331,7 @@ export function SupportTicketForm({ locale = "de" }: { locale?: Lang }) {
             {...register("email")}
             className={fieldTextSizing}
           />
-          {errors.email && (
-            <p className="text-sm text-red-600">{errors.email.message}</p>
-          )}
+          {errors.email && <p className="text-sm text-red-600">{errors.email.message}</p>}
         </div>
       </div>
 
@@ -353,9 +347,7 @@ export function SupportTicketForm({ locale = "de" }: { locale?: Lang }) {
             {...register("subject")}
             className={fieldTextSizing}
           />
-          {errors.subject && (
-            <p className="text-sm text-red-600">{errors.subject.message}</p>
-          )}
+          {errors.subject && <p className="text-sm text-red-600">{errors.subject.message}</p>}
         </div>
 
         <div className="space-y-2">
@@ -366,15 +358,8 @@ export function SupportTicketForm({ locale = "de" }: { locale?: Lang }) {
             control={control}
             name="category"
             render={({ field }) => (
-              <Select
-                onValueChange={field.onChange}
-                value={field.value ?? "general"}
-              >
-                <SelectTrigger
-                  id="category"
-                  onBlur={field.onBlur}
-                  className="w-full bg-white text-sm"
-                >
+              <Select onValueChange={field.onChange} value={field.value ?? "general"}>
+                <SelectTrigger id="category" onBlur={field.onBlur} className="w-full bg-white text-sm">
                   <SelectValue aria-label={t.labels.category} placeholder={t.labels.category} />
                 </SelectTrigger>
                 <SelectContent className="bg-white text-sm">
@@ -401,9 +386,7 @@ export function SupportTicketForm({ locale = "de" }: { locale?: Lang }) {
           {...register("message")}
           className={fieldTextSizing}
         />
-        {errors.message && (
-          <p className="text-sm text-red-600">{errors.message.message}</p>
-        )}
+        {errors.message && <p className="text-sm text-red-600">{errors.message.message}</p>}
       </div>
 
       <div className="flex items-center gap-3">
@@ -414,12 +397,8 @@ export function SupportTicketForm({ locale = "de" }: { locale?: Lang }) {
         >
           {status === "sending" ? t.labels.sending : t.labels.submit}
         </Button>
-        {status === "success" && (
-          <span className="text-sm text-teal-700">{t.feedback.success}</span>
-        )}
-        {status === "error" && (
-          <span className="text-sm text-red-600">{errorMsg}</span>
-        )}
+        {status === "success" && <span className="text-sm text-teal-700">{t.feedback.success}</span>}
+        {status === "error" && <span className="text-sm text-red-600">{errorMsg}</span>}
       </div>
 
       <p className="text-xs text-gray-500">{t.feedback.hint}</p>

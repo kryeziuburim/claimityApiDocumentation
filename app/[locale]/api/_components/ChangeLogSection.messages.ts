@@ -99,7 +99,8 @@ export const changeLogMessages: Record<Locale, typeof de> = {
       },
       {
         date: "2026-06-09",
-        changes: "Ajout de la nouvelle catégorie « Expertises spéciales », incluant le schéma et la structure de payload.",
+        changes:
+          "Ajout de la nouvelle catégorie « Expertises spéciales », incluant le schéma et la structure de payload.",
       },
       {
         date: "2025-12-30",

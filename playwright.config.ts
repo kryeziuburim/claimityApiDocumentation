@@ -22,7 +22,11 @@ export default defineConfig({
   projects: [
     {
       name: "desktop",
-      use: { ...devices["Desktop Chrome"], viewport: { width: 1400, height: 1000 }, channel: process.env.PLAYWRIGHT_CHANNEL },
+      use: {
+        ...devices["Desktop Chrome"],
+        viewport: { width: 1400, height: 1000 },
+        channel: process.env.PLAYWRIGHT_CHANNEL,
+      },
     },
   ],
   webServer: {

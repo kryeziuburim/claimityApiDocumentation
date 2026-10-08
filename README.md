@@ -10,12 +10,12 @@ cp .env.example .env   # EmailJS keys for the support form (optional locally)
 npm run dev            # http://localhost:3000
 ```
 
-| Script              | Purpose                                 |
-| ------------------- | --------------------------------------- |
-| `npm run dev`       | Dev server                              |
-| `npm run build`     | Static export to `out/`                 |
-| `npm run lint`      | ESLint (Next core-web-vitals + TS)      |
-| `npm run typecheck` | `tsc --noEmit`                          |
+| Script              | Purpose                                          |
+| ------------------- | ------------------------------------------------ |
+| `npm run dev`       | Dev server                                       |
+| `npm run build`     | Static export to `out/`                          |
+| `npm run lint`      | ESLint (Next core-web-vitals + TS)               |
+| `npm run typecheck` | `tsc --noEmit`                                   |
 | `npm test`          | Vitest: JSON schemas, OpenAPI spec, i18n helpers |
 
 CI (`.github/workflows/ci.yml`) runs lint, typecheck, tests and build on every pull request.
@@ -52,8 +52,8 @@ Every locale-dependent component has a colocated messages file, e.g.
 `OverviewSection.tsx` + `OverviewSection.messages.ts`:
 
 ```ts
-const de = { title: "Übersicht", /* ... */ }
-export const overviewMessages: Record<Locale, typeof de> = { de, en: { /* ... */ }, fr: { /* ... */ } }
+const de = { title: "Übersicht" /* ... */ }
+export const overviewMessages: Record<Locale, typeof de> = { de, en: {/* ... */}, fr: {/* ... */} }
 ```
 
 `Record<Locale, typeof de>` makes TypeScript fail the build if a language is missing a key.

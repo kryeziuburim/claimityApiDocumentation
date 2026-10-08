@@ -42,7 +42,8 @@ const de = {
     "Nur an neuen genehmigten Reports interessiert? Gleicher Ablauf mit lastReportApprovedSince und LastReportApprovedAt.",
   ],
   amountsTitle: "Beträge (CHF)",
-  amountsIntro: "Claim-Liste und Claim-Details liefern die vom Experten erfassten Beträge in CHF (null = noch nicht erfasst).",
+  amountsIntro:
+    "Claim-Liste und Claim-Details liefern die vom Experten erfassten Beträge in CHF (null = noch nicht erfasst).",
   amountItems,
   claimsTitle: "Schäden",
   claimDocsTitle: "Schadendokumente",
@@ -90,7 +91,8 @@ export const insurerMessages: Record<Locale, typeof de> = {
       "Only interested in newly approved reports? Same flow with lastReportApprovedSince and LastReportApprovedAt.",
     ],
     amountsTitle: "Amounts (CHF)",
-    amountsIntro: "Claim list and claim details carry the amounts entered by the expert in CHF (null = not entered yet).",
+    amountsIntro:
+      "Claim list and claim details carry the amounts entered by the expert in CHF (null = not entered yet).",
     amountItems: [
       { field: "CostEstimateAmount", text: "The workshop's cost estimate." },
       { field: "ApprovedAmount", text: "The amount approved by the expert report." },

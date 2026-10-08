@@ -58,7 +58,8 @@ describe.each(schemaFiles)("%s", (file) => {
       const validate = ajv.getSchema(`${schema.$id}#${pointer}`)
       if (!validate) throw new Error(`cannot resolve ${pointer}`)
       for (const example of examples) {
-        if (!validate(example)) failures.push(`${pointer}: ${JSON.stringify(example)} -> ${ajv.errorsText(validate.errors)}`)
+        if (!validate(example))
+          failures.push(`${pointer}: ${JSON.stringify(example)} -> ${ajv.errorsText(validate.errors)}`)
       }
     }
     expect(failures).toEqual([])
@@ -88,7 +89,10 @@ describe("dereferenceSchema", () => {
   })
 
   it("does not loop on self-referencing schemas", () => {
-    const resolved = dereferenceSchema({ $defs: { node: { properties: { child: { $ref: "#/$defs/node" } } } }, $ref: "#/$defs/node" })
+    const resolved = dereferenceSchema({
+      $defs: { node: { properties: { child: { $ref: "#/$defs/node" } } } },
+      $ref: "#/$defs/node",
+    })
     expect(resolved).toEqual({ properties: { child: {} } })
   })
 })

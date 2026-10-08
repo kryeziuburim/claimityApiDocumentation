@@ -25,7 +25,8 @@ const de = {
   noExampleTitle: "Kein Beispiel gefunden",
   noExampleDescription: "Das Schema enthält kein Beispiel-JSON für diese Kategorie.",
   exampleInsertedTitle: "Beispiel übernommen",
-  exampleInsertedDescription: (label: string | undefined) => `${label ?? "Kategorie"} Beispiel wurde in das Eingabefeld kopiert.`,
+  exampleInsertedDescription: (label: string | undefined) =>
+    `${label ?? "Kategorie"} Beispiel wurde in das Eingabefeld kopiert.`,
   enterPayload: "Bitte geben Sie ein Payload JSON ein.",
   unknownParserError: "Unbekannter Parserfehler",
   parseError: (message: string) => `JSON konnte nicht geparst werden: ${message}`,
@@ -87,7 +88,8 @@ const de = {
 
   // Validation form
   testTitle: "PayloadJson direkt testen",
-  testIntro: "Senden Sie eine Anfrage an die Claimity Validierungs-API und erhalten Sie sofortiges Feedback zu Ihrem Payload.",
+  testIntro:
+    "Senden Sie eine Anfrage an die Claimity Validierungs-API und erhalten Sie sofortiges Feedback zu Ihrem Payload.",
   selectCategory: "Kategorie wählen",
   payloadJsonLabel: "Payload JSON",
   expectsValidJson: "Erwartet eine gültige JSON-Struktur.",
@@ -105,7 +107,13 @@ const de = {
     insuredLabel: "Versicherte",
     counterpartyLabel: "Gegenpartei",
     driverAtIncidentSet: "`driverAtIncident` gesetzt wird",
-    driverYesLimit: (contextLabel: string, objectName: string, arrayName: string, maxContains: number, optional: boolean) =>
+    driverYesLimit: (
+      contextLabel: string,
+      objectName: string,
+      arrayName: string,
+      maxContains: number,
+      optional: boolean,
+    ) =>
       `${contextLabel}: In ${objectName} und ${arrayName}[] darf ${maxContains === 1 ? "höchstens eine Person" : `höchstens ${maxContains} Personen`} driverAtIncident = "yes" sein${optional ? " (auch keine)" : ""}.`,
     formatDate: "Datum im ISO-Format YYYY-MM-DD",
     formatDateTime: "Datum & Zeit im ISO-Format YYYY-MM-DDTHH:MM:SSZ",
@@ -135,8 +143,14 @@ const de = {
     may: "darf",
     must: "muss",
     orNone: " (auch keines)",
-    arrayContains: (path: string, verb: string, descriptor: string, elementLabel: string, optionalNote: string, requirement: string) =>
-      `${path}[] ${verb} ${descriptor} ${elementLabel}${optionalNote} enthalten, bei dem ${requirement}`,
+    arrayContains: (
+      path: string,
+      verb: string,
+      descriptor: string,
+      elementLabel: string,
+      optionalNote: string,
+      requirement: string,
+    ) => `${path}[] ${verb} ${descriptor} ${elementLabel}${optionalNote} enthalten, bei dem ${requirement}`,
     additionalRequirements: "Es gelten zusätzliche Anforderungen.",
     requiredFields: (fields: string) => `Pflichtfelder: ${fields}`,
     mustBe: (path: string, value: string) => `\`${path}\` muss \`${value}\` sein`,

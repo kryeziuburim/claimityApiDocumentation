@@ -54,7 +54,7 @@ export function useEndpointData(method: HttpMethod, path: string) {
   const responses = useMemo(() => {
     // The spec defines responses inline; `$ref` responses would be skipped.
     const entries = Object.entries(op?.responses ?? {}).filter(
-      (entry): entry is [string, OpenAPIV3.ResponseObject] => !isReference(entry[1])
+      (entry): entry is [string, OpenAPIV3.ResponseObject] => !isReference(entry[1]),
     )
     entries.sort(([a], [b]) => {
       if (a === "default") return 1
@@ -66,7 +66,7 @@ export function useEndpointData(method: HttpMethod, path: string) {
 
   const reqExample = useMemo(
     () => (spec && requestSchema ? generateExample(spec, requestSchema) : null),
-    [spec, requestSchema]
+    [spec, requestSchema],
   )
 
   const exampleBlocks = useMemo<ExampleBlock[]>(
@@ -87,7 +87,7 @@ export function useEndpointData(method: HttpMethod, path: string) {
         content: buildPython({ baseUrl, method, path, hasBody: !!requestSchema }),
       },
     ],
-    [baseUrl, method, path, requestSchema]
+    [baseUrl, method, path, requestSchema],
   )
 
   return {

@@ -43,11 +43,11 @@ export default function ApiPageClient({ locale }: { locale: Locale }) {
 
   const payloadKeyByAnchor = useMemo(
     () => Object.fromEntries(claimPayloads.map((payload) => [payload.anchorId, payload.key])),
-    [claimPayloads]
+    [claimPayloads],
   )
   const payloadAnchorByKey = useMemo(
     () => Object.fromEntries(claimPayloads.map((payload) => [payload.key, payload.anchorId])),
-    [claimPayloads]
+    [claimPayloads],
   )
   const [activePayloadKey, setActivePayloadKey] = useState<string>(claimPayloads[0]?.key ?? "")
 
@@ -73,7 +73,7 @@ export default function ApiPageClient({ locale }: { locale: Locale }) {
       setActiveId(id)
       setIsMobileMenuOpen(false)
     },
-    [payloadKeyByAnchor, setActiveId]
+    [payloadKeyByAnchor, setActiveId],
   )
 
   // Navigation and tab changes set activeId and activePayloadKey together, so the two never need to be
@@ -86,7 +86,7 @@ export default function ApiPageClient({ locale }: { locale: Locale }) {
         setActiveId(anchor)
       }
     },
-    [payloadAnchorByKey, setActiveId]
+    [payloadAnchorByKey, setActiveId],
   )
 
   // Bei initialer URL mit Hash dorthin scrollen (nach Mount). Payload anchors are handled by
@@ -153,9 +153,7 @@ export default function ApiPageClient({ locale }: { locale: Locale }) {
                 <h1 className="mt-4 text-3xl font-semibold tracking-tight text-gray-900 md:text-4xl lg:text-5xl">
                   {t.heroTitle}
                 </h1>
-                <p className="mt-4 text-sm text-gray-600 md:text-base">
-                  {t.heroSubtitle}
-                </p>
+                <p className="mt-4 text-sm text-gray-600 md:text-base">{t.heroSubtitle}</p>
               </div>
 
               {/* Sentinel: Sobald dieser beim Scrollen aus dem Viewport ist, gilt die Hero als "vorbei" */}
@@ -166,15 +164,31 @@ export default function ApiPageClient({ locale }: { locale: Locale }) {
                 className="mt-8 w-full max-w-full overflow-x-hidden transition-[padding] duration-300 ease-out md:mt-10"
                 style={showSidebar && desktopContentOffsetPx ? { paddingLeft: desktopContentOffsetPx } : undefined}
               >
-                <SectionComponent id="overview"><OverviewSectionComponent locale={locale} /></SectionComponent>
-                <SectionComponent id="first-steps"><FirstStepsSectionComponent locale={locale} /></SectionComponent>
-                <SectionComponent id="reporting"><ReportingSectionComponent locale={locale} /></SectionComponent>
-                <SectionComponent id="changelog"><ChangeLogSectionComponent locale={locale} /></SectionComponent>
-                <SectionComponent id="authentication"><AuthenticationSectionComponent locale={locale} /></SectionComponent>
-                <SectionComponent id="api-basics"><ApiBasicsSectionComponent locale={locale} /></SectionComponent>
+                <SectionComponent id="overview">
+                  <OverviewSectionComponent locale={locale} />
+                </SectionComponent>
+                <SectionComponent id="first-steps">
+                  <FirstStepsSectionComponent locale={locale} />
+                </SectionComponent>
+                <SectionComponent id="reporting">
+                  <ReportingSectionComponent locale={locale} />
+                </SectionComponent>
+                <SectionComponent id="changelog">
+                  <ChangeLogSectionComponent locale={locale} />
+                </SectionComponent>
+                <SectionComponent id="authentication">
+                  <AuthenticationSectionComponent locale={locale} />
+                </SectionComponent>
+                <SectionComponent id="api-basics">
+                  <ApiBasicsSectionComponent locale={locale} />
+                </SectionComponent>
                 <OpenApiProvider url="/assets/openapi.json">
-                  <SectionComponent id="experts"><ExpertsSectionComponent locale={locale} /></SectionComponent>
-                  <SectionComponent id="insurer"><InsurerSectionComponent locale={locale} /></SectionComponent>
+                  <SectionComponent id="experts">
+                    <ExpertsSectionComponent locale={locale} />
+                  </SectionComponent>
+                  <SectionComponent id="insurer">
+                    <InsurerSectionComponent locale={locale} />
+                  </SectionComponent>
                   <SectionComponent id="payloads">
                     <ClaimPayloadSection
                       locale={locale}

@@ -18,7 +18,7 @@ describe("buildCurl", () => {
         "  -H 'Accept: application/json' \\",
         "  -H 'Authorization: DPoP {access_token}' \\",
         "  -H 'DPoP: {dpop_proof_jwt}'",
-      ].join("\n")
+      ].join("\n"),
     )
   })
 
@@ -32,7 +32,7 @@ describe("buildCurl", () => {
         "  -H 'DPoP: {dpop_proof_jwt}' \\",
         "  -H 'Content-Type: application/json' \\",
         "  -d '{...}'",
-      ].join("\n")
+      ].join("\n"),
     )
   })
 })
@@ -51,7 +51,7 @@ describe("buildFetch", () => {
         "});",
         "",
         "const data = await res.json();",
-      ].join("\n")
+      ].join("\n"),
     )
   })
 
@@ -70,7 +70,7 @@ describe("buildFetch", () => {
         "});",
         "",
         "const data = await res.json();",
-      ].join("\n")
+      ].join("\n"),
     )
   })
 })
@@ -90,7 +90,7 @@ describe("buildPython", () => {
         'res = requests.request("GET", url, headers=headers)',
         "print(res.status_code)",
         "print(res.text)",
-      ].join("\n")
+      ].join("\n"),
     )
   })
 
@@ -111,7 +111,7 @@ describe("buildPython", () => {
         'res = requests.request("POST", url, headers=headers, json=payload)',
         "print(res.status_code)",
         "print(res.text)",
-      ].join("\n")
+      ].join("\n"),
     )
   })
 })

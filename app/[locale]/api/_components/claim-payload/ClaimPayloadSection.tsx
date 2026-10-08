@@ -27,11 +27,7 @@ type ClaimPayloadSectionProps = {
   onActivePayloadChange?: (key: string) => void
 }
 
-export function ClaimPayloadSection({
-  locale,
-  activePayloadKey,
-  onActivePayloadChange,
-}: ClaimPayloadSectionProps) {
+export function ClaimPayloadSection({ locale, activePayloadKey, onActivePayloadChange }: ClaimPayloadSectionProps) {
   const t = claimPayloadMessages[locale]
   const claimPayloads = getClaimPayloads(locale)
   const [internalActive, setInternalActive] = useState<string>(claimPayloads[0]?.key ?? "")
@@ -50,7 +46,7 @@ export function ClaimPayloadSection({
         onActivePayloadChange?.(value)
       }
     },
-    [isControlled, onActivePayloadChange]
+    [isControlled, onActivePayloadChange],
   )
 
   // Deep links and hash changes to a payload anchor (e.g. /de/api/#payloads-fraud) select that tab.
@@ -84,9 +80,7 @@ export function ClaimPayloadSection({
     <div id="claim-payloads" className="space-y-6">
       <div>
         <h2 className="mb-4 text-3xl font-bold tracking-tight text-balance">{t.title}</h2>
-        <p className="text-sm leading-relaxed text-muted-foreground text-pretty md:text-base">
-          {t.intro}
-        </p>
+        <p className="text-sm leading-relaxed text-muted-foreground text-pretty md:text-base">{t.intro}</p>
       </div>
 
       <Tabs value={resolvedActive} onValueChange={handleTabChange} className="space-y-6">
@@ -110,7 +104,13 @@ export function ClaimPayloadSection({
 
         {claimPayloads.map((payload) => (
           <TabsContent key={payload.key} value={payload.key} className="space-y-6 min-w-0">
-            <PayloadCategoryPanel payload={payload} state={schemas[payload.key]} t={t} copiedKey={copiedKey} onCopy={copy} />
+            <PayloadCategoryPanel
+              payload={payload}
+              state={schemas[payload.key]}
+              t={t}
+              copiedKey={copiedKey}
+              onCopy={copy}
+            />
           </TabsContent>
         ))}
       </Tabs>

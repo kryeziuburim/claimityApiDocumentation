@@ -7,7 +7,8 @@ const de = {
   requestFormatTitle: "Request‑Format",
   requestFormatText: (
     <>
-      Jeder Request besteht aus <strong>Methode</strong>, <strong>URL</strong>, optionalen <strong>Query‑Parametern</strong>, <strong>Headers </strong>
+      Jeder Request besteht aus <strong>Methode</strong>, <strong>URL</strong>, optionalen{" "}
+      <strong>Query‑Parametern</strong>, <strong>Headers </strong>
       und (bei <span className="font-mono">POST</span>/<span className="font-mono">PUT</span>) einem{" "}
       <strong>JSON‑Body</strong>.
     </>
@@ -33,8 +34,9 @@ const de = {
   responseFormatTitle: "Response‑Format",
   responseFormatText: (
     <>
-      Responses sind grundsätzlich <strong>JSON</strong> (<span className="font-mono">Content-Type: application/json</span>) und verwenden
-      HTTP‑Statuscodes, um Erfolg/Fehler zu signalisieren.
+      Responses sind grundsätzlich <strong>JSON</strong> (
+      <span className="font-mono">Content-Type: application/json</span>) und verwenden HTTP‑Statuscodes, um
+      Erfolg/Fehler zu signalisieren.
     </>
   ),
   successTitle: "Erfolgs‑Responses",
@@ -58,20 +60,21 @@ const de = {
   defaultPolicyText: "Für Standard-Endpunkte wird die Anzahl an Abfragen leicht limitiert.",
   defaultPolicyLimit: (
     <>
-      <strong>TokenBucket</strong>: ca. <strong>60 Requests/Minute</strong>, <strong>Burst</strong> bis <strong>20</strong>,{" "}
-      <strong>Queue</strong> <strong>0</strong>
+      <strong>TokenBucket</strong>: ca. <strong>60 Requests/Minute</strong>, <strong>Burst</strong> bis{" "}
+      <strong>20</strong>, <strong>Queue</strong> <strong>0</strong>
     </>
   ),
   documentsPolicyTitle: "Dokument-Routen",
   documentsPolicyText: (
     <>
-      Für Endpunkte mit <span className="font-mono">.../documents...</span> gelten strengere Limits (z. B. für Upload/Download).
+      Für Endpunkte mit <span className="font-mono">.../documents...</span> gelten strengere Limits (z. B. für
+      Upload/Download).
     </>
   ),
   documentsPolicyLimit: (
     <>
-      <strong>TokenBucket</strong>: ca. <strong>20 Requests/Minute</strong>, <strong>Burst</strong> bis <strong>10</strong>,{" "}
-      <strong>Queue</strong> <strong>0</strong>
+      <strong>TokenBucket</strong>: ca. <strong>20 Requests/Minute</strong>, <strong>Burst</strong> bis{" "}
+      <strong>10</strong>, <strong>Queue</strong> <strong>0</strong>
     </>
   ),
   tokenPolicyTitle: "Token-Endpunkt",
@@ -126,10 +129,12 @@ const de = {
     org_without_members: "Die Organisation hat keine Mitglieder — Anlage/Abruf nicht möglich.",
     invalid_category: "Unbekannte Fallkategorie (erlaubt: vehicle, appraiser, fraud, special).",
     invalid_payload: "PayloadJson fehlt oder ist kein gültiges JSON.",
-    invalid_state: "Die Aktion ist im aktuellen Fallstatus nicht erlaubt (z. B. Reopen eines nicht abgeschlossenen Falls).",
+    invalid_state:
+      "Die Aktion ist im aktuellen Fallstatus nicht erlaubt (z. B. Reopen eines nicht abgeschlossenen Falls).",
     "invalid_document / missing_documents": "Dokument ungültig bzw. erforderliche Dokumente fehlen.",
     "unsupported_content_type / size_limit_exceeded": "Dateityp nicht erlaubt bzw. Upload-Limit überschritten.",
-    "upstream_timeout / upstream_error": "Ein nachgelagerter Dienst hat nicht (rechtzeitig) geantwortet — Retry mit Backoff.",
+    "upstream_timeout / upstream_error":
+      "Ein nachgelagerter Dienst hat nicht (rechtzeitig) geantwortet — Retry mit Backoff.",
   },
   validationExampleTitle: "Beispiel: 400 bei der Payload-Validierung (POST /v1/insurers/claims:validate)",
 }
@@ -143,7 +148,8 @@ export const apiBasicsMessages: Record<Locale, typeof de> = {
     requestFormatTitle: "Request Format",
     requestFormatText: (
       <>
-        Every request consists of <strong>Method</strong>, <strong>URL</strong>, optional <strong>Query Parameters</strong>, <strong>Headers </strong>
+        Every request consists of <strong>Method</strong>, <strong>URL</strong>, optional{" "}
+        <strong>Query Parameters</strong>, <strong>Headers </strong>
         and (for <span className="font-mono">POST</span>/<span className="font-mono">PUT</span>) a{" "}
         <strong>JSON Body</strong>.
       </>
@@ -168,8 +174,8 @@ export const apiBasicsMessages: Record<Locale, typeof de> = {
     responseFormatTitle: "Response Format",
     responseFormatText: (
       <>
-        Responses are generally <strong>JSON</strong> (<span className="font-mono">Content-Type: application/json</span>) and use
-        HTTP status codes to signal success/error.
+        Responses are generally <strong>JSON</strong> (<span className="font-mono">Content-Type: application/json</span>
+        ) and use HTTP status codes to signal success/error.
       </>
     ),
     successTitle: "Success Responses",
@@ -193,20 +199,21 @@ export const apiBasicsMessages: Record<Locale, typeof de> = {
     defaultPolicyText: "For standard endpoints, the number of requests is slightly limited.",
     defaultPolicyLimit: (
       <>
-        <strong>TokenBucket</strong>: approx. <strong>60 Requests/Minute</strong>, <strong>Burst</strong> up to <strong>20</strong>,{" "}
-        <strong>Queue</strong> <strong>0</strong>
+        <strong>TokenBucket</strong>: approx. <strong>60 Requests/Minute</strong>, <strong>Burst</strong> up to{" "}
+        <strong>20</strong>, <strong>Queue</strong> <strong>0</strong>
       </>
     ),
     documentsPolicyTitle: "Document Routes",
     documentsPolicyText: (
       <>
-        For endpoints with <span className="font-mono">.../documents...</span>, stricter limits apply (e.g. for upload/download).
+        For endpoints with <span className="font-mono">.../documents...</span>, stricter limits apply (e.g. for
+        upload/download).
       </>
     ),
     documentsPolicyLimit: (
       <>
-        <strong>TokenBucket</strong>: approx. <strong>20 Requests/Minute</strong>, <strong>Burst</strong> up to <strong>10</strong>,{" "}
-        <strong>Queue</strong> <strong>0</strong>
+        <strong>TokenBucket</strong>: approx. <strong>20 Requests/Minute</strong>, <strong>Burst</strong> up to{" "}
+        <strong>10</strong>, <strong>Queue</strong> <strong>0</strong>
       </>
     ),
     tokenPolicyTitle: "Token Endpoint",
@@ -234,8 +241,8 @@ export const apiBasicsMessages: Record<Locale, typeof de> = {
     recommendationsTitle: "Recommendations for Clients",
     recommendations: [
       <>
-        Retry <span className="font-mono">429</span> requests with <strong>backoff</strong> and{" "}
-        respect <span className="font-mono">Retry-After</span>.
+        Retry <span className="font-mono">429</span> requests with <strong>backoff</strong> and respect{" "}
+        <span className="font-mono">Retry-After</span>.
       </>,
       <>Throttle document uploads/downloads.</>,
       <>Bursts are limited (no queuing) – high parallelism leads to 429 faster.</>,
@@ -261,7 +268,8 @@ export const apiBasicsMessages: Record<Locale, typeof de> = {
       org_without_members: "The organization has no members — creation/retrieval is not possible.",
       invalid_category: "Unknown claim category (allowed: vehicle, appraiser, fraud, special).",
       invalid_payload: "PayloadJson is missing or not valid JSON.",
-      invalid_state: "The action is not allowed in the current claim status (e.g. reopening a case that is not completed).",
+      invalid_state:
+        "The action is not allowed in the current claim status (e.g. reopening a case that is not completed).",
       "invalid_document / missing_documents": "Document invalid, or required documents are missing.",
       "unsupported_content_type / size_limit_exceeded": "File type not allowed, or the upload limit was exceeded.",
       "upstream_timeout / upstream_error": "A downstream service did not respond (in time) — retry with backoff.",
@@ -275,8 +283,9 @@ export const apiBasicsMessages: Record<Locale, typeof de> = {
     requestFormatTitle: "Format de requête",
     requestFormatText: (
       <>
-        Chaque requête se compose de <strong>Méthode</strong>, <strong>URL</strong>, <strong>Paramètres de requête</strong> optionnels, <strong>En-têtes</strong> et (pour <span className="font-mono">POST</span>/<span className="font-mono">PUT</span>) un{" "}
-        <strong>Corps JSON</strong>.
+        Chaque requête se compose de <strong>Méthode</strong>, <strong>URL</strong>,{" "}
+        <strong>Paramètres de requête</strong> optionnels, <strong>En-têtes</strong> et (pour{" "}
+        <span className="font-mono">POST</span>/<span className="font-mono">PUT</span>) un <strong>Corps JSON</strong>.
       </>
     ),
     urlStructureTitle: "Structure de l'URL",
@@ -299,8 +308,9 @@ export const apiBasicsMessages: Record<Locale, typeof de> = {
     responseFormatTitle: "Format de réponse",
     responseFormatText: (
       <>
-        Les réponses sont généralement en <strong>JSON</strong> (<span className="font-mono">Content-Type: application/json</span>) et utilisent
-        des codes d'état HTTP pour signaler le succès/l'erreur.
+        Les réponses sont généralement en <strong>JSON</strong> (
+        <span className="font-mono">Content-Type: application/json</span>) et utilisent des codes d'état HTTP pour
+        signaler le succès/l'erreur.
       </>
     ),
     successTitle: "Réponses de succès",
@@ -313,8 +323,8 @@ export const apiBasicsMessages: Record<Locale, typeof de> = {
     rateLimitTitle: "Limitation de débit",
     rateLimitIntro: (
       <>
-        L'API Partenaire est protégée par une limitation de débit pour garantir une utilisation équitable et la stabilité. Les limites sont appliquées{" "}
-        <strong>par partition client</strong>.
+        L'API Partenaire est protégée par une limitation de débit pour garantir une utilisation équitable et la
+        stabilité. Les limites sont appliquées <strong>par partition client</strong>.
       </>
     ),
     anonPolicyTitle: "Validation anonyme",
@@ -324,20 +334,21 @@ export const apiBasicsMessages: Record<Locale, typeof de> = {
     defaultPolicyText: "Pour les points de terminaison standard, le nombre de requêtes est légèrement limité.",
     defaultPolicyLimit: (
       <>
-        <strong>TokenBucket</strong> : env. <strong>60 Requêtes/Minute</strong>, <strong>Rafale</strong> jusqu'à <strong>20</strong>,{" "}
-        <strong>File d'attente</strong> <strong>0</strong>
+        <strong>TokenBucket</strong> : env. <strong>60 Requêtes/Minute</strong>, <strong>Rafale</strong> jusqu'à{" "}
+        <strong>20</strong>, <strong>File d'attente</strong> <strong>0</strong>
       </>
     ),
     documentsPolicyTitle: "Routes de documents",
     documentsPolicyText: (
       <>
-        Pour les points de terminaison avec <span className="font-mono">.../documents...</span>, des limites plus strictes s'appliquent (par ex. pour le téléchargement).
+        Pour les points de terminaison avec <span className="font-mono">.../documents...</span>, des limites plus
+        strictes s'appliquent (par ex. pour le téléchargement).
       </>
     ),
     documentsPolicyLimit: (
       <>
-        <strong>TokenBucket</strong> : env. <strong>20 Requêtes/Minute</strong>, <strong>Rafale</strong> jusqu'à <strong>10</strong>,{" "}
-        <strong>File d'attente</strong> <strong>0</strong>
+        <strong>TokenBucket</strong> : env. <strong>20 Requêtes/Minute</strong>, <strong>Rafale</strong> jusqu'à{" "}
+        <strong>10</strong>, <strong>File d'attente</strong> <strong>0</strong>
       </>
     ),
     tokenPolicyTitle: "Point de terminaison de jeton",
@@ -365,11 +376,13 @@ export const apiBasicsMessages: Record<Locale, typeof de> = {
     recommendationsTitle: "Recommandations pour les clients",
     recommendations: [
       <>
-        Réessayer les requêtes <span className="font-mono">429</span> avec <strong>backoff</strong> et{" "}
-        respecter <span className="font-mono">Retry-After</span>.
+        Réessayer les requêtes <span className="font-mono">429</span> avec <strong>backoff</strong> et respecter{" "}
+        <span className="font-mono">Retry-After</span>.
       </>,
       <>Limiter les téléchargements de documents.</>,
-      <>Les rafales sont limitées (pas de file d'attente) – une forte parallélisation entraîne plus rapidement des 429.</>,
+      <>
+        Les rafales sont limitées (pas de file d'attente) – une forte parallélisation entraîne plus rapidement des 429.
+      </>,
     ],
 
     idempotencyTitle: "Idempotence (Idempotency-Key)",
@@ -392,7 +405,8 @@ export const apiBasicsMessages: Record<Locale, typeof de> = {
       org_without_members: "L'organisation n'a aucun membre — création/consultation impossible.",
       invalid_category: "Catégorie de sinistre inconnue (autorisées : vehicle, appraiser, fraud, special).",
       invalid_payload: "PayloadJson manquant ou JSON invalide.",
-      invalid_state: "L'action n'est pas autorisée dans le statut actuel du dossier (p. ex. rouvrir un dossier non clôturé).",
+      invalid_state:
+        "L'action n'est pas autorisée dans le statut actuel du dossier (p. ex. rouvrir un dossier non clôturé).",
       "invalid_document / missing_documents": "Document invalide ou documents requis manquants.",
       "unsupported_content_type / size_limit_exceeded": "Type de fichier non autorisé ou limite d'upload dépassée.",
       "upstream_timeout / upstream_error": "Un service en aval n'a pas répondu (à temps) — retry avec backoff.",

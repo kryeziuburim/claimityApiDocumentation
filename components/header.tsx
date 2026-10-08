@@ -37,14 +37,14 @@ export function Header() {
     <>
       {/* Mobile: fixed; ab md: sticky */}
       <header className="fixed top-0 inset-x-0 z-50 bg-white border-b border-gray-200 shadow-sm">
-      <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
-        {/* Logo */}
-        <Link href={homeHref} aria-label="Claimity home" className="flex items-center gap-3">
-          <Image src="/logo.png" alt="Claimity Logo" width={100} height={28} priority />
-        </Link>
+        <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
+          {/* Logo */}
+          <Link href={homeHref} aria-label="Claimity home" className="flex items-center gap-3">
+            <Image src="/logo.png" alt="Claimity Logo" width={100} height={28} priority />
+          </Link>
 
-        {/* Navigation Menu */}
-        {/* <nav className="hidden md:flex items-center gap-8">
+          {/* Navigation Menu */}
+          {/* <nav className="hidden md:flex items-center gap-8">
           {menu.map((item) => (
             <Link
               key={item.href}
@@ -56,61 +56,56 @@ export function Header() {
           ))}
         </nav> */}
 
-        {/* CTAs + Language */}
-        <div className="hidden md:flex items-center gap-4">
-          <Button asChild className="bg-teal-600 hover:bg-teal-700 text-white rounded-lg px-6">
-            <Link href="https://app.claimity.ch" target="_blank" rel="noopener noreferrer">
-              {L.clientLogin}
-            </Link>
-          </Button>
-          <LanguageSwitcher />
-        </div>
+          {/* CTAs + Language */}
+          <div className="hidden md:flex items-center gap-4">
+            <Button asChild className="bg-teal-600 hover:bg-teal-700 text-white rounded-lg px-6">
+              <Link href="https://app.claimity.ch" target="_blank" rel="noopener noreferrer">
+                {L.clientLogin}
+              </Link>
+            </Button>
+            <LanguageSwitcher />
+          </div>
 
-        {/* Mobile Menu */}
-        <div className="md:hidden">
-          <Sheet>
-            <SheetTrigger asChild>
-              <Button
-                variant="ghost"
-                size="icon"
-                aria-label="Open menu"
-                className="text-gray-900 hover:bg-gray-100"
-              >
-                <Menu className="h-6 w-6" />
-              </Button>
-            </SheetTrigger>
-            <SheetContent side="right" className="w-[280px] sm:w-[320px]">
-              <SheetHeader>
-                <SheetTitle className="text-gray-900 font-semibold">{L.navTitle}</SheetTitle>
-              </SheetHeader>
-              <nav className="mt-4 grid gap-2">
-                {menu.map((item) => (
-                  <Link
-                    key={item.href}
-                    href={item.href}
-                    className="py-2 text-base font-medium text-gray-900 hover:text-gray-700 ml-4"
-                  >
-                    {item.label}
-                  </Link>
-                ))}
-              </nav>
-              <div className="mt-6 grid gap-2">
-                <Button asChild className="justify-start bg-teal-600 hover:bg-teal-700 text-white ml-4 mr-4">
-                  <Link href="https://app.claimity.ch" target="_blank" rel="noopener noreferrer">
-                    {L.clientLogin}
-                  </Link>
+          {/* Mobile Menu */}
+          <div className="md:hidden">
+            <Sheet>
+              <SheetTrigger asChild>
+                <Button variant="ghost" size="icon" aria-label="Open menu" className="text-gray-900 hover:bg-gray-100">
+                  <Menu className="h-6 w-6" />
                 </Button>
-                <div className="px-4">
-                  <LanguageSwitcher />
+              </SheetTrigger>
+              <SheetContent side="right" className="w-[280px] sm:w-[320px]">
+                <SheetHeader>
+                  <SheetTitle className="text-gray-900 font-semibold">{L.navTitle}</SheetTitle>
+                </SheetHeader>
+                <nav className="mt-4 grid gap-2">
+                  {menu.map((item) => (
+                    <Link
+                      key={item.href}
+                      href={item.href}
+                      className="py-2 text-base font-medium text-gray-900 hover:text-gray-700 ml-4"
+                    >
+                      {item.label}
+                    </Link>
+                  ))}
+                </nav>
+                <div className="mt-6 grid gap-2">
+                  <Button asChild className="justify-start bg-teal-600 hover:bg-teal-700 text-white ml-4 mr-4">
+                    <Link href="https://app.claimity.ch" target="_blank" rel="noopener noreferrer">
+                      {L.clientLogin}
+                    </Link>
+                  </Button>
+                  <div className="px-4">
+                    <LanguageSwitcher />
+                  </div>
                 </div>
-              </div>
-            </SheetContent>
-          </Sheet>
+              </SheetContent>
+            </Sheet>
+          </div>
         </div>
-      </div>
-    </header>
-    {/* Spacer nur auf Mobile, um den fixed Header auszugleichen */}
-    <div className="h-16" aria-hidden="true" />
+      </header>
+      {/* Spacer nur auf Mobile, um den fixed Header auszugleichen */}
+      <div className="h-16" aria-hidden="true" />
     </>
   )
 }

@@ -14,15 +14,7 @@ import { RequestTab } from "./endpoint-details/RequestTab"
 import { ResponseTab } from "./endpoint-details/ResponseTab"
 import { useEndpointData } from "./endpoint-details/useEndpointData"
 
-export function EndpointDetails({
-  method,
-  path,
-  className,
-}: {
-  method: HttpMethod
-  path: string
-  className?: string
-}) {
+export function EndpointDetails({ method, path, className }: { method: HttpMethod; path: string; className?: string }) {
   const lang = useLocale()
   const t = endpointDetailsMessages[lang]
 
@@ -56,7 +48,11 @@ export function EndpointDetails({
   if (!op) {
     return (
       <div className={cn("rounded-md border border-border bg-muted/30 p-3 text-sm text-muted-foreground", className)}>
-        {t.notFound} <span className="font-mono">{method} {path}</span> {t.found}
+        {t.notFound}{" "}
+        <span className="font-mono">
+          {method} {path}
+        </span>{" "}
+        {t.found}
       </div>
     )
   }

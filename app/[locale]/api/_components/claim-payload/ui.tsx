@@ -8,29 +8,18 @@ export function RuleText({ text }: { text: string }) {
     <>
       {segments.map((segment, index) =>
         index % 2 === 1 ? (
-          <code
-            key={index}
-            className="rounded bg-background px-1 py-0.5 font-mono text-[0.85em] text-foreground"
-          >
+          <code key={index} className="rounded bg-background px-1 py-0.5 font-mono text-[0.85em] text-foreground">
             {segment}
           </code>
         ) : (
           <span key={index}>{segment}</span>
-        )
+        ),
       )}
     </>
   )
 }
 
-export function InlineHint({
-  icon: Icon,
-  label,
-  value,
-}: {
-  icon: LucideIcon
-  label: string
-  value: string | number
-}) {
+export function InlineHint({ icon: Icon, label, value }: { icon: LucideIcon; label: string; value: string | number }) {
   return (
     <div className="flex items-center justify-between gap-3 rounded-2xl border border-border/50 bg-muted/30 px-4 py-2">
       <div className="flex items-center gap-2 text-sm text-muted-foreground">

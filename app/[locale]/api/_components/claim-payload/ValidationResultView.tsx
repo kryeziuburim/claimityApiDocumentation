@@ -9,14 +9,8 @@ const renderErrorDetails = (errors?: Record<string, string[]> | null) => {
   if (!errors) return null
   const entries = Object.entries(errors)
     .map<[string, string[]] | null>(([field, raw]) => {
-      const normalized = Array.isArray(raw)
-        ? raw
-        : raw === undefined || raw === null
-          ? []
-          : [raw]
-      const cleaned = normalized
-        .map((msg) => String(msg).trim())
-        .filter((msg) => msg.length)
+      const normalized = Array.isArray(raw) ? raw : raw === undefined || raw === null ? [] : [raw]
+      const cleaned = normalized.map((msg) => String(msg).trim()).filter((msg) => msg.length)
       return cleaned.length ? [field, cleaned] : null
     })
     .filter((entry): entry is [string, string[]] => entry !== null)
@@ -41,7 +35,13 @@ const renderErrorDetails = (errors?: Record<string, string[]> | null) => {
 }
 
 /** Response panel of the payload tester for each validation state. */
-export function ValidationResultView({ state: validationState, t }: { state: ValidationState; t: ClaimPayloadMessages }) {
+export function ValidationResultView({
+  state: validationState,
+  t,
+}: {
+  state: ValidationState
+  t: ClaimPayloadMessages
+}) {
   if (validationState.status === "running") {
     return (
       <div className="flex items-center gap-3 rounded-2xl border border-border/60 bg-background/80 px-4 py-3 text-sm font-medium">
@@ -59,9 +59,7 @@ export function ValidationResultView({ state: validationState, t }: { state: Val
           <AlertDescription className="space-y-2 text-sm">
             <p>{validationState.message}</p>
             {typeof validationState.statusCode === "number" ? (
-              <p className="text-xs uppercase tracking-wide text-muted-foreground">
-                HTTP {validationState.statusCode}
-              </p>
+              <p className="text-xs uppercase tracking-wide text-muted-foreground">HTTP {validationState.statusCode}</p>
             ) : null}
           </AlertDescription>
         </Alert>
@@ -81,17 +79,16 @@ export function ValidationResultView({ state: validationState, t }: { state: Val
           {data.valid ? <ShieldCheck className="h-4 w-4 text-primary" /> : <ShieldAlert className="h-4 w-4" />}
           <AlertTitle>{data.valid ? t.payloadValid : t.payloadInvalid}</AlertTitle>
           <AlertDescription className="space-y-2 text-sm">
-            <p>
-              {data.valid ? t.validatorNoDeviations : t.validatorRuleViolated}
-            </p>
+            <p>{data.valid ? t.validatorNoDeviations : t.validatorRuleViolated}</p>
             <p className="text-xs uppercase tracking-wide text-muted-foreground">HTTP {statusCode}</p>
           </AlertDescription>
         </Alert>
-        {errorDetails ?? (!data.valid ? (
-          <p className="rounded-2xl border border-border/60 bg-muted/20 p-3 text-sm text-muted-foreground">
-            {t.invalidWithoutErrors}
-          </p>
-        ) : null)}
+        {errorDetails ??
+          (!data.valid ? (
+            <p className="rounded-2xl border border-border/60 bg-muted/20 p-3 text-sm text-muted-foreground">
+              {t.invalidWithoutErrors}
+            </p>
+          ) : null)}
       </div>
     )
   }

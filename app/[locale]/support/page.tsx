@@ -109,8 +109,10 @@ export default async function SupportPage({ params }: Props) {
                   <div>
                     <div className="text-sm font-medium text-gray-900">{t.address}</div>
                     <p className="text-sm text-gray-600">
-                      Wisentalstrasse 7a<br />
-                      8185 Winkel<br />
+                      Wisentalstrasse 7a
+                      <br />
+                      8185 Winkel
+                      <br />
                       {t.country}
                     </p>
                   </div>

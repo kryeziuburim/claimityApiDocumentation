@@ -98,7 +98,7 @@ function buildNavigationItems(locale: Locale): NavItem[] {
 
 // Built once per locale so the hooks below get a referentially stable array.
 const NAVIGATION_ITEMS_BY_LOCALE = Object.fromEntries(
-  locales.map((locale) => [locale, buildNavigationItems(locale)])
+  locales.map((locale) => [locale, buildNavigationItems(locale)]),
 ) as Record<Locale, NavItem[]>
 
 /** Sub-entry id -> id of the chapter it belongs to. */
@@ -113,7 +113,7 @@ function buildChildToParent(items: NavItem[]): Record<string, string> {
 }
 
 const CHILD_TO_PARENT_BY_LOCALE = Object.fromEntries(
-  locales.map((locale) => [locale, buildChildToParent(NAVIGATION_ITEMS_BY_LOCALE[locale])])
+  locales.map((locale) => [locale, buildChildToParent(NAVIGATION_ITEMS_BY_LOCALE[locale])]),
 ) as Record<Locale, Record<string, string>>
 
 /** Sidebar entries for a locale; arrays and maps are referentially stable per locale. */

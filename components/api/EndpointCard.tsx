@@ -31,7 +31,10 @@ export function EndpointCard({
   note,
 }: EndpointCardProps) {
   const [open, setOpen] = useState<boolean>(defaultOpen)
-  const methodColor = useMemo(() => (METHOD_COLORS as Partial<Record<HttpMethod, string>>)[method] ?? "#475569", [method])
+  const methodColor = useMemo(
+    () => (METHOD_COLORS as Partial<Record<HttpMethod, string>>)[method] ?? "#475569",
+    [method],
+  )
   const hasDetails = enableDetails
 
   const headerContent = (
@@ -49,7 +52,9 @@ export function EndpointCard({
             <span className="font-mono text-xs font-semibold text-foreground sm:text-sm">{path}</span>
           </div>
 
-          {description ? <p className="mt-2 text-xs text-muted-foreground text-pretty sm:text-sm">{description}</p> : null}
+          {description ? (
+            <p className="mt-2 text-xs text-muted-foreground text-pretty sm:text-sm">{description}</p>
+          ) : null}
 
           {note ? (
             <div className="mt-2 text-xs text-muted-foreground">
@@ -69,7 +74,7 @@ export function EndpointCard({
     <div
       className={cn(
         "rounded-2xl border border-border/70 bg-muted/30 transition-shadow",
-        hasDetails && open && "border-border/70"
+        hasDetails && open && "border-border/70",
       )}
     >
       {hasDetails ? (

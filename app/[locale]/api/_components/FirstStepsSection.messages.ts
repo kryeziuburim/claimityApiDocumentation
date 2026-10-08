@@ -21,7 +21,8 @@ const de = {
     },
     {
       title: "Erste Anfrage",
-      description: "Senden Sie mit Ihrem Access Token und dem DPoP-Header eine authentifizierte Anfrage an einen Endpoint.",
+      description:
+        "Senden Sie mit Ihrem Access Token und dem DPoP-Header eine authentifizierte Anfrage an einen Endpoint.",
     },
   ],
   exampleRequestTitle: "Beispiel‑Request",
@@ -84,7 +85,8 @@ export const firstStepsMessages: Record<Locale, typeof de> = {
       },
       {
         title: "Première requête",
-        description: "Envoyez une requête authentifiée à un point de terminaison avec votre jeton d'accès et l'en-tête DPoP.",
+        description:
+          "Envoyez une requête authentifiée à un point de terminaison avec votre jeton d'accès et l'en-tête DPoP.",
       },
     ],
     exampleRequestTitle: "Exemple de requête",

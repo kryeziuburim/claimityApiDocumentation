@@ -11,7 +11,9 @@ test.describe("API page navigation", () => {
     await page.locator('[data-nav-id="insurer"]').click()
     await page.locator('[data-nav-id="insurer-claims-create"]').click()
 
-    await expect.poll(() => navState(page)).toEqual({ hash: "#insurer-claims-create", activeNav: "insurer-claims-create" })
+    await expect
+      .poll(() => navState(page))
+      .toEqual({ hash: "#insurer-claims-create", activeNav: "insurer-claims-create" })
     await expect.poll(() => topOf(page, "insurer-claims-create")).toBeCloseTo(SECTION_TOP, -1)
   })
 
@@ -37,7 +39,7 @@ test.describe("API page navigation", () => {
     await page.goto("/de/api/#payloads-fraud")
 
     await expect(page.locator("#claim-payloads").getByRole("tab", { selected: true })).toHaveText(
-      "Bekämpfung Versicherungsmissbrauch"
+      "Bekämpfung Versicherungsmissbrauch",
     )
     await expect.poll(() => topOf(page, "payloads-fraud"), { timeout: 10_000 }).toBeCloseTo(0, -1)
     await expect.poll(() => navState(page)).toEqual({ hash: "#payloads-fraud", activeNav: "payloads-fraud" })

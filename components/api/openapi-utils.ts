@@ -36,7 +36,11 @@ export function normalizeMethod(m: string): string {
   return m.toLowerCase()
 }
 
-export function getOperation(spec: OpenApiDocument, method: HttpMethod, path: string): OpenAPIV3.OperationObject | null {
+export function getOperation(
+  spec: OpenApiDocument,
+  method: HttpMethod,
+  path: string,
+): OpenAPIV3.OperationObject | null {
   const item = spec.paths?.[path]
   if (!item) return null
   return item[normalizeMethod(method) as OpenAPIV3.HttpMethods] ?? null
@@ -87,7 +91,7 @@ export function listParameters(op: OpenAPIV3.OperationObject | null): OpenAPIV3.
 }
 
 export function pickJsonSchemaFromContent(
-  content: Record<string, OpenAPIV3.MediaTypeObject> | undefined
+  content: Record<string, OpenAPIV3.MediaTypeObject> | undefined,
 ): SchemaNode | null {
   if (!content) return null
   // prefer application/json
@@ -107,7 +111,7 @@ export function generateExample(
   schema: SchemaNode | null | undefined,
   depth = 0,
   maxDepth = 5,
-  visitedRefs?: Set<string>
+  visitedRefs?: Set<string>,
 ): unknown {
   if (!schema || depth > maxDepth) return null
   const seen = visitedRefs ?? new Set<string>()

@@ -135,7 +135,12 @@ export function ExpertsSection({ locale }: { locale: Locale }) {
           </div>
 
           <div id="experts-reports-list" className="scroll-mt-24">
-            <EndpointCard method="GET" path="/v1/experts/cases/{caseId}/reports" label="List" description={e.reportsList} />
+            <EndpointCard
+              method="GET"
+              path="/v1/experts/cases/{caseId}/reports"
+              label="List"
+              description={e.reportsList}
+            />
           </div>
 
           <div id="experts-reports-submission-get" className="scroll-mt-24">

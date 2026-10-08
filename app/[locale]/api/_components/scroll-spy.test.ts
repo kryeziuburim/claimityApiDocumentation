@@ -11,7 +11,9 @@ describe("pickActiveSection", () => {
   })
 
   it("prefers a visible child anchor over its long chapter section", () => {
-    expect(pickActiveSection([chapter("insurer", -4000), anchor("insurer-claims-list", 120)])).toBe("insurer-claims-list")
+    expect(pickActiveSection([chapter("insurer", -4000), anchor("insurer-claims-list", 120)])).toBe(
+      "insurer-claims-list",
+    )
   })
 
   it("falls back to the chapter once no child anchor is visible", () => {
@@ -24,7 +26,7 @@ describe("pickActiveSection", () => {
     // Regression: after navigating to "Create claim" (scrolled to the top), the next endpoint card
     // below it was highlighted instead.
     expect(pickActiveSection([anchor("insurer-claims-validate", 202), anchor("insurer-claims-create", 96)])).toBe(
-      "insurer-claims-create"
+      "insurer-claims-create",
     )
     expect(pickActiveSection([chapter("first-steps", 250), chapter("overview", -300)])).toBe("overview")
   })

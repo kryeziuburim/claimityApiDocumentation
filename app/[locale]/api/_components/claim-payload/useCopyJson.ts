@@ -31,7 +31,7 @@ export function useCopyJson(t: ClaimPayloadMessages) {
         setCopiedKey(payloadKey)
       }
     },
-    [t, toast]
+    [t, toast],
   )
 
   return { copiedKey, copy }

@@ -10,11 +10,7 @@ type ModernLoaderProps = {
   variant?: "light" | "dark"
 }
 
-export default function ModernLoader({
-  message = "Laden …",
-  className,
-  variant = "light",
-}: ModernLoaderProps) {
+export default function ModernLoader({ message = "Laden …", className, variant = "light" }: ModernLoaderProps) {
   const isDark = variant === "dark"
 
   return (
@@ -57,9 +53,7 @@ export default function ModernLoader({
           <div
             className={cn(
               "mx-auto mb-5 h-10 w-10 rounded-full border-4 animate-spin",
-              isDark
-                ? "border-white/10 border-t-teal-400"
-                : "border-[#329AA1]/20 border-t-[#329AA1]",
+              isDark ? "border-white/10 border-t-teal-400" : "border-[#329AA1]/20 border-t-[#329AA1]",
             )}
             aria-label="Loading"
           />

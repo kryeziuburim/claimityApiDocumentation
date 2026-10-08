@@ -136,7 +136,8 @@
   }
 
   /* Verhindert horizontales Scrollen global */
-  html, body {
+  html,
+  body {
     overflow-x: hidden;
   }
 
@@ -145,33 +146,37 @@
   }
 
   /* Sichere Zeilenumbrüche für typische Text-Elemente in allen Sprachen */
-  :where(h1,h2,h3,h4,h5,h6,p,li,dt,dd,a,button,span,strong,em,blockquote,figcaption) {
-    overflow-wrap: anywhere;   /* bevorzugt: bricht lange Wörter/URLs */
-    word-break: break-word;    /* Fallback für ältere Browser */
-    -webkit-hyphens: auto;     /* Safari/alte WebKit */
-    -ms-hyphens: auto;         /* alter IE */
-    hyphens: auto;             /* nutzt html[lang] für korrekte Silbentrennung */
+  :where(h1, h2, h3, h4, h5, h6, p, li, dt, dd, a, button, span, strong, em, blockquote, figcaption) {
+    overflow-wrap: anywhere; /* bevorzugt: bricht lange Wörter/URLs */
+    word-break: break-word; /* Fallback für ältere Browser */
+    -webkit-hyphens: auto; /* Safari/alte WebKit */
+    -ms-hyphens: auto; /* alter IE */
+    hyphens: auto; /* nutzt html[lang] für korrekte Silbentrennung */
   }
 
   /* Angenehmere Umbrüche bei Überschriften */
-  :where(h1,h2,h3,h4) {
+  :where(h1, h2, h3, h4) {
     text-wrap: balance;
   }
 
   /* Code/Preformatierter Text: nicht aggressiv umbrechen, horizontal scrollen erlauben */
-  :where(code,kbd,samp,pre) {
+  :where(code, kbd, samp, pre) {
     word-break: normal;
     overflow-wrap: normal;
   }
 
   pre {
     white-space: pre-wrap;
-    word-wrap: break-word;     /* Fallback */
-    overflow-x: auto;          /* Scrollbar statt Überlaufen */
+    word-wrap: break-word; /* Fallback */
+    overflow-x: auto; /* Scrollbar statt Überlaufen */
   }
 
   /* Medien niemals über Containerbreite hinaus */
-  img, svg, video, canvas, iframe {
+  img,
+  svg,
+  video,
+  canvas,
+  iframe {
     max-width: 100%;
     height: auto;
   }

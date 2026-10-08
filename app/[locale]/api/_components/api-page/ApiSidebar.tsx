@@ -23,7 +23,15 @@ type ApiSidebarProps = {
   footerLiftPx: number
 }
 
-export function ApiSidebar({ items, childToParent, activeId, onNavigate, visible, mobileOpen, footerLiftPx }: ApiSidebarProps) {
+export function ApiSidebar({
+  items,
+  childToParent,
+  activeId,
+  onNavigate,
+  visible,
+  mobileOpen,
+  footerLiftPx,
+}: ApiSidebarProps) {
   // UX: Es soll immer nur genau 1 "Accordion"-Parent gleichzeitig offen sein.
   const [expandedItem, setExpandedItem] = useState<string | null>(null)
   const scrollRef = useRef<HTMLDivElement | null>(null)
@@ -73,7 +81,7 @@ export function ApiSidebar({ items, childToParent, activeId, onNavigate, visible
       className={cn(
         "fixed inset-y-0 left-0 z-30 w-full max-w-[18rem] border-r border-border bg-sidebar transition-[transform,opacity] duration-[350ms] ease-out lg:max-w-none lg:w-64",
         mobileOpen ? "translate-x-0" : "-translate-x-full",
-        visible ? "lg:translate-x-0 lg:opacity-100" : "lg:-translate-x-full lg:opacity-0"
+        visible ? "lg:translate-x-0 lg:opacity-100" : "lg:-translate-x-full lg:opacity-0",
       )}
       style={visible && footerLiftPx > 0 ? { bottom: footerLiftPx } : undefined}
     >
@@ -100,7 +108,7 @@ export function ApiSidebar({ items, childToParent, activeId, onNavigate, visible
                     "flex w-full items-start gap-3 rounded-md px-3 py-2 text-sm font-medium leading-snug transition-colors",
                     isItemActive
                       ? "bg-sidebar-accent font-semibold text-sidebar-accent-foreground"
-                      : "text-sidebar-foreground hover:bg-sidebar-accent/50"
+                      : "text-sidebar-foreground hover:bg-sidebar-accent/50",
                   )}
                   aria-expanded={item.children ? expandedItem === item.id : undefined}
                   aria-controls={item.children ? `subnav-${item.id}` : undefined}
@@ -110,7 +118,10 @@ export function ApiSidebar({ items, childToParent, activeId, onNavigate, visible
                   <span className="min-w-0 flex-1 text-left">{item.title}</span>
                   {item.children && (
                     <ChevronRight
-                      className={cn("mt-0.5 h-4 w-4 shrink-0 transition-transform", expandedItem === item.id && "rotate-90")}
+                      className={cn(
+                        "mt-0.5 h-4 w-4 shrink-0 transition-transform",
+                        expandedItem === item.id && "rotate-90",
+                      )}
                     />
                   )}
                 </button>
@@ -131,7 +142,7 @@ export function ApiSidebar({ items, childToParent, activeId, onNavigate, visible
                             "flex w-full items-start gap-2 rounded-md px-3 py-1.5 text-[13px] leading-snug transition-colors",
                             isChildActive
                               ? "bg-sidebar-accent font-semibold text-sidebar-accent-foreground"
-                              : "text-muted-foreground hover:bg-sidebar-accent/30 hover:text-sidebar-foreground"
+                              : "text-muted-foreground hover:bg-sidebar-accent/30 hover:text-sidebar-foreground",
                           )}
                           aria-current={isChildActive ? "page" : undefined}
                         >
@@ -141,7 +152,7 @@ export function ApiSidebar({ items, childToParent, activeId, onNavigate, visible
                                 // Fixe Breite, damit GET/PUT/DEL genauso breit sind wie POST.
                                 // (Die Sidebar wirkt dadurch visuell ruhiger und "aligned".)
                                 "mt-[1px] inline-flex h-5 w-9 shrink-0 items-center justify-center rounded-md px-0",
-                                "font-mono text-[11px] font-semibold text-white"
+                                "font-mono text-[11px] font-semibold text-white",
                               )}
                               style={{ backgroundColor: METHOD_COLORS[child.method] }}
                             >

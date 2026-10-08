@@ -57,12 +57,7 @@ export default async function Home({ params }: Props) {
             {cards.map(({ key, path, icon: Icon }) => {
               const card = t.cards[key]
               return (
-                <Link
-                  key={key}
-                  href={`/${locale}/${path}`}
-                  aria-label={card.ariaLabel}
-                  className="group block h-full"
-                >
+                <Link key={key} href={`/${locale}/${path}`} aria-label={card.ariaLabel} className="group block h-full">
                   <Card className="flex h-full flex-col justify-between border-slate-800/60 bg-white/10 backdrop-blur-xl transition-all duration-300 hover:-translate-y-1 hover:border-teal-400/70 hover:bg-white/15 hover:shadow-[0_18px_45px_rgba(15,23,42,0.75)]">
                     <CardHeader className="flex flex-row items-start gap-4">
                       <div className="relative flex h-12 w-12 items-center justify-center rounded-xl bg-teal-500/10">

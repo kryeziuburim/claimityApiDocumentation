@@ -58,7 +58,7 @@ test.describe("claim payloads", () => {
 
     test("lists field errors returned by the API", async ({ page }) => {
       await page.route(VALIDATE_URL, (route) =>
-        route.fulfill({ json: { Valid: false, Errors: { incidentDate: ["darf nicht in der Zukunft liegen"] } } })
+        route.fulfill({ json: { Valid: false, Errors: { incidentDate: ["darf nicht in der Zukunft liegen"] } } }),
       )
       await tester(page).getByRole("button", { name: "Beispiel übernehmen" }).click()
       await tester(page).getByRole("button", { name: "Payload validieren" }).click()

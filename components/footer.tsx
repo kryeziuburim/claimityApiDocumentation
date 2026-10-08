@@ -33,9 +33,7 @@ export function Footer() {
             </div>
 
             {/* Description */}
-            <p className="text-sm text-gray-300 leading-relaxed max-w-sm">
-              {L.companyBlurb}
-            </p>
+            <p className="text-sm text-gray-300 leading-relaxed max-w-sm">{L.companyBlurb}</p>
 
             {/* Social Media */}
             <div className="flex gap-4">
@@ -98,10 +96,7 @@ export function Footer() {
             <ul className="space-y-3">
               <li className="flex items-center gap-2 text-sm text-gray-300">
                 <Mail className="h-4 w-4 flex-shrink-0" />
-                <a
-                  href={`mailto:${companyContact.email}`}
-                  className="hover:text-white transition-colors"
-                >
+                <a href={`mailto:${companyContact.email}`} className="hover:text-white transition-colors">
                   {companyContact.email}
                 </a>
               </li>
@@ -129,7 +124,9 @@ export function Footer() {
 
         {/* Bottom Bar - Copyright & Legal Links */}
         <div className="pt-8 border-t border-gray-700 flex flex-col md:flex-row justify-between items-center gap-4">
-          <p className="text-sm text-gray-300">© 2026 {L.companyName}. {L.rights}</p>
+          <p className="text-sm text-gray-300">
+            © 2026 {L.companyName}. {L.rights}
+          </p>
           <div className="flex flex-wrap gap-6 md:flex-nowrap justify-center md:justify-start w-full md:w-auto">
             <Link href={imprintHref} className="text-sm text-gray-300 hover:text-white transition-colors">
               {L.imprint}
@@ -137,7 +134,10 @@ export function Footer() {
             <Link href={privacyHref} className="text-sm text-gray-300 hover:text-white transition-colors">
               {L.privacy}
             </Link>
-            <Link href={termsHref} className="text-sm text-gray-300 hover:text-white transition-colors w-full text-center md:w-auto md:text-left">
+            <Link
+              href={termsHref}
+              className="text-sm text-gray-300 hover:text-white transition-colors w-full text-center md:w-auto md:text-left"
+            >
               {L.terms}
             </Link>
           </div>

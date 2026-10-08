@@ -40,7 +40,7 @@ export function scrollToAnchor(id: string, { settleMs = 2500 }: { settleMs?: num
     cleanups.push(
       () => observer.disconnect(),
       () => USER_SCROLL_EVENTS.forEach((type) => window.removeEventListener(type, cancel)),
-      () => window.clearTimeout(timeout)
+      () => window.clearTimeout(timeout),
     )
   }
 

@@ -20,7 +20,7 @@ export function TabButton({
       onClick={onClick}
       className={cn(
         "rounded-md border border-border/60 px-3 py-1.5 text-[11px] font-semibold transition sm:px-4 sm:text-xs",
-        active ? "text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"
+        active ? "text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground",
       )}
       style={active ? { backgroundColor: accentColor, borderColor: accentColor } : undefined}
     >
@@ -65,7 +65,15 @@ export function HeaderList({ rows }: { rows: HeaderRow[] }) {
   )
 }
 
-export function CodeBlock({ title, children, accentColor }: { title: string; children: string | null; accentColor: string }) {
+export function CodeBlock({
+  title,
+  children,
+  accentColor,
+}: {
+  title: string
+  children: string | null
+  accentColor: string
+}) {
   if (!children) return null
 
   return (
