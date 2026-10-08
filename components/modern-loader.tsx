@@ -46,7 +46,8 @@ export default function ModernLoader({ message = "Laden …", className, variant
             src={isDark ? "/logo_white.png" : "/logo.png"}
             alt="Claimity AG"
             width={142}
-            height={46}
+            // The two logo files have different aspect ratios (480x166 white, 480x153 colored).
+            height={isDark ? 49 : 45}
             priority
             className="mx-auto mb-5"
           />
