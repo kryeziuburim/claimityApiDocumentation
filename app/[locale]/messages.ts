@@ -2,7 +2,7 @@ import type { Locale } from "@/lib/i18n"
 
 const de = {
   meta: {
-    title: "Claimity – Hilfe-Center",
+    title: "Hilfe-Center",
     description:
       "Hilfe-Center der Claimity Plattform. Claimity vermittelt zertifizierte Experten automatisch – für schnellere Bearbeitung, weniger Aufwand und volle Transparenz.",
     socialDescription: "Hilfe-Center der Claimity Plattform.",
@@ -51,7 +51,7 @@ export const homeMessages: Record<Locale, typeof de> = {
   de,
   en: {
     meta: {
-      title: "Claimity – Help Center",
+      title: "Help Center",
       description:
         "Claimity Platform Help Center. Claimity automatically connects certified experts – for faster processing, less effort, and full transparency.",
       socialDescription: "Claimity Platform Help Center.",
@@ -93,7 +93,7 @@ export const homeMessages: Record<Locale, typeof de> = {
   },
   fr: {
     meta: {
-      title: "Claimity – Centre d'aide",
+      title: "Centre d'aide",
       description:
         "Centre d'aide de la plateforme Claimity. Claimity connecte automatiquement des experts certifiés – pour un traitement plus rapide, moins d'efforts et une transparence totale.",
       socialDescription: "Centre d'aide de la plateforme Claimity.",
@@ -139,7 +139,7 @@ export const homeMessages: Record<Locale, typeof de> = {
   },
   it: {
     meta: {
-      title: "Claimity – Centro assistenza",
+      title: "Centro assistenza",
       description:
         "Centro assistenza della piattaforma Claimity. Claimity assegna automaticamente periti certificati – per un'elaborazione più rapida, meno oneri e piena trasparenza.",
       socialDescription: "Centro assistenza della piattaforma Claimity.",

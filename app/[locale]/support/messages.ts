@@ -2,7 +2,7 @@ import type { Locale } from "@/lib/i18n"
 
 const de = {
   meta: {
-    title: "Claimity – Support",
+    title: "Support",
     description: "Support, Hilfe und Kontakt rund um die Claimity Plattform.",
   },
   badge: "Claimity Support",
@@ -57,7 +57,7 @@ export const supportMessages: Record<Locale, typeof de> = {
   de,
   en: {
     meta: {
-      title: "Claimity – Support",
+      title: "Support",
       description: "Support, help, and contact for the Claimity platform.",
     },
     badge: "Claimity Support",
@@ -108,7 +108,7 @@ export const supportMessages: Record<Locale, typeof de> = {
   },
   fr: {
     meta: {
-      title: "Claimity – Support",
+      title: "Support",
       description: "Support, aide et contact pour la plateforme Claimity.",
     },
     badge: "Support Claimity",
@@ -160,7 +160,7 @@ export const supportMessages: Record<Locale, typeof de> = {
   },
   it: {
     meta: {
-      title: "Claimity – Supporto",
+      title: "Supporto",
       description: "Supporto, aiuto e contatti per la piattaforma Claimity.",
     },
     badge: "Supporto Claimity",

@@ -1,27 +1,43 @@
 import type { Metadata } from "next"
 
-import { pageAlternates, type Locale } from "@/lib/i18n"
+import { locales, pageAlternates, type Locale } from "@/lib/i18n"
+import { ogLocale, SITE_NAME, type PagePath } from "@/lib/site"
 
 type PageMetadataInput = {
   locale: Locale
   /** Path relative to the locale root, with trailing slash ("" for the locale home, "api/", ...). */
-  path: string
-  title?: string
+  path: PagePath
+  /** Page name without the brand, e.g. "API-Dokumentation"; rendered as "API-Dokumentation | Claimity". */
+  title: string
   description?: string
   /** Shorter description for Open Graph / Twitter; defaults to `description`. */
   socialDescription?: string
 }
 
-export function pageMetadata({ locale, path, title, description, socialDescription }: PageMetadataInput): Metadata {
-  const metadata: Metadata = { alternates: pageAlternates(locale, path) }
-  if (!title) return metadata
+/** Social preview image for a page (generated at build time by app/[locale]/og/[page]/route.tsx). */
+export function ogImagePath(locale: Locale, path: PagePath): string {
+  return `/${locale}/og/${path === "" ? "home" : path.replace(/\/$/, "")}.png`
+}
 
+export function pageMetadata({ locale, path, title, description, socialDescription }: PageMetadataInput): Metadata {
+  const fullTitle = `${title} | ${SITE_NAME}`
   const social = socialDescription ?? description
+  const image = { url: ogImagePath(locale, path), width: 1200, height: 630, alt: fullTitle }
+
   return {
-    ...metadata,
-    title,
+    title: { absolute: fullTitle },
     description,
-    openGraph: { title, description: social, url: `/${locale}/${path}` },
-    twitter: { card: "summary_large_image", title, description: social },
+    alternates: pageAlternates(locale, path),
+    openGraph: {
+      type: "website",
+      siteName: SITE_NAME,
+      title: fullTitle,
+      description: social,
+      url: `/${locale}/${path}`,
+      locale: ogLocale[locale],
+      alternateLocale: locales.filter((l) => l !== locale).map((l) => ogLocale[l]),
+      images: [image],
+    },
+    twitter: { card: "summary_large_image", title: fullTitle, description: social, images: [image.url] },
   }
 }

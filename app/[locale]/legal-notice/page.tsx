@@ -10,7 +10,13 @@ type Props = { params: Promise<{ locale: Locale }> }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params
-  return pageMetadata({ locale, path: "legal-notice/" })
+  const t = legalNoticeMessages[locale]
+  return pageMetadata({
+    locale,
+    path: "legal-notice/",
+    title: t.title,
+    description: `${t.title} – Claimity AG, Wisentalstrasse 7a, 8185 Winkel`,
+  })
 }
 
 export default async function LegalNotice({ params }: Props) {

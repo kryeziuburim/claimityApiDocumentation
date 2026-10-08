@@ -5,12 +5,15 @@ import { Suspense } from "react"
 import "./globals.css"
 import { HtmlLangSetter } from "@/components/html-lang-setter"
 import { Toaster } from "@/components/ui/toaster"
+import { SITE_NAME, SITE_URL } from "@/lib/site"
 
 const _geist = Geist({ subsets: ["latin"] })
 const _geistMono = Geist_Mono({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
-  title: "Claimity – Schadenmanagement. Digital. Effizient.",
+  // Makes canonical, hreflang, og:url and og:image absolute.
+  metadataBase: new URL(SITE_URL),
+  title: SITE_NAME,
   description:
     "Claimity vermittelt zertifizierte Experten automatisch – für schnellere Bearbeitung, weniger Aufwand und volle Transparenz.",
 }

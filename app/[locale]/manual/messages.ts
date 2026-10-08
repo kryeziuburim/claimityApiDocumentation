@@ -2,7 +2,7 @@ import type { Locale } from "@/lib/i18n"
 
 const de = {
   meta: {
-    title: "Claimity - Bedienungsanleitung",
+    title: "Bedienungsanleitung",
     description: "Anleitungen und Hilfen zur Nutzung der Claimity Plattform.",
   },
   badge: "Claimity Bedienungsanleitung",
@@ -30,7 +30,7 @@ export const manualMessages: Record<Locale, typeof de> = {
   de,
   en: {
     meta: {
-      title: "Claimity - User Manual",
+      title: "User Manual",
       description: "Instructions and help for using the Claimity platform.",
     },
     badge: "Claimity User Manual",
@@ -55,7 +55,7 @@ export const manualMessages: Record<Locale, typeof de> = {
   },
   fr: {
     meta: {
-      title: "Claimity - Manuel d'utilisation",
+      title: "Manuel d'utilisation",
       description: "Instructions et aide pour l'utilisation de la plateforme Claimity.",
     },
     badge: "Manuel d'utilisation Claimity",
@@ -82,7 +82,7 @@ export const manualMessages: Record<Locale, typeof de> = {
   },
   it: {
     meta: {
-      title: "Claimity - Manuale d'uso",
+      title: "Manuale d'uso",
       description: "Istruzioni e aiuti per l'utilizzo della piattaforma Claimity.",
     },
     badge: "Manuale d'uso Claimity",

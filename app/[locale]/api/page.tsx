@@ -4,31 +4,13 @@ import { type Locale } from "@/lib/i18n"
 import { pageMetadata } from "@/lib/metadata"
 
 import ApiPageClient from "./_components/ApiPageClient"
+import { apiPageMessages } from "./messages"
 
 type Props = { params: Promise<{ locale: Locale }> }
 
-const meta: Record<Locale, { title: string; description: string }> = {
-  de: {
-    title: "Claimity - API Dokumentation",
-    description: "Anleitung und Dokumentation zur Nutzung der Claimity API.",
-  },
-  en: {
-    title: "Claimity - API Documentation",
-    description: "Instructions and documentation for using the Claimity API.",
-  },
-  fr: {
-    title: "Claimity - Documentation API",
-    description: "Instructions et documentation pour l'utilisation de l'API Claimity.",
-  },
-  it: {
-    title: "Claimity - Documentazione API",
-    description: "Istruzioni e documentazione per l'utilizzo dell'API Claimity.",
-  },
-}
-
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params
-  return pageMetadata({ locale, path: "api/", ...meta[locale] })
+  return pageMetadata({ locale, path: "api/", ...apiPageMessages[locale].meta })
 }
 
 export default async function Page({ params }: Props) {
