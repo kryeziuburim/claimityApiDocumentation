@@ -210,6 +210,20 @@ export function SchemaExplorer({
                   </>
                 )}
               </div>
+              {descNode ? (
+                <p
+                  className={cn(
+                    "mt-1 whitespace-normal font-sans text-[11px] leading-snug text-muted-foreground sm:text-xs",
+                    canExpand && "pl-6"
+                  )}
+                  // Links inside the description must not toggle the expandable row.
+                  onClick={(event) => {
+                    if ((event.target as HTMLElement).closest("a")) event.stopPropagation()
+                  }}
+                >
+                  {descNode}
+                </p>
+              ) : null}
             </td>
             <td className="pr-2.5 py-1.5 font-mono text-[11px] align-top sm:pr-3 sm:py-2 sm:text-xs">{type}</td>
             <td className="pr-2.5 py-1.5 align-top text-center sm:pr-3 sm:py-2">{isReq ? "✓" : ""}</td>
