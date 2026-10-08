@@ -2,13 +2,17 @@
   "name": "claimityDocumentation",
   "version": "0.1.0",
   "private": true,
+  "engines": {
+    "node": ">=22"
+  },
   "scripts": {
     "build": "next build",
     "dev": "next dev",
     "lint": "eslint .",
     "start": "next start",
     "typecheck": "tsc --noEmit",
-    "test": "vitest run"
+    "test": "vitest run",
+    "test:e2e": "playwright test"
   },
   "dependencies": {
     "@emailjs/browser": "^4.4.1",
@@ -36,6 +40,8 @@
   },
   "devDependencies": {
     "@apidevtools/swagger-parser": "^13.1.0",
+    "@axe-core/playwright": "^4.13.0",
+    "@playwright/test": "^1.64.0",
     "@tailwindcss/postcss": "^4.1.9",
     "@types/node": "^22",
     "@types/react": "^19",
