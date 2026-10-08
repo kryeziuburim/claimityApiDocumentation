@@ -4,6 +4,7 @@ import { Geist, Geist_Mono } from "next/font/google"
 import { Suspense } from "react"
 import "./globals.css"
 import { HtmlLangSetter } from "@/components/html-lang-setter"
+import { HydrationMarker } from "@/components/hydration-marker"
 import { Toaster } from "@/components/ui/toaster"
 import { SITE_NAME, SITE_URL } from "@/lib/site"
 
@@ -30,6 +31,7 @@ export default function RootLayout({
       </head>
       <body className={`font-sans antialiased overflow-x-hidden`}>
         <HtmlLangSetter />
+        <HydrationMarker />
         <Suspense fallback={null}>{children}</Suspense>
         <Toaster />
       </body>

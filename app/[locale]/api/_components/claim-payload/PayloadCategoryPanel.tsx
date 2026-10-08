@@ -131,7 +131,7 @@ export function PayloadCategoryPanel({ payload, state, t, copiedKey, onCopy }: P
                     {t.exampleJson}
                   </span>
                 </AccordionTrigger>
-                <AccordionContent className="px-1">
+                <AccordionContent forceMount className="px-1">
                   {exampleJson ? (
                     <div className="relative">
                       <ScrollArea className="h-[360px] max-w-full rounded-2xl border border-border/60">
@@ -173,7 +173,7 @@ export function PayloadCategoryPanel({ payload, state, t, copiedKey, onCopy }: P
                     {t.formatRequirements}
                   </span>
                 </AccordionTrigger>
-                <AccordionContent className="space-y-3 px-1">
+                <AccordionContent forceMount className="space-y-3 px-1">
                   {formatHints.length ? (
                     formatHints.map((hint) => (
                       <div
@@ -197,7 +197,7 @@ export function PayloadCategoryPanel({ payload, state, t, copiedKey, onCopy }: P
                     {t.rulesAndDependencies}
                   </span>
                 </AccordionTrigger>
-                <AccordionContent className="space-y-6 px-1">
+                <AccordionContent forceMount className="space-y-6 px-1">
                   {/* Not derived from the schema: JSON Schema cannot express rules relative to the current date. */}
                   <div className="space-y-3">
                     <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
@@ -263,7 +263,7 @@ export function PayloadCategoryPanel({ payload, state, t, copiedKey, onCopy }: P
                     {t.schemaExplorer}
                   </span>
                 </AccordionTrigger>
-                <AccordionContent className="px-1">
+                <AccordionContent forceMount className="px-1">
                   <div className="overflow-x-auto rounded-xl border border-border/40">
                     <SchemaExplorer
                       spec={schema}

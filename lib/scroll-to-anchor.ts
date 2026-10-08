@@ -3,7 +3,7 @@ const USER_SCROLL_EVENTS = ["wheel", "touchstart", "keydown", "mousedown"] as co
 /**
  * Scrolls to the element with the given id and keeps it aligned while the page settles.
  *
- * - Waits for the element if it isn't mounted yet (e.g. the content of a tab that was just selected).
+ * - Waits for the element if it isn't mounted or visible yet (e.g. the content of a tab that was just selected).
  * - Late layout changes above the target (images, web fonts, the sidebar padding that appears once the
  *   page is scrolled past the hero) would otherwise push it out of view; while the document resizes the
  *   target is re-aligned, for at most `settleMs` and only until the user scrolls themselves.
@@ -48,7 +48,8 @@ export function scrollToAnchor(id: string, { settleMs = 2500 }: { settleMs?: num
   const find = () => {
     if (cancelled) return
     const el = document.getElementById(id)
-    if (el) start(el)
+    // Wait until it is rendered visibly: content of inactive tabs exists in the DOM but is hidden.
+    if (el && el.getClientRects().length > 0) start(el)
     else if (++attempts < 60) frame = requestAnimationFrame(find)
   }
   find()

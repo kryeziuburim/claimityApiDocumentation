@@ -114,7 +114,13 @@ export function ClaimPayloadSection({
         </div>
 
         {claimPayloads.map((payload) => (
-          <TabsContent key={payload.key} value={payload.key} className="space-y-6 min-w-0">
+          // forceMount: every category is in the exported HTML (crawlable); inactive ones are hidden.
+          <TabsContent
+            key={payload.key}
+            value={payload.key}
+            forceMount
+            className="space-y-6 min-w-0 data-[state=inactive]:hidden"
+          >
             <PayloadCategoryPanel
               payload={payload}
               state={schemas[payload.key]}

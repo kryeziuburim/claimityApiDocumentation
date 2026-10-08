@@ -6,8 +6,8 @@ import { useLocale } from "@/hooks/use-locale"
 import { htmlLang } from "@/lib/i18n"
 
 /**
- * The root layout sits above the [locale] segment and renders <html lang="de-CH">,
- * so the correct language is applied on the client.
+ * Keeps <html lang> in sync on client-side navigation between locales (the <html> element is not
+ * re-rendered). The exported HTML already has the right value (scripts/set-html-lang.ts).
  */
 export function HtmlLangSetter() {
   const locale = useLocale()
