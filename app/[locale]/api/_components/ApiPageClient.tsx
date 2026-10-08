@@ -3,6 +3,7 @@
 import type React from "react"
 import { useState, useEffect, useCallback, useMemo, useRef, useLayoutEffect } from "react"
 import { Menu, ChevronRight, FileText, BookOpen, Bug, History, Lock, Code, Users, Shield, FileJson } from "lucide-react"
+import { METHOD_COLORS } from "@/components/api/method-colors"
 import { scrollToAnchor } from "@/lib/scroll-to-anchor"
 import { cn } from "@/lib/utils"
 import { Footer } from "@/components/footer"
@@ -490,13 +491,6 @@ export default function ApiPageClient({ locale }: { locale: Locale }) {
                     <div id={`subnav-${item.id}`} className="ml-3 mt-1 space-y-1 border-l border-border pl-2">
                       {item.children.map((child) => (
                         (() => {
-                          const METHOD_COLORS: Record<NonNullable<typeof child.method>, string> = {
-                            GET: "#61AFFE",
-                            POST: "#49CC90",
-                            PUT: "#FCA130",
-                            DELETE: "#F93E3E",
-                          }
-
                           const methodLabel = child.method === "DELETE" ? "DEL" : child.method
                           const isChildActive = activeId === child.id
 

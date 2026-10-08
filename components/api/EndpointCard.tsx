@@ -5,14 +5,7 @@ import { ChevronDown } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { EndpointDetails } from "@/components/api/EndpointDetails"
 import type { HttpMethod } from "@/components/api/openapi-utils"
-
-const METHOD_COLORS: Partial<Record<HttpMethod, string>> = {
-  GET: "#61AFFE",
-  POST: "#49CC90",
-  PUT: "#FCA130",
-  PATCH: "#FCA130",
-  DELETE: "#F93E3E",
-}
+import { METHOD_COLORS } from "@/components/api/method-colors"
 
 type EndpointCardProps = {
   method: HttpMethod
@@ -38,7 +31,7 @@ export function EndpointCard({
   note,
 }: EndpointCardProps) {
   const [open, setOpen] = useState<boolean>(defaultOpen)
-  const methodColor = useMemo(() => METHOD_COLORS[method] ?? "#475569", [method])
+  const methodColor = useMemo(() => (METHOD_COLORS as Partial<Record<HttpMethod, string>>)[method] ?? "#475569", [method])
   const hasDetails = enableDetails
 
   const headerContent = (

@@ -1,13 +1,8 @@
 import type React from "react"
 
-const METHOD_COLORS = {
-  GET: "#61AFFE",
-  POST: "#49CC90",
-  PUT: "#FCA130",
-  DELETE: "#F93E3E",
-} as const
+import { METHOD_COLORS, type ColoredMethod } from "./method-colors"
 
-export function MethodBadge({ method }: { method: keyof typeof METHOD_COLORS }) {
+export function MethodBadge({ method }: { method: ColoredMethod }) {
   return (
     <span
       className="inline-flex h-7 w-14 items-center justify-center rounded-md font-mono text-[11px] font-semibold text-white sm:w-20 sm:text-xs"
