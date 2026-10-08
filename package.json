@@ -2,12 +2,21 @@
   "name": "claimityDocumentation",
   "version": "0.1.0",
   "private": true,
+  "engines": {
+    "node": ">=22"
+  },
   "scripts": {
     "build": "next build",
+    "postbuild": "node --experimental-strip-types --no-warnings scripts/set-html-lang.ts",
     "dev": "next dev",
     "lint": "eslint .",
     "start": "next start",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:e2e": "playwright test",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "prepare": "husky"
   },
   "dependencies": {
     "@emailjs/browser": "^4.4.1",
@@ -25,24 +34,41 @@
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "lucide-react": "^0.454.0",
-    "next": "16.0.0",
-    "react": "19.2.0",
+    "next": "16.4.0",
+    "react": "19.2.8",
     "react-country-flag": "^3.1.0",
-    "react-dom": "19.2.0",
+    "react-dom": "19.2.8",
     "react-hook-form": "^7.60.0",
     "tailwind-merge": "^2.5.5",
     "zod": "3.25.76"
   },
   "devDependencies": {
+    "@apidevtools/swagger-parser": "^13.1.0",
+    "@axe-core/playwright": "^4.13.0",
+    "@playwright/test": "^1.64.0",
     "@tailwindcss/postcss": "^4.1.9",
     "@types/node": "^22",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "ajv": "^8.20.0",
+    "ajv-formats": "^3.0.1",
     "eslint": "^9.39.5",
-    "eslint-config-next": "^16.0.0",
+    "eslint-config-next": "16.4.0",
+    "husky": "9.1.7",
+    "lint-staged": "17.6.0",
+    "openapi-types": "^12.1.3",
     "postcss": "^8.5",
+    "prettier": "3.9.9",
     "tailwindcss": "^4.1.9",
     "tw-animate-css": "1.3.3",
-    "typescript": "^5"
+    "typescript": "^5",
+    "vitest": "^5.0.3"
+  },
+  "lint-staged": {
+    "*.{ts,tsx,mjs,js}": [
+      "prettier --write",
+      "eslint --fix"
+    ],
+    "*.{json,md,css,yml,yaml}": "prettier --write"
   }
 }

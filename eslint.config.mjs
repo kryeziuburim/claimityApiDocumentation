@@ -9,10 +9,11 @@ export default defineConfig([
     rules: {
       // Quotes in copy text render fine in React; escaping them hurts readability of the translations.
       "react/no-unescaped-entities": "off",
-      // TODO: back to "error" once the OpenAPI types are generated and the any-casts are gone.
-      "@typescript-eslint/no-explicit-any": "warn",
-      // TODO: back to "error" after the locale merge; the derived-state syncs in ApiPageClient/EndpointDetails need a refactor.
-      "react-hooks/set-state-in-effect": "warn",
+      // Leading underscore marks intentionally unused values (e.g. next/font loaders kept for their side effect).
+      "@typescript-eslint/no-unused-vars": [
+        "warn",
+        { argsIgnorePattern: "^_", varsIgnorePattern: "^_", caughtErrorsIgnorePattern: "^_" },
+      ],
     },
   },
   globalIgnores([".next/**", "out/**", ".kilo/**", "next-env.d.ts", "components/ui/**"]),

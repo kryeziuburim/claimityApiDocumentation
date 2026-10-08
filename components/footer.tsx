@@ -2,108 +2,22 @@
 
 import Link from "next/link"
 import Image from "next/image"
-import { usePathname } from "next/navigation"
 import { Mail, Phone, MapPin } from "lucide-react"
 
-export function Footer() {
-  const pathname = usePathname() || "/"
-  const lang = pathname.startsWith("/en") ? "en" : pathname.startsWith("/fr") ? "fr" : "de"
-  const base = `/${lang}`
+import { companyContact, footerMessages, websiteLinks } from "@/components/footer.messages"
+import { useLocale } from "@/hooks/use-locale"
 
-  const L =
-    lang === "de"
-      ? {
-          support: "Support",
-          manual: "Bedienungsanleitung",
-          api: "API Integration",
-          website: "Website",
-          booking: "Termin buchen",
-          help: "Hilfe",
-          company: "Unternehmen",
-          contactSection: "Kontakt",
-          contact: "Kontakt",
-          emailLabel: "E‑Mail:",
-          phoneLabel: "Telefon:",
-          rights: "Alle Rechte vorbehalten.",
-          privacy: "Datenschutzerklärung",
-          terms: "Nutzungsbedingungen",
-          imprint: "Impressum",
-          companyName: "Claimity AG",
-          street: "Wisentalstrasse 7a",
-          city: "8185 Winkel",
-          country: "Schweiz",
-          companyBlurb:
-            "Die digitale Plattform für effizientes Schadenmanagement. Automatisiert, transparent, sicher.",
-          emailValue: "info@claimity.ch",
-          phoneValue: "+41 78 344 77 36",
-          phoneHref: "tel:+41783447736",
-        }
-      : lang === "en"
-      ? {
-          support: "Support",
-          manual: "Manual",
-          api: "API-Integration",
-          website: "Website",
-          booking: "Book a Meeting",
-          help: "Help",
-          company: "Company",
-          contactSection: "Contact",
-          contact: "Contact",
-          emailLabel: "Email:",
-          phoneLabel: "Phone:",
-          rights: "All rights reserved.",
-          privacy: "Privacy Policy",
-          terms: "Terms of Service",
-          imprint: "Legal Notice",
-          companyName: "Claimity AG",
-          street: "Wisentalstrasse 7a",
-          city: "8185 Winkel",
-          country: "Switzerland",
-          companyBlurb:
-            "The digital platform for efficient claims management. Automated, transparent, secure.",
-          emailValue: "info@claimity.ch",
-          phoneValue: "+41 78 344 77 36",
-          phoneHref: "tel:+41783447736",
-        }
-      : {
-          support: "Assistance",
-          manual: "Mode d'emploi",
-          api: "Intégration API",
-          website: "Site Web",
-          booking: "Prendre rendez-vous",
-          help: "Aide",
-          company: "Entreprise",
-          contactSection: "Contact",
-          contact: "Formulaire de contact",
-          emailLabel: "E‑mail:",
-          phoneLabel: "Téléphone:",
-          rights: "Tous droits réservés.",
-          privacy: "Politique de confidentialité",
-          terms: "Conditions d'utilisation",
-          imprint: "Mentions légales",
-          companyName: "Claimity SA",
-          street: "Wisentalstrasse 7a",
-          city: "8185 Winkel",
-          country: "Suisse",
-          companyBlurb:
-            "La plateforme numérique pour une gestion efficace des sinistres. Automatisée, transparente, sécurisée.",
-          emailValue: "info@claimity.ch",
-          phoneValue: "+41 78 344 77 36",
-          phoneHref: "tel:+41783447736",
-        }
+export function Footer() {
+  const locale = useLocale()
+  const L = footerMessages[locale]
+  const base = `/${locale}`
 
   const homeHref = `${base}/`
   const imprintHref = `${base}/legal-notice`
   const supportHref = `${base}/support`
   const manualHref = `${base}/manual`
   const apiHref = `${base}/api`
-
-  // External website links per language
-  const websiteRoot = `https://www.claimity.ch/${lang}/`
-  const websiteHref = websiteRoot
-  const bookingHref = `${websiteRoot}#book`
-  const privacyHref = `${websiteRoot}privacy`
-  const termsHref = `${websiteRoot}terms`
+  const { website: websiteHref, booking: bookingHref, privacy: privacyHref, terms: termsHref } = websiteLinks(locale)
 
   return (
     <footer className="bg-[#1a1f2e] border-t border-gray-800 py-16">
@@ -114,14 +28,19 @@ export function Footer() {
             {/* Logo */}
             <div className="flex items-center gap-3">
               <Link href={homeHref} aria-label="Claimity home" className="flex items-center">
-                <Image src="/logo_white.png" alt="Claimity Logo" width={120} height={28} priority />
+                <Image
+                  src="/logo_white.png"
+                  alt="Claimity Logo"
+                  width={120}
+                  height={41}
+                  priority
+                  className="h-[41px] w-[120px] object-contain"
+                />
               </Link>
             </div>
 
             {/* Description */}
-            <p className="text-sm text-gray-300 leading-relaxed max-w-sm">
-              {L.companyBlurb}
-            </p>
+            <p className="text-sm text-gray-300 leading-relaxed max-w-sm">{L.companyBlurb}</p>
 
             {/* Social Media */}
             <div className="flex gap-4">
@@ -184,17 +103,14 @@ export function Footer() {
             <ul className="space-y-3">
               <li className="flex items-center gap-2 text-sm text-gray-300">
                 <Mail className="h-4 w-4 flex-shrink-0" />
-                <a
-                  href={`mailto:${L.emailValue}`}
-                  className="hover:text-white transition-colors"
-                >
-                  {L.emailValue}
+                <a href={`mailto:${companyContact.email}`} className="hover:text-white transition-colors">
+                  {companyContact.email}
                 </a>
               </li>
               <li className="flex items-center gap-2 text-sm text-gray-300">
                 <Phone className="h-4 w-4 flex-shrink-0" />
-                <a href={L.phoneHref} className="hover:text-white transition-colors">
-                  {L.phoneValue}
+                <a href={companyContact.phoneHref} className="hover:text-white transition-colors">
+                  {companyContact.phone}
                 </a>
               </li>
               <li className="flex items-start gap-2 text-sm text-gray-300">
@@ -202,9 +118,9 @@ export function Footer() {
                 <span>
                   {L.companyName}
                   <br />
-                  {L.street}
+                  {companyContact.street}
                   <br />
-                  {L.city}
+                  {companyContact.city}
                   <br />
                   {L.country}
                 </span>
@@ -215,7 +131,9 @@ export function Footer() {
 
         {/* Bottom Bar - Copyright & Legal Links */}
         <div className="pt-8 border-t border-gray-700 flex flex-col md:flex-row justify-between items-center gap-4">
-          <p className="text-sm text-gray-300">© 2026 {L.companyName}. {L.rights}</p>
+          <p className="text-sm text-gray-300">
+            © 2026 {L.companyName}. {L.rights}
+          </p>
           <div className="flex flex-wrap gap-6 md:flex-nowrap justify-center md:justify-start w-full md:w-auto">
             <Link href={imprintHref} className="text-sm text-gray-300 hover:text-white transition-colors">
               {L.imprint}
@@ -223,7 +141,10 @@ export function Footer() {
             <Link href={privacyHref} className="text-sm text-gray-300 hover:text-white transition-colors">
               {L.privacy}
             </Link>
-            <Link href={termsHref} className="text-sm text-gray-300 hover:text-white transition-colors w-full text-center md:w-auto md:text-left">
+            <Link
+              href={termsHref}
+              className="text-sm text-gray-300 hover:text-white transition-colors w-full text-center md:w-auto md:text-left"
+            >
               {L.terms}
             </Link>
           </div>

@@ -1,22 +1,33 @@
 "use client"
 
 import React, { useMemo, useState } from "react"
-import { usePathname } from "next/navigation"
+import { useLocale } from "@/hooks/use-locale"
 import { ChevronRight } from "lucide-react"
+import type { Locale } from "@/lib/i18n"
 import { cn } from "@/lib/utils"
-import { refName, resolveRef, schemaTypeLabel, safeString } from "./openapi-utils"
+import {
+  refName,
+  resolveRef,
+  schemaTypeLabel,
+  safeString,
+  type ResolvedSchemaNode,
+  type SchemaNode,
+} from "./openapi-utils"
 
-type Lang = "de" | "en" | "fr"
+type Lang = Locale
 
-const i18n: Record<Lang, {
-  noSchema: string
-  type: string
-  noFields: string
-  field: string
-  required: string
-  nullable: string
-  enum: string
-}> = {
+const i18n: Record<
+  Lang,
+  {
+    noSchema: string
+    type: string
+    noFields: string
+    field: string
+    required: string
+    nullable: string
+    enum: string
+  }
+> = {
   de: {
     noSchema: "Kein Schema vorhanden.",
     type: "Typ:",
@@ -44,27 +55,29 @@ const i18n: Record<Lang, {
     nullable: "Nullable",
     enum: "Enum",
   },
+  it: {
+    noSchema: "Nessuno schema disponibile.",
+    type: "Tipo:",
+    noFields: "Nessun altro campo documentato.",
+    field: "Campo",
+    required: "Obbligatorio",
+    nullable: "Nullable",
+    enum: "Enum",
+  },
 }
 
 type SchemaExplorerProps = {
-  spec: any
-  schema: any
+  /** Document root that `$ref`s are resolved against (the OpenAPI spec, or the schema itself). */
+  spec: object
+  schema: SchemaNode
   title?: string
   depth?: number
   maxDepth?: number
   fieldLinks?: Record<string, string>
 }
 
-export function SchemaExplorer({
-  spec,
-  schema,
-  title,
-  depth = 0,
-  maxDepth = 6,
-  fieldLinks,
-}: SchemaExplorerProps) {
-  const pathname = usePathname() || "/"
-  const lang = (pathname.startsWith("/en") ? "en" : pathname.startsWith("/fr") ? "fr" : "de") as Lang
+export function SchemaExplorer({ spec, schema, title, depth = 0, maxDepth = 6, fieldLinks }: SchemaExplorerProps) {
+  const lang = useLocale()
   const t = i18n[lang]
 
   const [expanded, setExpanded] = useState<Record<string, boolean>>({})
@@ -83,31 +96,31 @@ export function SchemaExplorer({
     return (
       <div className="rounded-md border border-border bg-muted/30 p-3">
         <div className="mb-2 text-sm font-medium">{schemaTitle}</div>
-        <div className="text-sm text-muted-foreground">{t.type} {schemaTypeLabel(spec, normalized)}</div>
+        <div className="text-sm text-muted-foreground">
+          {t.type} {schemaTypeLabel(normalized)}
+        </div>
       </div>
     )
   }
-
-  const keys = Object.keys(props)
 
   const isRoot = depth === 0
   const containerClasses = cn(
     "space-y-3",
     isRoot
       ? "rounded-md border border-border bg-muted/30 p-3 sm:rounded-lg sm:p-4"
-      : "rounded-md border border-border/50 bg-muted/15 p-2.5 sm:p-3"
+      : "rounded-md border border-border/50 bg-muted/15 p-2.5 sm:p-3",
   )
   const headerClasses = cn(
     "flex items-center justify-between gap-3",
-    isRoot ? "mb-2 sm:mb-3" : "mb-2 text-[11px] text-muted-foreground sm:text-xs"
+    isRoot ? "mb-2 sm:mb-3" : "mb-2 text-[11px] text-muted-foreground sm:text-xs",
   )
   const bodyWrapperClasses = "overflow-x-auto"
 
   const renderPropertyRows = (
-    currentSchema: any,
+    currentSchema: SchemaNode,
     currentTitle: string,
     currentDepth: number,
-    parentPath: string
+    parentPath: string,
   ): React.ReactNode => {
     const currentProps = currentSchema.properties ?? {}
     const currentRequired: string[] = Array.isArray(currentSchema.required) ? currentSchema.required : []
@@ -115,7 +128,7 @@ export function SchemaExplorer({
 
     return propKeys.map((field) => {
       const fieldSchema = currentProps[field]
-      const type = schemaTypeLabel(spec, fieldSchema)
+      const type = schemaTypeLabel(fieldSchema)
       const isReq = currentRequired.includes(field)
       const nullable = !!fieldSchema?.nullable
       const enumVals = Array.isArray(fieldSchema?.enum) ? fieldSchema.enum : null
@@ -126,13 +139,13 @@ export function SchemaExplorer({
         enumVals && enumVals.length ? (
           <div className="flex justify-start">
             <div className="flex flex-wrap gap-1 text-[11px] font-mono text-muted-foreground">
-              {enumVals.map((value: string, idx: number) => {
+              {enumVals.map((value, idx) => {
                 return (
                   <span
-                    key={`${fieldPath}-enum-${idx}-${value}`}
+                    key={`${fieldPath}-enum-${idx}-${String(value)}`}
                     className="rounded border border-border/60 bg-muted/20 px-2 py-0.5"
                   >
-                    {value}
+                    {String(value)}
                   </span>
                 )
               })}
@@ -158,7 +171,8 @@ export function SchemaExplorer({
           <tr
             className={cn(
               "border-t border-border/60 align-top",
-              canExpand && "cursor-pointer hover:bg-muted/40 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-border"
+              canExpand &&
+                "cursor-pointer hover:bg-muted/40 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-border",
             )}
             onClick={canExpand ? () => toggleRow() : undefined}
             onKeyDown={
@@ -173,7 +187,7 @@ export function SchemaExplorer({
             }
             tabIndex={canExpand ? 0 : undefined}
             aria-expanded={canExpand ? open : undefined}
-           >
+          >
             <td
               className="pr-2.5 py-1.5 font-mono text-[11px] align-top sm:pr-3 sm:py-2 sm:text-xs"
               style={{ paddingLeft: indentLevel * 16 }}
@@ -184,7 +198,7 @@ export function SchemaExplorer({
                     <ChevronRight
                       className={cn(
                         "h-4 w-4 rounded-sm border border-border/40 bg-muted/40 p-0.5 transition-transform",
-                        open && "rotate-90"
+                        open && "rotate-90",
                       )}
                     />
                     {linkHref ? (
@@ -211,6 +225,20 @@ export function SchemaExplorer({
                   </>
                 )}
               </div>
+              {descNode ? (
+                <p
+                  className={cn(
+                    "mt-1 whitespace-normal font-sans text-[11px] leading-snug text-muted-foreground sm:text-xs",
+                    canExpand && "pl-6",
+                  )}
+                  // Links inside the description must not toggle the expandable row.
+                  onClick={(event) => {
+                    if ((event.target as HTMLElement).closest("a")) event.stopPropagation()
+                  }}
+                >
+                  {descNode}
+                </p>
+              ) : null}
             </td>
             <td className="pr-2.5 py-1.5 font-mono text-[11px] align-top sm:pr-3 sm:py-2 sm:text-xs">{type}</td>
             <td className="pr-2.5 py-1.5 align-top text-center sm:pr-3 sm:py-2">{isReq ? "✓" : ""}</td>
@@ -218,21 +246,19 @@ export function SchemaExplorer({
             <td className="pr-2.5 py-1.5 align-top text-left sm:pr-3 sm:py-2">{enumNode}</td>
           </tr>
 
-          {canExpand && open
-            ? renderChildRows(fieldSchema, childTitle(field, fieldSchema), currentDepth + 1, fieldPath)
-            : null}
+          {canExpand && open ? renderChildRows(fieldSchema, field, currentDepth + 1, fieldPath) : null}
         </React.Fragment>
       )
     })
   }
 
   const renderChildRows = (
-    childSchema: any,
+    childSchema: SchemaNode,
     childLabel: string,
     nextDepth: number,
-    parentPath: string
+    parentPath: string,
   ): React.ReactNode => {
-    const expandedSchema = expandChildSchema(childSchema, spec)
+    const expandedSchema = expandChildSchema(childSchema)
     const normalizedChild = normalizeSchemaWithRef(spec, expandedSchema)
     if (!normalizedChild) {
       return (
@@ -248,7 +274,7 @@ export function SchemaExplorer({
       return (
         <tr key={`${childLabel}-${nextDepth}-leaf`} className="border-t border-border/40">
           <td colSpan={6} className="pl-6 py-3 text-xs text-muted-foreground">
-            {childLabel}: {schemaTypeLabel(spec, normalizedChild)}
+            {childLabel}: {schemaTypeLabel(normalizedChild)}
           </td>
         </tr>
       )
@@ -260,8 +286,12 @@ export function SchemaExplorer({
   return (
     <div className={containerClasses}>
       <div className={headerClasses}>
-        <div className={cn(isRoot ? "text-sm font-semibold" : "text-xs font-semibold text-foreground/80")}>{schemaTitle}</div>
-        <div className={cn("text-xs text-muted-foreground", !isRoot && "text-[11px]")}>{t.type} {schemaTypeLabel(spec, normalized)}</div>
+        <div className={cn(isRoot ? "text-sm font-semibold" : "text-xs font-semibold text-foreground/80")}>
+          {schemaTitle}
+        </div>
+        <div className={cn("text-xs text-muted-foreground", !isRoot && "text-[11px]")}>
+          {t.type} {schemaTypeLabel(normalized)}
+        </div>
       </div>
 
       <div className={bodyWrapperClasses}>
@@ -289,23 +319,17 @@ export function SchemaExplorer({
   )
 }
 
-function childTitle(field: string, schema: any) {
-  // if (schema?.$ref) return `${field}: ${refName(schema.$ref)}`
-  // if (schema?.type === "array" && schema?.items?.$ref) return `${field}: array<${refName(schema.items.$ref)}>`
-  return field
-}
-
-function expandChildSchema(schema: any, spec: any) {
+function expandChildSchema(schema: SchemaNode | undefined): SchemaNode | undefined {
   if (!schema) return schema
   if (schema.$ref) return schema
   if (schema.type === "array") return schema.items
   return schema
 }
 
-function normalizeSchemaWithRef(spec: any, schema: any) {
+function normalizeSchemaWithRef(spec: object, schema: SchemaNode | undefined): ResolvedSchemaNode | null {
   if (!schema) return null
   if (schema.$ref) {
-    const resolved = resolveRef(spec, schema.$ref)
+    const resolved = resolveRef(spec, schema.$ref) as SchemaNode | null
     if (!resolved) return null
     return { ...resolved, __refName: refName(schema.$ref) }
   }
@@ -325,7 +349,7 @@ function renderInlineLinks(text: string) {
     parts.push(
       <a key={`${match.index}-${match[2]}`} href={match[2]} className="text-primary underline underline-offset-2">
         {match[1]}
-      </a>
+      </a>,
     )
     lastIndex = linkRegex.lastIndex
   }

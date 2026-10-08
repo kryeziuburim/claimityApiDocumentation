@@ -1,0 +1,13 @@
+# Build output and dependencies
+.next/
+out/
+node_modules/
+package-lock.json
+playwright-report/
+test-results/
+
+# Generated / external sources
+components/ui/
+public/
+next-env.d.ts
+app/[locale]/api/_components/claim-payload/__snapshots__/
