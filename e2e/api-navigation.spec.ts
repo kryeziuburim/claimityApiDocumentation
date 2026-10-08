@@ -52,6 +52,8 @@ test.describe("API page navigation", () => {
 
   test("hash change selects the payload tab", async ({ page }) => {
     await page.goto("/de/api/")
+    // Change the hash only once the page is interactive (Next.js resets it while its router initializes).
+    await waitForClaimSchemas(page)
     await page.evaluate(() => {
       location.hash = "payloads-special"
     })

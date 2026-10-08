@@ -1,19 +1,21 @@
 "use client"
 
-import type React from "react"
-import { useState, useEffect, useCallback, useMemo, useRef, useLayoutEffect } from "react"
-import { Menu, ChevronRight, FileText, BookOpen, Bug, History, Lock, Code, Users, Shield, FileJson } from "lucide-react"
-import { METHOD_COLORS } from "@/components/api/method-colors"
-import { scrollToAnchor } from "@/lib/scroll-to-anchor"
-import { cn } from "@/lib/utils"
-import { Footer } from "@/components/footer"
+import { useCallback, useEffect, useMemo, useRef, useState } from "react"
+import { Menu } from "lucide-react"
+
 import { OpenApiProvider } from "@/components/api/OpenApiProvider"
+import { Footer } from "@/components/footer"
 import { LanguageSwitcher } from "@/components/language-switcher"
-import { locales, type Locale } from "@/lib/i18n"
+import type { Locale } from "@/lib/i18n"
+import { scrollToAnchor } from "@/lib/scroll-to-anchor"
+
+import { ApiSidebar, API_SIDEBAR_ID } from "./api-page/ApiSidebar"
+import { useBodyScrollLock, useDesktopContentOffset, useFooterLift, usePastHero } from "./api-page/layout-hooks"
+import { getApiNavigation, SIDEBAR_CHAPTERS } from "./api-page/navigation"
+import { useScrollSpy } from "./api-page/useScrollSpy"
+import { apiPageClientMessages } from "./ApiPageClient.messages"
 import { ClaimPayloadSection } from "./claim-payload/ClaimPayloadSection"
 import { getClaimPayloads } from "./claim-payload/payloads"
-import { apiPageClientMessages } from "./ApiPageClient.messages"
-import { pickActiveSection } from "./scroll-spy"
 
 // Ausgelagerte Bereichs-Komponenten (je Kapitel)
 import { Section as SectionComponent } from "./Section"
@@ -26,235 +28,36 @@ import { ApiBasicsSection as ApiBasicsSectionComponent } from "./ApiBasicsSectio
 import { ExpertsSection as ExpertsSectionComponent } from "./ExpertsSection"
 import { InsurerSection as InsurerSectionComponent } from "./InsurerSection"
 
-interface NavItem {
-  id: string
-  title: string
-  icon: React.ElementType
-  children?: { id: string; title: string; method?: "GET" | "POST" | "PUT" | "DELETE" }[]
-}
-
-function buildNavigationItems(locale: Locale): NavItem[] {
-  const t = apiPageClientMessages[locale].nav
-  return [
-    { id: "overview", title: t.overview, icon: FileText },
-    { id: "first-steps", title: t.firstSteps, icon: BookOpen },
-    { id: "reporting", title: t.reporting, icon: Bug },
-    { id: "changelog", title: t.changelog, icon: History },
-    {
-      id: "authentication",
-      title: t.authentication,
-      icon: Lock,
-      children: [
-        { id: "auth-flow", title: "Authentication Flow" },
-        { id: "auth-access-token", title: "OAuth 2.0 / Access Token" },
-        { id: "auth-dpop", title: "DPoP / API Requests" },
-      ],
-    },
-    {
-      id: "api-basics",
-      title: t.apiBasics,
-      icon: Code,
-      children: [
-        { id: "basics-request-format", title: t.basicsRequestFormat },
-        { id: "basics-response-format", title: t.basicsResponseFormat },
-        { id: "basics-rate-limiting", title: t.basicsRateLimiting },
-        { id: "basics-idempotency", title: t.basicsIdempotency },
-        { id: "basics-errors", title: t.basicsErrors },
-      ],
-    },
-    {
-      id: "experts",
-      title: t.experts,
-      icon: Users,
-      children: [
-        { id: "experts-cases-list", method: "GET", title: "Cases" },
-        { id: "experts-cases-get", method: "GET", title: "Case" },
-        { id: "experts-cases-comment", method: "PUT", title: "Expert comment" },
-        { id: "experts-cases-amounts", method: "PUT", title: "Case amounts" },
-        { id: "experts-cases-reopen", method: "POST", title: "Reopen case" },
-        { id: "experts-cases-docs-list", method: "GET", title: "Documents" },
-        { id: "experts-cases-docs-get", method: "GET", title: "Document" },
-
-        { id: "experts-reports-draft-create", method: "POST", title: "Report draft" },
-        { id: "experts-reports-draft-update", method: "PUT", title: "Report draft" },
-        { id: "experts-reports-list", method: "GET", title: "Reports" },
-        { id: "experts-reports-submission-get", method: "GET", title: "Report submission" },
-
-        { id: "experts-submission-docs-list", method: "GET", title: "Submission documents" },
-        { id: "experts-submission-docs-add", method: "POST", title: "Submission document" },
-        { id: "experts-submission-docs-delete", method: "DELETE", title: "Submission document" },
-        { id: "experts-submission-submit", method: "POST", title: "Submission" },
-      ],
-    },
-    {
-      id: "insurer",
-      title: t.insurer,
-      icon: Shield,
-      children: [
-        { id: "insurer-claims-list", method: "GET", title: "Claims" },
-        { id: "insurer-claims-create", method: "POST", title: "Claim" },
-        { id: "insurer-claims-validate", method: "POST", title: "Claims validation" },
-        { id: "insurer-claims-get", method: "GET", title: "Claim" },
-
-        { id: "insurer-claim-docs-list", method: "GET", title: "Documents" },
-        { id: "insurer-claim-docs-add", method: "POST", title: "Document" },
-        { id: "insurer-claim-docs-get", method: "GET", title: "Document" },
-
-        { id: "insurer-claim-reports-list", method: "GET", title: "Reports" },
-        { id: "insurer-claim-report-docs-list", method: "GET", title: "Report documents" },
-      ],
-    },
-    {
-      id: "payloads",
-      title: t.payloads,
-      icon: FileJson,
-      children: [
-        ...getClaimPayloads(locale).map((payload) => ({ id: payload.anchorId, title: payload.navTitle })),
-        { id: "claim-payload-validation", title: t.payloadValidation },
-      ],
-    },
-  ]
-}
-
-// Built once per locale so the hooks below get a referentially stable array.
-const NAVIGATION_ITEMS_BY_LOCALE = Object.fromEntries(
-  locales.map((locale) => [locale, buildNavigationItems(locale)])
-) as Record<Locale, NavItem[]>
-
 export default function ApiPageClient({ locale }: { locale: Locale }) {
   const t = apiPageClientMessages[locale]
-  const navigationItems = NAVIGATION_ITEMS_BY_LOCALE[locale]
+  const { items: navigationItems, childToParent } = getApiNavigation(locale)
   const claimPayloads = getClaimPayloads(locale)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
-  // UX: Es soll immer nur genau 1 "Accordion"-Parent gleichzeitig offen sein.
-  const [expandedItem, setExpandedItem] = useState<string | null>(null)
-  const [pastHero, setPastHero] = useState(false)
+  useBodyScrollLock(isMobileMenuOpen)
+
   const heroSentinelRef = useRef<HTMLDivElement | null>(null)
-  const sidebarScrollRef = useRef<HTMLDivElement | null>(null)
   const contentWrapperRef = useRef<HTMLDivElement | null>(null)
-  const bodyOverflowRef = useRef<string>("")
-  const [desktopContentOffsetPx, setDesktopContentOffsetPx] = useState(0)
-  const payloadKeyByAnchor = useMemo(() => {
-    const map: Record<string, string> = {}
-    claimPayloads.forEach((payload) => {
-      map[payload.anchorId] = payload.key
-    })
-    return map
-  }, [claimPayloads])
-  const payloadAnchorByKey = useMemo(() => {
-    const map: Record<string, string> = {}
-    claimPayloads.forEach((payload) => {
-      map[payload.key] = payload.anchorId
-    })
-    return map
-  }, [claimPayloads])
+  const pastHero = usePastHero(heroSentinelRef)
+  const footerLiftPx = useFooterLift()
+  const desktopContentOffsetPx = useDesktopContentOffset(contentWrapperRef)
+
+  const payloadKeyByAnchor = useMemo(
+    () => Object.fromEntries(claimPayloads.map((payload) => [payload.anchorId, payload.key])),
+    [claimPayloads]
+  )
+  const payloadAnchorByKey = useMemo(
+    () => Object.fromEntries(claimPayloads.map((payload) => [payload.key, payload.anchorId])),
+    [claimPayloads]
+  )
   const [activePayloadKey, setActivePayloadKey] = useState<string>(claimPayloads[0]?.key ?? "")
 
-  const [footerLiftPx, setFooterLiftPx] = useState(0)
-
-  useEffect(() => {
-    if (typeof window === "undefined") return
-
-    const sentinel = document.getElementById("footer-sentinel")
-    if (!sentinel) return
-
-    let raf = 0
-
-    const update = () => {
-      raf = 0
-
-      // nur Desktop; auf Mobile ist es off-canvas und meist zu
-      if (window.innerWidth < 1024) {
-        setFooterLiftPx(0)
-        return
-      }
-
-      const vh = window.innerHeight
-      const top = sentinel.getBoundingClientRect().top
-
-      // Sobald der Footer ins Viewport kommt, wird lift > 0
-      const overlap = Math.max(0, vh - top)
-      const maxLift = Math.max(0, vh - 96)
-      const lift = Math.min(overlap, maxLift)
-
-      setFooterLiftPx((prev) => (Math.abs(prev - lift) < 1 ? prev : lift))
-    }
-
-    const onScroll = () => {
-      if (!raf) raf = requestAnimationFrame(update)
-    }
-
-    update()
-    window.addEventListener("scroll", onScroll, { passive: true })
-    window.addEventListener("resize", onScroll)
-
-    return () => {
-      window.removeEventListener("scroll", onScroll)
-      window.removeEventListener("resize", onScroll)
-      if (raf) cancelAnimationFrame(raf)
-    }
-  }, [])
-
-  // Layout-Shift nur dann, wenn die Sidebar (w-64) den Content tatsächlich überlappen würde.
-  // Auf sehr großen Screens bleibt der Content unverändert.
-  useLayoutEffect(() => {
-    const SIDEBAR_WIDTH_PX = 256
-    const GAP_PX = 44
-
-    const update = () => {
-      if (typeof window === "undefined") return
-
-      // Unterhalb lg wird die Sidebar ohnehin per Mobile-Menü genutzt.
-      if (window.innerWidth < 1024) {
-        setDesktopContentOffsetPx(0)
-        return
-      }
-
-      const el = contentWrapperRef.current
-      if (!el) return
-
-      const left = el.getBoundingClientRect().left
-      const required = SIDEBAR_WIDTH_PX + GAP_PX
-      const needed = Math.max(0, required - left)
-
-      setDesktopContentOffsetPx(needed < 1 ? 0 : Math.ceil(needed))
-    }
-
-    update()
-    window.addEventListener("resize", update)
-    return () => window.removeEventListener("resize", update)
-  }, [])
-
-  const toggleExpanded = (id: string) => {
-    setExpandedItem((prev) => (prev === id ? null : id))
-  }
-
-  const childToParent = useMemo(() => {
-    const map: Record<string, string> = {}
-    navigationItems.forEach((i) => {
-      i.children?.forEach((c) => {
-        map[c.id] = i.id
-      })
-    })
-    return map
-  }, [navigationItems])
-
-  // Scroll + Active section highlighting (IntersectionObserver)
-  const [activeId, setActiveId] = useState<string>("overview")
-
-  // Sidebar soll erst ab dem ersten Inhaltsbereich (unterhalb der Hero) einblenden.
-  useEffect(() => {
-    const el = heroSentinelRef.current
-    if (!el) return
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        setPastHero(!entry.isIntersecting)
-      },
-      { root: null, threshold: [0], rootMargin: "-86px 0px 0px 0px" }
-    )
-    observer.observe(el)
-    return () => observer.disconnect()
-  }, [])
+  const [activeId, setActiveId] = useScrollSpy({
+    items: navigationItems,
+    childToParent,
+    payloadAnchorByKey,
+    activePayloadKey,
+    pastHero,
+  })
 
   const handleNavigate = useCallback(
     (id: string) => {
@@ -262,15 +65,15 @@ export default function ApiPageClient({ locale }: { locale: Locale }) {
       if (payloadKey) {
         setActivePayloadKey((prev) => (prev === payloadKey ? prev : payloadKey))
       }
-      if (typeof window !== "undefined") {
-        try { history.pushState(null, "", `#${id}`) } catch {}
-      }
+      try {
+        history.pushState(null, "", `#${id}`)
+      } catch {}
       // Waits for payload tabs that are only mounted after the tab switch above.
       scrollToAnchor(id)
       setActiveId(id)
       setIsMobileMenuOpen(false)
     },
-    [payloadKeyByAnchor]
+    [payloadKeyByAnchor, setActiveId]
   )
 
   // Navigation and tab changes set activeId and activePayloadKey together, so the two never need to be
@@ -283,141 +86,18 @@ export default function ApiPageClient({ locale }: { locale: Locale }) {
         setActiveId(anchor)
       }
     },
-    [payloadAnchorByKey]
+    [payloadAnchorByKey, setActiveId]
   )
-
-  // Scroll spy. Re-created when the payload tab changes: only the active tab's section is mounted,
-  // so the newly shown anchor has to be observed.
-  useEffect(() => {
-    const ids = [
-      ...navigationItems.map((i) => i.id),
-      ...navigationItems.flatMap((i) => (i.children ? i.children.map((c) => c.id) : [])),
-    ]
-    // The observer only reports elements whose visibility changed, so keep the full set of visible ones.
-    const visible = new Map<string, Element>()
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        for (const entry of entries) {
-          const id = (entry.target as HTMLElement).id
-          if (entry.isIntersecting) visible.set(id, entry.target)
-          else visible.delete(id)
-        }
-        const next = pickActiveSection(
-          [...visible].map(([id, el]) => ({ id, top: el.getBoundingClientRect().top, isChildAnchor: id in childToParent }))
-        )
-        if (!next) return
-        setActiveId(next === "payloads" ? (payloadAnchorByKey[activePayloadKey] ?? next) : next)
-      },
-      {
-        root: null,
-        // The band starts just above where scrollIntoView puts a section (scroll-mt-24 = 96px), so the
-        // section navigated to is inside it rather than the one below it.
-        rootMargin: "-90px 0px -70% 0px",
-        threshold: [0, 0.25, 0.5, 0.75, 1],
-      }
-    )
-
-    ids.forEach((id) => {
-      const el = document.getElementById(id)
-      if (el) observer.observe(el)
-    })
-
-    return () => {
-      observer.disconnect()
-    }
-  }, [navigationItems, childToParent, payloadAnchorByKey, activePayloadKey])
 
   // Bei initialer URL mit Hash dorthin scrollen (nach Mount). Payload anchors are handled by
   // ClaimPayloadSection, which first has to select the matching tab.
   useEffect(() => {
-    if (typeof window === "undefined") return
     const hash = window.location.hash.replace(/^#/, "")
     if (!hash || payloadKeyByAnchor[hash]) return
     return scrollToAnchor(hash)
   }, [payloadKeyByAnchor])
-  
-  // Auto-Expand: Wenn Parent- oder Child-Anker aktiv wird, Parent offen halten.
-  // State is adjusted during render when activeId changes (instead of in an effect), so the sidebar
-  // doesn't render once with the stale accordion first. The user can still collapse it manually.
-  const [expandedForActiveId, setExpandedForActiveId] = useState(activeId)
-  if (activeId !== expandedForActiveId) {
-    setExpandedForActiveId(activeId)
-    const isParent = navigationItems.some((i) => i.id === activeId && i.children)
-    const toExpand = isParent ? activeId : childToParent[activeId]
-    if (toExpand) setExpandedItem(toExpand)
-  }
 
-  // Auto-Scroll: aktives Sidebar-Element (auch weiter unten) automatisch in den sichtbaren Bereich holen
-  useEffect(() => {
-    const container = sidebarScrollRef.current
-    if (!container) return
-
-    // Warten bis Accordion (expandedItem) gerendert ist, damit Child-Button existiert.
-    const raf = requestAnimationFrame(() => {
-      const el = container.querySelector<HTMLElement>(`[data-nav-id="${activeId}"]`)
-      if (!el) return
-
-      const padding = 12
-      const cRect = container.getBoundingClientRect()
-      const eRect = el.getBoundingClientRect()
-
-      if (eRect.bottom > cRect.bottom - padding) {
-        container.scrollTop += eRect.bottom - (cRect.bottom - padding)
-      } else if (eRect.top < cRect.top + padding) {
-        container.scrollTop -= (cRect.top + padding) - eRect.top
-      }
-    })
-
-    return () => cancelAnimationFrame(raf)
-  }, [activeId, expandedItem])
-
-  // URL-Hash anhand aktivem Abschnitt aktualisieren (beim Scrollen)
-  // Wichtig: NICHT direkt beim initialen Page-Load den Hash setzen, sonst springt der Browser
-  // sofort zum ersten Section-Anchor (und die Hero ist weg).
-  useEffect(() => {
-    if (!activeId) return
-    if (typeof window === "undefined") return
-
-    const hasInitialHash = window.location.hash.length > 1
-    // Hash erst synchronisieren, wenn der User wirklich in den Content scrollt
-    // oder wenn die Seite mit Hash geöffnet wurde (Deep-Link).
-    if (!pastHero && !hasInitialHash) return
-
-    const current = window.location.hash.replace(/^#/, "")
-    if (current !== activeId) {
-      try { history.replaceState(null, "", `#${activeId}`) } catch {}
-    }
-  }, [activeId, pastHero])
-  
-  useEffect(() => {
-    if (typeof document === "undefined") return
-    const body = document.body
-    if (isMobileMenuOpen) {
-      bodyOverflowRef.current = body.style.overflow || ""
-      body.style.overflow = "hidden"
-    } else {
-      body.style.overflow = bodyOverflowRef.current || ""
-    }
-    return () => {
-      body.style.overflow = bodyOverflowRef.current || ""
-    }
-  }, [isMobileMenuOpen])
-
-  const effectiveActive = childToParent[activeId] ?? activeId
-  // Sidebar-Einblendung ab dem ersten Bereich ("Übersicht") und alle nachfolgenden Kapitel.
-  const revealFrom = new Set([
-    "overview",
-    "first-steps",
-    "reporting",
-    "changelog",
-    "authentication",
-    "api-basics",
-    "experts",
-    "insurer",
-    "payloads",
-  ])
-  const showSidebar = pastHero && revealFrom.has(effectiveActive)
+  const showSidebar = pastHero && SIDEBAR_CHAPTERS.has(childToParent[activeId] ?? activeId)
 
   return (
     <div className="min-h-screen bg-white text-gray-900">
@@ -431,109 +111,15 @@ export default function ApiPageClient({ locale }: { locale: Locale }) {
       ) : null}
       <div className="flex w-full flex-col overflow-x-hidden lg:flex-row">
         {/* Seiten-Navigation */}
-        <aside
-          className={cn(
-            "fixed inset-y-0 left-0 z-30 w-full max-w-[18rem] border-r border-border bg-sidebar transition-[transform,opacity] duration-[350ms] ease-out lg:max-w-none lg:w-64",
-            isMobileMenuOpen ? "translate-x-0" : "-translate-x-full",
-            showSidebar ? "lg:translate-x-0 lg:opacity-100" : "lg:-translate-x-full lg:opacity-0"
-          )}
-          style={
-            showSidebar && footerLiftPx > 0
-              ? { bottom: footerLiftPx }
-              : undefined
-          }
-        >
-          <div
-            ref={sidebarScrollRef}
-            className="api-sidebar-scroll flex h-screen flex-col overflow-y-auto py-6 lg:h-[calc(100vh-4rem)]"
-            style={
-              footerLiftPx > 0 && showSidebar
-                ? { height: `calc(100vh - 4rem - ${footerLiftPx}px)` }
-                : undefined
-            }
-          >
-            <nav className="space-y-1 px-4" role="navigation" aria-label="API Navigation">
-              {navigationItems.map((item) => (
-                <div key={item.id}>
-                  <button
-                    data-nav-id={item.id}
-                    onClick={() => {
-                      if (item.children) {
-                        toggleExpanded(item.id)
-                      } else {
-                        handleNavigate(item.id)
-                      }
-                    }}
-                    className={cn(
-                      "flex w-full items-start gap-3 rounded-md px-3 py-2 text-sm font-medium leading-snug transition-colors",
-                      activeId === item.id || (item.children && item.children.some((c) => c.id === activeId))
-                        ? "bg-sidebar-accent font-semibold text-sidebar-accent-foreground"
-                        : "text-sidebar-foreground hover:bg-sidebar-accent/50",
-                    )}
-                    aria-expanded={item.children ? expandedItem === item.id : undefined}
-                    aria-controls={item.children ? `subnav-${item.id}` : undefined}
-                    aria-current={
-                      activeId === item.id || (item.children && item.children.some((c) => c.id === activeId)) ? "page" : undefined
-                    }
-                  >
-                    <item.icon className="mt-0.5 h-4 w-4 shrink-0" />
-                    <span className="min-w-0 flex-1 text-left">{item.title}</span>
-                    {item.children && (
-                      <ChevronRight
-                        className={cn(
-                          "mt-0.5 h-4 w-4 shrink-0 transition-transform",
-                          expandedItem === item.id && "rotate-90"
-                        )}
-                      />
-                    )}
-                  </button>
-                  {item.children && expandedItem === item.id && (
-                    <div id={`subnav-${item.id}`} className="ml-3 mt-1 space-y-1 border-l border-border pl-2">
-                      {item.children.map((child) => (
-                        (() => {
-                          const methodLabel = child.method === "DELETE" ? "DEL" : child.method
-                          const isChildActive = activeId === child.id
-
-                          return (
-                        <button
-                          key={child.id}
-                          data-nav-id={child.id}
-                          onClick={() => {
-                            handleNavigate(child.id)
-                          }}
-                          className={cn(
-                            "flex w-full items-start gap-2 rounded-md px-3 py-1.5 text-[13px] leading-snug transition-colors",
-                            isChildActive
-                              ? "bg-sidebar-accent font-semibold text-sidebar-accent-foreground"
-                              : "text-muted-foreground hover:bg-sidebar-accent/30 hover:text-sidebar-foreground",
-                          )}
-                          aria-current={activeId === child.id ? "page" : undefined}
-                        >
-                           {child.method ? (
-                             <span
-                               className={cn(
-                                 // Fixe Breite, damit GET/PUT/DEL genauso breit sind wie POST.
-                                 // (Die Sidebar wirkt dadurch visuell ruhiger und "aligned".)
-                                 "mt-[1px] inline-flex h-5 w-9 shrink-0 items-center justify-center rounded-md px-0",
-                                 "font-mono text-[11px] font-semibold text-white"
-                               )}
-                               style={{ backgroundColor: METHOD_COLORS[child.method] }}
-                             >
-                               {methodLabel}
-                             </span>
-                          ) : null}
-                          <span className="min-w-0 flex-1 text-left">{child.title}</span>
-                        </button>
-                          )
-                        })()
-                      ))}
-                    </div>
-                  )}
-                </div>
-              ))}
-            </nav>
-          </div>
-        </aside>
+        <ApiSidebar
+          items={navigationItems}
+          childToParent={childToParent}
+          activeId={activeId}
+          onNavigate={handleNavigate}
+          visible={showSidebar}
+          mobileOpen={isMobileMenuOpen}
+          footerLiftPx={footerLiftPx}
+        />
 
         {/* Hauptinhalt */}
         <main className="flex-1 min-w-0">
@@ -549,6 +135,8 @@ export default function ApiPageClient({ locale }: { locale: Locale }) {
               <div className="mb-4 flex items-center justify-between gap-3 lg:hidden">
                 <button
                   onClick={() => setIsMobileMenuOpen((v) => !v)}
+                  aria-expanded={isMobileMenuOpen}
+                  aria-controls={API_SIDEBAR_ID}
                   className="inline-flex items-center gap-2 rounded-md border border-border bg-white/90 px-3 py-1.5 text-xs font-medium text-gray-900 hover:bg-white"
                 >
                   <Menu className="h-4 w-4" />
