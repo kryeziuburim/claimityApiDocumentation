@@ -28,7 +28,14 @@ export function Footer() {
             {/* Logo */}
             <div className="flex items-center gap-3">
               <Link href={homeHref} aria-label="Claimity home" className="flex items-center">
-                <Image src="/logo_white.png" alt="Claimity Logo" width={120} height={41} priority />
+                <Image
+                  src="/logo_white.png"
+                  alt="Claimity Logo"
+                  width={120}
+                  height={41}
+                  priority
+                  style={{ height: "auto" }}
+                />
               </Link>
             </div>
 

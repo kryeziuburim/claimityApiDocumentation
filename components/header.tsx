@@ -41,7 +41,7 @@ export function Header() {
         <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
           {/* Logo */}
           <Link href={homeHref} aria-label="Claimity home" className="flex items-center gap-3">
-            <Image src="/logo.png" alt="Claimity Logo" width={100} height={32} priority />
+            <Image src="/logo.png" alt="Claimity Logo" width={100} height={32} priority style={{ height: "auto" }} />
           </Link>
 
           {/* Navigation Menu */}
