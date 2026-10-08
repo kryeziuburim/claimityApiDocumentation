@@ -11,6 +11,27 @@ import { Button } from "@/components/ui/button"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 
 import type { Locale as Lang } from "@/lib/i18n"
+import { cooldownRemaining, looksLikeBot } from "@/lib/spam-guard"
+
+const LAST_SENT_KEY = "claimity.supportTicket.lastSentAt"
+
+// localStorage can be unavailable (private mode, blocked storage); the cooldown is best effort.
+function readLastSentAt(): number | null {
+  try {
+    const value = Number(window.localStorage.getItem(LAST_SENT_KEY))
+    return Number.isFinite(value) && value > 0 ? value : null
+  } catch {
+    return null
+  }
+}
+
+function writeLastSentAt(value: number) {
+  try {
+    window.localStorage.setItem(LAST_SENT_KEY, String(value))
+  } catch {
+    // ignore
+  }
+}
 
 const i18n: Record<
   Lang,
@@ -40,6 +61,7 @@ const i18n: Record<
       success: string
       errorGeneric: string
       errorConfig: string
+      errorTooFrequent: string
       hint: string
     }
     validation: {
@@ -78,6 +100,7 @@ const i18n: Record<
         "Versand fehlgeschlagen. Bitte versuchen Sie es erneut oder kontaktieren Sie uns per E-Mail.",
       errorConfig:
         "E-Mail-Service ist nicht konfiguriert. Bitte hinterlegen Sie die EmailJS-Umgebungsvariablen.",
+      errorTooFrequent: "Bitte warten Sie einen Moment, bevor Sie ein weiteres Ticket senden.",
       hint:
         "Hinweis: Mit dem Absenden stimmen Sie der Verarbeitung Ihrer Angaben zum Zweck der Support-Bearbeitung zu.",
     },
@@ -117,6 +140,7 @@ const i18n: Record<
         "Sending failed. Please try again or contact us via email.",
       errorConfig:
         "Email service is not configured. Please set the EmailJS environment variables.",
+      errorTooFrequent: "Please wait a moment before sending another ticket.",
       hint:
         "Note: By submitting, you agree to the processing of your data for support purposes.",
     },
@@ -156,6 +180,7 @@ const i18n: Record<
         "Échec de l’envoi. Veuillez réessayer ou nous contacter par e-mail.",
       errorConfig:
         "Le service e-mail n’est pas configuré. Veuillez définir les variables d’environnement EmailJS.",
+      errorTooFrequent: "Veuillez patienter un instant avant d’envoyer un autre ticket.",
       hint:
         "Remarque : En envoyant, vous acceptez le traitement de vos données à des fins de support.",
     },
@@ -176,6 +201,8 @@ function makeSchema(t: (typeof i18n)[Lang]) {
     subject: z.string().min(3, t.validation.subjectMin),
     message: z.string().min(10, t.validation.messageMin),
     category: z.enum(["general", "technical", "billing", "other"]).optional(),
+    // Honeypot, see below. Never validated so a filled value reaches onSubmit and is detected there.
+    website: z.string().optional(),
   })
 }
 
@@ -185,6 +212,7 @@ type TicketValues = {
   subject: string
   message: string
   category?: "general" | "technical" | "billing" | "other"
+  website?: string
 }
 
 // EmailJS benötigt Public Key clientseitig – daher NEXT_PUBLIC_* (beim Build eingesetzt)
@@ -201,6 +229,8 @@ export function SupportTicketForm({ locale = "de" }: { locale?: Lang }) {
   const [status, setStatus] = useState<"idle" | "sending" | "success" | "error">("idle")
   const [errorMsg, setErrorMsg] = useState<string | null>(null)
   const fieldTextSizing = "bg-white text-sm placeholder:text-sm"
+  // When the form was shown; submissions faster than a human could type are treated as bots.
+  const [startedAt] = useState(() => Date.now())
 
   const {
     register,
@@ -216,6 +246,7 @@ export function SupportTicketForm({ locale = "de" }: { locale?: Lang }) {
       subject: "",
       message: "",
       category: "general",
+      website: "",
     },
   })
 
@@ -223,6 +254,20 @@ export function SupportTicketForm({ locale = "de" }: { locale?: Lang }) {
     async (values: TicketValues) => {
       setStatus("sending")
       setErrorMsg(null)
+
+      const now = Date.now()
+      if (looksLikeBot({ honeypot: values.website ?? "", startedAt, now })) {
+        // Pretend success so bots get no signal; nothing is sent.
+        setStatus("success")
+        reset()
+        return
+      }
+
+      if (cooldownRemaining(readLastSentAt(), now) > 0) {
+        setStatus("error")
+        setErrorMsg(t.feedback.errorTooFrequent)
+        return
+      }
 
       if (!serviceId || !templateId || !publicKey) {
         setStatus("error")
@@ -243,6 +288,7 @@ export function SupportTicketForm({ locale = "de" }: { locale?: Lang }) {
         }
 
         await emailjs.send(serviceId, templateId, templateParams, { publicKey })
+        writeLastSentAt(Date.now())
         setStatus("success")
         reset()
       } catch (_err: unknown) {
@@ -250,11 +296,16 @@ export function SupportTicketForm({ locale = "de" }: { locale?: Lang }) {
         setErrorMsg(t.feedback.errorGeneric)
       }
     },
-    [locale, publicKey, reset, serviceId, t.feedback.errorGeneric, t.feedback.errorConfig, templateId]
+    [locale, publicKey, reset, serviceId, startedAt, t.feedback.errorGeneric, t.feedback.errorConfig, t.feedback.errorTooFrequent, templateId]
   )
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+      {/* Honeypot: hidden from people and assistive tech, but filled in by most form bots. */}
+      <div aria-hidden="true" className="sr-only">
+        <label htmlFor="website">Website</label>
+        <input id="website" type="text" tabIndex={-1} autoComplete="off" {...register("website")} />
+      </div>
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
         <div className="space-y-2">
           <label className="text-sm font-medium text-gray-900" htmlFor="name">
