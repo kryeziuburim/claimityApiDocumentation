@@ -88,8 +88,9 @@ export function EndpointCard({
         <div className="p-4 sm:p-5">{headerContent}</div>
       )}
 
-      {hasDetails && open ? (
-        <div className="border-t border-border bg-card/80 px-4 pb-4 pt-3 sm:px-5">
+      {/* Always rendered (hidden while collapsed) so the details are part of the exported HTML. */}
+      {hasDetails ? (
+        <div hidden={!open} className="border-t border-border bg-card/80 px-4 pb-4 pt-3 sm:px-5">
           <EndpointDetails method={method} path={path} className="mt-2" />
         </div>
       ) : null}

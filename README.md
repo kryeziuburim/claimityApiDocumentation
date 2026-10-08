@@ -89,6 +89,24 @@ list every messages file that needs the new translations.
 
 **Adding a page**: create `app/[locale]/<name>/page.tsx` with `generateMetadata` using `pageMetadata({ locale, path: "<name>/", ... })`.
 
+## SEO
+
+Production URL: https://docs.claimity.ch (`lib/site.ts`).
+
+- **Metadata** via `pageMetadata()` (`lib/metadata.ts`): "<page> | Claimity" titles, absolute canonical + hreflang
+  (incl. `x-default`), Open Graph/Twitter with a generated 1200×630 preview image per page and language
+  (`app/[locale]/og/[image]/route.tsx`).
+- **`/sitemap.xml`** (all pages × languages with hreflang) and **`/robots.txt`** (`app/sitemap.ts`, `app/robots.ts`).
+  A new page only needs to be added to `PAGE_PATHS` in `lib/site.ts`.
+- **Structured data** (JSON-LD, `lib/structured-data.ts`): Organization + WebSite on the home page, BreadcrumbList on
+  subpages, TechArticle on the API page.
+- **Crawlable API content**: the OpenAPI spec and claim schemas are read at build time (`lib/api-docs-data.ts`);
+  collapsed endpoint details, payload tabs and accordions stay in the DOM (hidden), so the exported HTML contains
+  all parameters, fields, descriptions and rules.
+- `e2e/seo.spec.ts` guards all of the above.
+
+After deploying: verify the domain in Google Search Console and submit `https://docs.claimity.ch/sitemap.xml`.
+
 ## Known limitations
 
 - Next.js' static export requests some segment-prefetch files (`__PAGE__.txt` of the `[locale]` segment) under a

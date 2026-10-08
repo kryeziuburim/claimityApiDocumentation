@@ -30,6 +30,9 @@ export function ResponseTab({
         const schema = pickJsonSchemaFromContent(resp?.content)
         const example = spec && schema ? generateExample(spec, schema) : null
         const isOpen = activeResponse === code
+        // Success responses are always rendered (hidden while collapsed) so their fields are crawlable;
+        // error responses share one problem schema and are rendered on demand.
+        const keepMounted = code.startsWith("2")
 
         return (
           <div key={code} className="overflow-hidden rounded-xl border border-border/60 bg-muted/15 sm:rounded-2xl">
@@ -46,8 +49,8 @@ export function ResponseTab({
               <ChevronDown className={cn("h-4 w-4 transition-transform", isOpen && "rotate-180")} />
             </button>
 
-            {isOpen ? (
-              <div className="border-t border-border/40 bg-card/80 p-3 sm:p-4">
+            {isOpen || keepMounted ? (
+              <div hidden={!isOpen} className="border-t border-border/40 bg-card/80 p-3 sm:p-4">
                 {schema && spec ? (
                   <div className="space-y-3">
                     <SchemaExplorer

@@ -74,7 +74,9 @@ export function EndpointDetails({ method, path, className }: { method: HttpMetho
         </TabButton>
       </div>
 
-      {tab === "request" && (
+      {/* Request and response stay in the DOM (hidden when inactive) so parameters, fields and their
+          descriptions are part of the exported HTML; errors and examples are rendered on demand. */}
+      <div hidden={tab !== "request"}>
         <RequestTab
           t={t}
           spec={spec}
@@ -84,9 +86,9 @@ export function EndpointDetails({ method, path, className }: { method: HttpMetho
           reqExample={reqExample}
           accentColor={accentColor}
         />
-      )}
+      </div>
 
-      {tab === "response" && (
+      <div hidden={tab !== "response"}>
         <ResponseTab
           t={t}
           spec={spec}
@@ -95,7 +97,7 @@ export function EndpointDetails({ method, path, className }: { method: HttpMetho
           setActiveResponse={setActiveResponse}
           accentColor={accentColor}
         />
-      )}
+      </div>
 
       {tab === "errors" && <ErrorsTab t={t} responses={responses} />}
 
