@@ -22,11 +22,18 @@ export default defineConfig({
   projects: [
     {
       name: "desktop",
+      testIgnore: /mobile\.spec\.ts/,
       use: {
         ...devices["Desktop Chrome"],
         viewport: { width: 1400, height: 1000 },
         channel: process.env.PLAYWRIGHT_CHANNEL,
       },
+    },
+    {
+      // Phone viewport with touch: off-canvas menu, layout overflow and the localized pages.
+      name: "mobile",
+      testMatch: /(mobile|i18n)\.spec\.ts/,
+      use: { ...devices["Pixel 7"], channel: process.env.PLAYWRIGHT_CHANNEL },
     },
   ],
   webServer: {

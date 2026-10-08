@@ -18,7 +18,8 @@ test.describe("localized pages", () => {
 
   test("language switcher keeps the current page and section", async ({ page }) => {
     await page.goto("/de/api/")
-    await page.getByRole("button", { name: "Language selection" }).first().click()
+    // Desktop and mobile each render their own switcher; use the visible one.
+    await page.getByRole("button", { name: "Language selection" }).locator("visible=true").click()
     await page.getByRole("menuitem", { name: /Français/ }).click()
     await expect(page).toHaveURL(/\/fr\/api\/$/)
     await expect(page.getByRole("heading", { name: "Vue d'ensemble" }).first()).toBeVisible()
