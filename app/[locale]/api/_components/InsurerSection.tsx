@@ -55,24 +55,19 @@ export function InsurerSection({ locale }: { locale: Locale }) {
 
         <div className="space-y-4">
           <div id="insurer-claims-list" className="scroll-mt-24">
-            <EndpointCard method="GET" path="/v1/insurers/claims" label="List" description={e.claimsList} />
+            <EndpointCard method="GET" path="/v1/insurers/claims" description={e.claimsList} />
           </div>
 
           <div id="insurer-claims-create" className="scroll-mt-24">
-            <EndpointCard method="POST" path="/v1/insurers/claims" label="Create" description={e.claimsCreate} />
+            <EndpointCard method="POST" path="/v1/insurers/claims" description={e.claimsCreate} />
           </div>
 
           <div id="insurer-claims-validate" className="scroll-mt-24">
-            <EndpointCard
-              method="POST"
-              path="/v1/insurers/claims:validate"
-              label="Validate"
-              description={e.claimsValidate}
-            />
+            <EndpointCard method="POST" path="/v1/insurers/claims:validate" description={e.claimsValidate} />
           </div>
 
           <div id="insurer-claims-get" className="scroll-mt-24">
-            <EndpointCard method="GET" path="/v1/insurers/claims/{claimId}" label="Get" description={e.claimsGet} />
+            <EndpointCard method="GET" path="/v1/insurers/claims/{claimId}" description={e.claimsGet} />
           </div>
         </div>
       </div>
@@ -82,28 +77,17 @@ export function InsurerSection({ locale }: { locale: Locale }) {
 
         <div className="space-y-4">
           <div id="insurer-claim-docs-list" className="scroll-mt-24">
-            <EndpointCard
-              method="GET"
-              path="/v1/insurers/claims/{claimId}/documents"
-              label="List"
-              description={e.claimDocsList}
-            />
+            <EndpointCard method="GET" path="/v1/insurers/claims/{claimId}/documents" description={e.claimDocsList} />
           </div>
 
           <div id="insurer-claim-docs-add" className="scroll-mt-24">
-            <EndpointCard
-              method="POST"
-              path="/v1/insurers/claims/{claimId}/documents"
-              label="Create"
-              description={e.claimDocsAdd}
-            />
+            <EndpointCard method="POST" path="/v1/insurers/claims/{claimId}/documents" description={e.claimDocsAdd} />
           </div>
 
           <div id="insurer-claim-docs-get" className="scroll-mt-24">
             <EndpointCard
               method="GET"
               path="/v1/insurers/claims/{claimId}/documents/{documentId}"
-              label="Get"
               description={e.claimDocsGet}
             />
           </div>
@@ -115,19 +99,13 @@ export function InsurerSection({ locale }: { locale: Locale }) {
 
         <div className="space-y-4">
           <div id="insurer-claim-reports-list" className="scroll-mt-24">
-            <EndpointCard
-              method="GET"
-              path="/v1/insurers/claims/{claimId}/reports"
-              label="List"
-              description={e.claimReportsList}
-            />
+            <EndpointCard method="GET" path="/v1/insurers/claims/{claimId}/reports" description={e.claimReportsList} />
           </div>
 
           <div id="insurer-claim-report-docs-list" className="scroll-mt-24">
             <EndpointCard
               method="GET"
               path="/v1/insurers/claims/{claimId}/reports/{submissionId}/documents"
-              label="List"
               description={e.claimReportDocsList}
             />
           </div>

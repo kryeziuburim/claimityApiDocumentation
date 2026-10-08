@@ -50,38 +50,23 @@ export function ExpertsSection({ locale }: { locale: Locale }) {
 
         <div className="space-y-4">
           <div id="experts-cases-list" className="scroll-mt-24">
-            <EndpointCard method="GET" path="/v1/experts/cases" label="List" description={e.casesList} />
+            <EndpointCard method="GET" path="/v1/experts/cases" description={e.casesList} />
           </div>
 
           <div id="experts-cases-get" className="scroll-mt-24">
-            <EndpointCard method="GET" path="/v1/experts/cases/{caseId}" label="Get" description={e.casesGet} />
+            <EndpointCard method="GET" path="/v1/experts/cases/{caseId}" description={e.casesGet} />
           </div>
 
           <div id="experts-cases-comment" className="scroll-mt-24">
-            <EndpointCard
-              method="PUT"
-              path="/v1/experts/cases/{caseId}/expert-comment"
-              label="Update"
-              description={e.casesComment}
-            />
+            <EndpointCard method="PUT" path="/v1/experts/cases/{caseId}/expert-comment" description={e.casesComment} />
           </div>
 
           <div id="experts-cases-amounts" className="scroll-mt-24">
-            <EndpointCard
-              method="PUT"
-              path="/v1/experts/cases/{caseId}/amounts"
-              label="Update"
-              description={e.casesAmounts}
-            />
+            <EndpointCard method="PUT" path="/v1/experts/cases/{caseId}/amounts" description={e.casesAmounts} />
           </div>
 
           <div id="experts-cases-reopen" className="scroll-mt-24">
-            <EndpointCard
-              method="POST"
-              path="/v1/experts/cases/{caseId}:reopen"
-              label="Reopen"
-              description={e.casesReopen}
-            />
+            <EndpointCard method="POST" path="/v1/experts/cases/{caseId}:reopen" description={e.casesReopen} />
           </div>
         </div>
       </div>
@@ -92,19 +77,13 @@ export function ExpertsSection({ locale }: { locale: Locale }) {
 
         <div className="space-y-4">
           <div id="experts-cases-docs-list" className="scroll-mt-24">
-            <EndpointCard
-              method="GET"
-              path="/v1/experts/cases/{caseId}/documents"
-              label="List"
-              description={e.caseDocsList}
-            />
+            <EndpointCard method="GET" path="/v1/experts/cases/{caseId}/documents" description={e.caseDocsList} />
           </div>
 
           <div id="experts-cases-docs-get" className="scroll-mt-24">
             <EndpointCard
               method="GET"
               path="/v1/experts/cases/{caseId}/documents/{documentId}"
-              label="Get"
               description={e.caseDocsGet}
             />
           </div>
@@ -120,7 +99,6 @@ export function ExpertsSection({ locale }: { locale: Locale }) {
             <EndpointCard
               method="POST"
               path="/v1/experts/cases/{caseId}/reports:draft"
-              label="Create"
               description={e.reportsDraftCreate}
             />
           </div>
@@ -129,25 +107,18 @@ export function ExpertsSection({ locale }: { locale: Locale }) {
             <EndpointCard
               method="PUT"
               path="/v1/experts/cases/{caseId}/reports:draft"
-              label="Update"
               description={e.reportsDraftUpdate}
             />
           </div>
 
           <div id="experts-reports-list" className="scroll-mt-24">
-            <EndpointCard
-              method="GET"
-              path="/v1/experts/cases/{caseId}/reports"
-              label="List"
-              description={e.reportsList}
-            />
+            <EndpointCard method="GET" path="/v1/experts/cases/{caseId}/reports" description={e.reportsList} />
           </div>
 
           <div id="experts-reports-submission-get" className="scroll-mt-24">
             <EndpointCard
               method="GET"
               path="/v1/experts/cases/{caseId}/reports/{submissionId}"
-              label="Get"
               description={e.reportsSubmissionGet}
             />
           </div>
@@ -163,7 +134,6 @@ export function ExpertsSection({ locale }: { locale: Locale }) {
             <EndpointCard
               method="GET"
               path="/v1/experts/reports/{submissionId}/documents"
-              label="List"
               description={e.submissionDocsList}
             />
           </div>
@@ -172,7 +142,6 @@ export function ExpertsSection({ locale }: { locale: Locale }) {
             <EndpointCard
               method="POST"
               path="/v1/experts/reports/{submissionId}/documents"
-              label="Create"
               description={e.submissionDocsAdd}
             />
           </div>
@@ -181,7 +150,6 @@ export function ExpertsSection({ locale }: { locale: Locale }) {
             <EndpointCard
               method="DELETE"
               path="/v1/experts/reports/{submissionId}/documents/{docId}"
-              label="Delete"
               description={e.submissionDocsDelete}
             />
           </div>
@@ -190,7 +158,6 @@ export function ExpertsSection({ locale }: { locale: Locale }) {
             <EndpointCard
               method="POST"
               path="/v1/experts/reports/{submissionId}/submit"
-              label="Submit"
               description={e.submissionSubmit}
             />
           </div>

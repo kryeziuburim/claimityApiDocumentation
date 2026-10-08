@@ -10,7 +10,6 @@ import { METHOD_COLORS } from "@/components/api/method-colors"
 type EndpointCardProps = {
   method: HttpMethod
   path: string
-  label: string
   description?: string
 
   /** Optional: standardmäßig Details-Renderer aktivieren */
@@ -24,7 +23,6 @@ type EndpointCardProps = {
 export function EndpointCard({
   method,
   path,
-  label,
   description,
   enableDetails = true,
   defaultOpen = false,
