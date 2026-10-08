@@ -13,15 +13,15 @@ cp .env.example .env   # EmailJS keys for the support form (optional locally)
 npm run dev            # http://localhost:3000
 ```
 
-| Script              | Purpose                                                                |
-| ------------------- | ---------------------------------------------------------------------- |
-| `npm run dev`       | Dev server                                                             |
-| `npm run build`     | Static export to `out/`                                                |
-| `npm run lint`      | ESLint (Next core-web-vitals + TS)                                     |
-| `npm run typecheck` | `tsc --noEmit`                                                         |
-| `npm run format`    | Prettier (`format:check` in CI)                                        |
-| `npm test`          | Vitest: claim schemas, OpenAPI spec, rule texts, pure helpers          |
-| `npm run test:e2e`  | Playwright + axe against the static export (run `npm run build` first) |
+| Script              | Purpose                                                                   |
+| ------------------- | ------------------------------------------------------------------------- |
+| `npm run dev`       | Dev server                                                                |
+| `npm run build`     | Static export to `out/`, then sets `<html lang>` per locale (`postbuild`) |
+| `npm run lint`      | ESLint (Next core-web-vitals + TS)                                        |
+| `npm run typecheck` | `tsc --noEmit`                                                            |
+| `npm run format`    | Prettier (`format:check` in CI)                                           |
+| `npm test`          | Vitest: claim schemas, OpenAPI spec, rule texts, pure helpers             |
+| `npm run test:e2e`  | Playwright + axe against the static export (run `npm run build` first)    |
 
 To use an installed browser instead of Playwright's own: `PLAYWRIGHT_CHANNEL=msedge npm run test:e2e`
 (or `npx playwright install chromium` once).
@@ -91,8 +91,6 @@ list every messages file that needs the new translations.
 
 ## Known limitations
 
-- `<html lang>` is set on the client: a correct static value needs the root layout inside `[locale]`, which in turn
-  needs Next.js' `global-not-found` (still experimental).
 - Next.js' static export requests some segment-prefetch files (`__PAGE__.txt` of the `[locale]` segment) under a
   different path than it writes them; prefetching those fails with 404, navigation is unaffected.
 - The support form sends directly to EmailJS. Client-side spam checks (honeypot, minimum fill time, cooldown) catch

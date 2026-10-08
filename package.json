@@ -7,6 +7,7 @@
   },
   "scripts": {
     "build": "next build",
+    "postbuild": "node --experimental-strip-types --no-warnings scripts/set-html-lang.ts",
     "dev": "next dev",
     "lint": "eslint .",
     "start": "next start",

@@ -42,9 +42,14 @@ export function localizeHref(href: string, locale: Locale): string {
  * canonical + hreflang alternates for a page, e.g. pageAlternates("de", "api/").
  * `path` is relative to the locale root and keeps the trailing slash.
  */
-export function pageAlternates(locale: Locale, path = ""): Metadata["alternates"] {
+/** hreflang -> path of every language version of a page (plus x-default); shared by page metadata and sitemap. */
+export function languageAlternates(path = ""): Record<string, string> {
   const languages: Record<string, string> = {}
   for (const l of locales) languages[hrefLang[l]] = `/${l}/${path}`
   languages["x-default"] = `/${defaultLocale}/${path}`
-  return { canonical: `/${locale}/${path}`, languages }
+  return languages
+}
+
+export function pageAlternates(locale: Locale, path = ""): Metadata["alternates"] {
+  return { canonical: `/${locale}/${path}`, languages: languageAlternates(path) }
 }
