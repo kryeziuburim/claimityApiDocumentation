@@ -37,7 +37,7 @@ export function Header() {
   return (
     <>
       {/* Mobile: fixed; ab md: sticky */}
-      <header className="fixed top-0 inset-x-0 z-50 bg-white border-b border-gray-200 shadow-sm">
+      <header className="fixed top-0 inset-x-0 z-50 bg-white border-b border-gray-200 ">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
           {/* Logo */}
           <Link href={homeHref} aria-label="Claimity home" className="flex items-center gap-3">

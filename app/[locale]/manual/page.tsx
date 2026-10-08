@@ -34,9 +34,6 @@ export default async function ManualPage({ params }: Props) {
       />
       <section className="relative overflow-hidden">
         {/* Subtle Background Glow (Light) */}
-        <div className="pointer-events-none absolute inset-x-0 top-[-12rem] -z-10 transform-gpu overflow-hidden blur-3xl">
-          <div className="relative left-1/2 aspect-[1155/678] w-[72rem] -translate-x-1/2 bg-gradient-to-tr from-teal-500/20 via-cyan-400/15 to-sky-500/15" />
-        </div>
 
         <div className="relative mx-auto max-w-7xl px-6 pb-16 pt-10 md:pb-20 md:pt-16 lg:pb-24 lg:pt-20">
           <div className="absolute right-6 top-6 z-10">
@@ -45,9 +42,6 @@ export default async function ManualPage({ params }: Props) {
 
           {/* Hero */}
           <div className="w-full">
-            <p className="inline-flex items-center rounded-full bg-teal-50 px-3 py-1 text-xs font-medium text-teal-700 ring-1 ring-teal-100">
-              {t.badge}
-            </p>
             <h1 className="mt-4 text-3xl font-semibold tracking-tight text-gray-900 md:text-4xl lg:text-5xl">
               {t.title}
             </h1>
@@ -55,7 +49,7 @@ export default async function ManualPage({ params }: Props) {
           </div>
 
           <div className="mt-8 md:mt-12">
-            <div className="rounded-2xl border border-slate-200 bg-white/80 p-8 shadow-sm backdrop-blur-xl">
+            <div>
               <div className="flex items-start justify-between gap-6">
                 <div>
                   <h2 className="mt-1 text-xl font-semibold text-gray-900 md:mt-3">{t.downloadTitle}</h2>
@@ -67,9 +61,8 @@ export default async function ManualPage({ params }: Props) {
                 {guides.map(({ key, icon: Icon, title, description, pdf }) => (
                   <div
                     key={key}
-                    className="group relative overflow-hidden rounded-2xl border border-slate-200 bg-white/70 p-6 backdrop-blur"
+                    className="group relative overflow-hidden rounded-xl border border-slate-200 bg-white p-6"
                   >
-                    <div className="pointer-events-none absolute -right-20 -top-24 h-56 w-56 rounded-full bg-white" />
                     <div className="relative">
                       <div className="flex items-start gap-4">
                         <div className="hidden h-11 w-11 items-center justify-center rounded-xl bg-teal-500/10 ring-1 ring-teal-200/60 sm:flex">

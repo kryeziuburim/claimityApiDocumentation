@@ -132,10 +132,6 @@ export default function ApiPageClient({ locale, spec, claimSchemas }: ApiPageCli
         {/* Hauptinhalt */}
         <main className="flex-1 min-w-0">
           <section className="relative overflow-hidden">
-            <div className="pointer-events-none absolute inset-x-0 top-[-12rem] -z-10 transform-gpu overflow-hidden blur-3xl">
-              <div className="relative left-1/2 aspect-[1155/678] w-[72rem] -translate-x-1/2 bg-gradient-to-tr from-teal-500/20 via-cyan-400/15 to-sky-500/15" />
-            </div>
-
             <div className="relative mx-auto max-w-7xl px-4 pb-16 pt-10 sm:px-6 md:pb-20 md:pt-16 lg:pb-24 lg:pt-20">
               <div className="absolute right-4 top-6 hidden lg:block xl:right-6">
                 <LanguageSwitcher />
@@ -155,9 +151,6 @@ export default function ApiPageClient({ locale, spec, claimSchemas }: ApiPageCli
 
               {/* Hero */}
               <div className="w-full">
-                <p className="inline-flex items-center rounded-full bg-teal-50 px-3 py-1 text-xs font-medium text-teal-700 ring-1 ring-teal-100">
-                  Claimity API
-                </p>
                 <h1 className="mt-4 text-3xl font-semibold tracking-tight text-gray-900 md:text-4xl lg:text-5xl">
                   {t.heroTitle}
                 </h1>

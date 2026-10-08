@@ -35,7 +35,7 @@ export function ResponseTab({
         const keepMounted = code.startsWith("2")
 
         return (
-          <div key={code} className="overflow-hidden rounded-xl border border-border/60 bg-muted/15 sm:rounded-2xl">
+          <div key={code} className="overflow-hidden rounded-xl border border-border/60 bg-muted/15 sm:rounded-xl">
             <button
               type="button"
               onClick={() => setActiveResponse((prev) => (prev === code ? null : code))}

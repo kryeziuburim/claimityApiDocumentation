@@ -18,7 +18,7 @@ const renderErrorDetails = (errors?: Record<string, string[]> | null) => {
   return (
     <div className="space-y-3">
       {entries.map(([field, messages]) => (
-        <div key={field} className="rounded-2xl border border-border/40 bg-background/80 p-3">
+        <div key={field} className="rounded-xl border border-border/40 bg-background/80 p-3">
           <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">{field}</p>
           <ul className="mt-2 space-y-1 text-sm text-foreground">
             {messages.map((message, index) => (
@@ -44,7 +44,7 @@ export function ValidationResultView({
 }) {
   if (validationState.status === "running") {
     return (
-      <div className="flex items-center gap-3 rounded-2xl border border-border/60 bg-background/80 px-4 py-3 text-sm font-medium">
+      <div className="flex items-center gap-3 rounded-xl border border-border/60 bg-background/80 px-4 py-3 text-sm font-medium">
         <Loader2 className="h-4 w-4 animate-spin text-primary" />
         <span>{t.validationRunning}</span>
       </div>
@@ -85,7 +85,7 @@ export function ValidationResultView({
         </Alert>
         {errorDetails ??
           (!data.valid ? (
-            <p className="rounded-2xl border border-border/60 bg-muted/20 p-3 text-sm text-muted-foreground">
+            <p className="rounded-xl border border-border/60 bg-muted/20 p-3 text-sm text-muted-foreground">
               {t.invalidWithoutErrors}
             </p>
           ) : null)}

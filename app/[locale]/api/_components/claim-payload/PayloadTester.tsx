@@ -169,7 +169,7 @@ export function PayloadTester({ t, claimPayloads, schemas }: PayloadTesterProps)
   return (
     <section
       id="claim-payload-validation"
-      className="space-y-6 rounded-3xl border border-border/60 bg-card/80 p-4 shadow-sm sm:p-6"
+      className="space-y-6 rounded-xl border border-border/60 bg-card/80 p-4  sm:p-6"
     >
       <div className="space-y-2">
         <h3 className="text-2xl font-semibold tracking-tight">{t.testTitle}</h3>
@@ -181,10 +181,10 @@ export function PayloadTester({ t, claimPayloads, schemas }: PayloadTesterProps)
           <div className="space-y-2">
             <Label htmlFor="payload-category-select">{t.category}</Label>
             <Select value={testCategory} onValueChange={handleTestCategoryChange}>
-              <SelectTrigger id="payload-category-select" className="h-11 w-full rounded-2xl border-border/70">
+              <SelectTrigger id="payload-category-select" className="h-11 w-full rounded-lg border-border/70">
                 <SelectValue placeholder={t.selectCategory} />
               </SelectTrigger>
-              <SelectContent className="rounded-2xl">
+              <SelectContent className="rounded-lg">
                 {claimPayloads.map((option) => (
                   <SelectItem key={option.key} value={option.key}>
                     {option.label}
@@ -205,7 +205,7 @@ export function PayloadTester({ t, claimPayloads, schemas }: PayloadTesterProps)
               }}
               spellCheck={false}
               rows={16}
-              className="w-full max-w-full rounded-2xl border-border/70 font-mono text-xs leading-relaxed sm:text-[13px]"
+              className="w-full max-w-full rounded-lg border-border/70 font-mono text-xs leading-relaxed sm:text-[13px]"
               placeholder="{}"
             />
             <p className="text-xs text-muted-foreground">{t.expectsValidJson}</p>
@@ -253,7 +253,7 @@ export function PayloadTester({ t, claimPayloads, schemas }: PayloadTesterProps)
           </div>
         </div>
 
-        <div className="space-y-4 rounded-3xl border border-border/60 bg-background/70 p-4">
+        <div className="space-y-4 rounded-xl border border-border/60 bg-background/70 p-4">
           <div className="flex items-center justify-between gap-2">
             <p className="text-sm font-semibold text-foreground">{t.response}</p>
             <Badge variant="outline" className="rounded-full border-border/60 text-xs">

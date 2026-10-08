@@ -59,9 +59,7 @@ export default function NotFound() {
         <main className="flex-1 bg-gray-50">
           <section className="mx-auto max-w-7xl px-6 py-20 lg:py-28">
             <div className="relative w-full max-w-2xl mx-auto">
-              <div className="pointer-events-none absolute -inset-12 -z-10 bg-[radial-gradient(ellipse_at_top,_rgba(50,154,161,0.08),_transparent_60%)]" />
-
-              <div className="relative rounded-2xl bg-white ring-1 ring-gray-200 shadow-lg p-10 text-center">
+              <div className="relative rounded-xl bg-white ring-1 ring-gray-200  p-10 text-center">
                 <h1 className="text-4xl sm:text-5xl font-bold text-gray-900 mb-4">{T.title}</h1>
 
                 <p className="text-lg text-gray-600 mb-8 leading-relaxed">{T.lead}</p>

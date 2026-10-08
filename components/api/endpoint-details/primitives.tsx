@@ -20,7 +20,7 @@ export function TabButton({
       onClick={onClick}
       className={cn(
         "rounded-md border border-border/60 px-3 py-1.5 text-[11px] font-semibold transition sm:px-4 sm:text-xs",
-        active ? "text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground",
+        active ? "text-foreground " : "text-muted-foreground hover:text-foreground",
       )}
       style={active ? { backgroundColor: accentColor, borderColor: accentColor } : undefined}
     >
@@ -39,7 +39,7 @@ export function DetailBlock({
   children: React.ReactNode
 }) {
   return (
-    <div className="rounded-xl border border-border/70 bg-muted/20 p-3 sm:rounded-2xl sm:p-4">
+    <div>
       <div className="mb-2 space-y-1 sm:mb-3">
         <p className="text-[11px] font-semibold uppercase tracking-wide text-muted-foreground sm:text-xs">{title}</p>
         {description ? <p className="text-[11px] text-muted-foreground sm:text-xs">{description}</p> : null}
@@ -51,12 +51,9 @@ export function DetailBlock({
 
 export function HeaderList({ rows }: { rows: HeaderRow[] }) {
   return (
-    <div className="grid gap-1.5 sm:gap-2">
+    <div className="divide-y divide-border/60 overflow-hidden rounded-xl border border-border/60 bg-background/80">
       {rows.map((row) => (
-        <div
-          key={row.k}
-          className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-border/60 bg-background/70 px-2.5 py-2 sm:px-3"
-        >
+        <div key={row.k} className="flex flex-wrap items-center justify-between gap-3 px-3 py-2">
           <span className="font-mono text-[11px] text-muted-foreground sm:text-xs">{row.k}</span>
           <span className="font-mono text-[11px] text-foreground sm:text-xs">{row.v}</span>
         </div>
@@ -77,7 +74,7 @@ export function CodeBlock({
   if (!children) return null
 
   return (
-    <div className="overflow-hidden rounded-xl border border-border/70 bg-background/80 sm:rounded-2xl">
+    <div className="overflow-hidden rounded-xl border border-border/70 bg-background/80 sm:rounded-xl">
       <div
         className="px-3 py-2 text-[11px] font-semibold uppercase tracking-wide text-foreground sm:px-4 sm:text-xs"
         style={{ backgroundColor: accentColor }}

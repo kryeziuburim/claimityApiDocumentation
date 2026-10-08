@@ -95,7 +95,7 @@ export function ClaimPayloadSection({
       </div>
 
       <Tabs value={resolvedActive} onValueChange={handleTabChange} className="space-y-6">
-        <div className="sticky top-[4.25rem] z-10 mb-4 rounded-2xl border border-border/60 bg-background/90 p-2 shadow-sm backdrop-blur-sm sm:top-16 sm:mb-6 sm:p-3">
+        <div className="sticky top-[4.25rem] z-10 mb-4 rounded-xl border border-border/60 bg-background/90 p-2  backdrop-blur-sm sm:top-16 sm:mb-6 sm:p-3">
           <TabsList className="grid w-full grid-cols-1 gap-2 bg-transparent p-0 h-auto sm:grid-cols-2 lg:grid-cols-4">
             {claimPayloads.map((payload) => {
               const Icon = PAYLOAD_ICONS[payload.key] ?? SquareStack
@@ -103,7 +103,7 @@ export function ClaimPayloadSection({
                 <TabsTrigger
                   key={payload.key}
                   value={payload.key}
-                  className="h-auto min-h-10 w-full min-w-0 whitespace-normal rounded-2xl border border-transparent bg-transparent px-3 py-2 text-center text-sm leading-tight data-[state=active]:border-primary/30 data-[state=active]:bg-primary/10 data-[state=active]:text-primary"
+                  className="h-auto min-h-10 w-full min-w-0 whitespace-normal rounded-lg border border-transparent bg-transparent px-3 py-2 text-center text-sm leading-tight data-[state=active]:border-primary/30 data-[state=active]:bg-primary/10 data-[state=active]:text-primary"
                 >
                   <Icon className="h-4 w-4 shrink-0" />
                   <span className="min-w-0">{payload.navTitle}</span>

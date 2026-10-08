@@ -102,7 +102,7 @@ export function AuthenticationSection({ locale }: { locale: Locale }) {
           ]}
         />
 
-        <details className="rounded-lg border border-border bg-muted/20 p-4">
+        <details className="border-t border-border pt-4">
           <summary className="cursor-pointer text-sm font-semibold">JWT Client Assertion (RS256)</summary>
           <div className="mt-3 grid gap-4 md:grid-cols-2 md:items-start">
             <div className="space-y-3 break-words text-sm text-muted-foreground">
@@ -184,7 +184,7 @@ export function AuthenticationSection({ locale }: { locale: Locale }) {
           ]}
         />
 
-        <details className="rounded-lg border border-border bg-muted/20 p-4">
+        <details className="border-t border-border pt-4">
           <summary className="cursor-pointer text-sm font-semibold">{t.dpopContentTitle}</summary>
           <div className="mt-3 grid gap-4 md:grid-cols-2 md:items-start">
             <ul className="space-y-2 break-words text-sm text-muted-foreground">
@@ -215,7 +215,7 @@ export function AuthenticationSection({ locale }: { locale: Locale }) {
           </div>
         </details>
 
-        <details className="rounded-lg border border-border bg-muted/20 p-4">
+        <details className="border-t border-border pt-4">
           <summary className="cursor-pointer text-sm font-semibold">{t.troubleshootingTitle}</summary>
           <p className="mt-2 text-sm text-muted-foreground text-pretty">{t.troubleshootingIntro}</p>
           <ul className="mt-3 space-y-2 text-sm text-muted-foreground">
@@ -228,7 +228,7 @@ export function AuthenticationSection({ locale }: { locale: Locale }) {
           </ul>
         </details>
 
-        <div id="auth-correlation" className="space-y-3 rounded-lg border border-border bg-muted/20 p-4 scroll-mt-24">
+        <div id="auth-correlation" className="space-y-3 border-t border-border pt-4 scroll-mt-24">
           <h4 className="text-sm font-semibold">{t.correlationTitle}</h4>
           {t.correlationParagraphs.map((paragraph, index) => (
             <p key={index} className="text-sm text-muted-foreground text-pretty">

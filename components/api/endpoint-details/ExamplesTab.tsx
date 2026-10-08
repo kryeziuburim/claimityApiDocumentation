@@ -19,7 +19,7 @@ export function ExamplesTab({
       {exampleBlocks.map(({ key, title, content }) => {
         const isOpen = activeExample === key
         return (
-          <div key={key} className="overflow-hidden rounded-xl border border-border/60 bg-muted/15 sm:rounded-2xl">
+          <div key={key} className="overflow-hidden rounded-xl border border-border/60 bg-muted/15 sm:rounded-xl">
             <button
               type="button"
               onClick={() => setActiveExample(key)}

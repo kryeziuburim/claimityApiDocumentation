@@ -21,7 +21,7 @@ export function RuleText({ text }: { text: string }) {
 
 export function InlineHint({ icon: Icon, label, value }: { icon: LucideIcon; label: string; value: string | number }) {
   return (
-    <div className="flex items-center justify-between gap-3 rounded-2xl border border-border/50 bg-muted/30 px-4 py-2">
+    <div className="flex items-center justify-between gap-3 border-b border-border/60 py-2 last:border-b-0">
       <div className="flex items-center gap-2 text-sm text-muted-foreground">
         <Icon className="h-4 w-4 text-primary" />
         <span>{label}</span>
@@ -33,7 +33,7 @@ export function InlineHint({ icon: Icon, label, value }: { icon: LucideIcon; lab
 
 export function PayloadLoadingSkeleton({ label }: { label: string }) {
   return (
-    <div className="space-y-5 rounded-2xl border border-border/50 bg-muted/30 p-6">
+    <div className="space-y-5 rounded-xl border border-border/50 bg-muted/30 p-6">
       <div className="flex items-center justify-between">
         <div>
           <p className="text-sm font-semibold text-muted-foreground">{label}</p>
@@ -42,11 +42,11 @@ export function PayloadLoadingSkeleton({ label }: { label: string }) {
         <Skeleton className="h-8 w-24 rounded-full" />
       </div>
       <div className="grid gap-4 md:grid-cols-3">
-        <Skeleton className="h-32 rounded-2xl" />
-        <Skeleton className="h-32 rounded-2xl" />
-        <Skeleton className="h-32 rounded-2xl" />
+        <Skeleton className="h-32 rounded-xl" />
+        <Skeleton className="h-32 rounded-xl" />
+        <Skeleton className="h-32 rounded-xl" />
       </div>
-      <Skeleton className="h-48 rounded-2xl" />
+      <Skeleton className="h-48 rounded-xl" />
     </div>
   )
 }

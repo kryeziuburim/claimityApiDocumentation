@@ -20,7 +20,7 @@ export function ApiBasicsSection({ locale }: { locale: Locale }) {
         <p className="mb-4 leading-relaxed text-muted-foreground text-pretty">{t.requestFormatText}</p>
 
         <div className="mt-5 grid gap-4 md:grid-cols-2">
-          <div className="rounded-lg border border-border bg-muted/20 p-4">
+          <div className="rounded-lg bg-muted/30 p-4">
             <h4 className="mb-2 text-sm font-semibold">{t.urlStructureTitle}</h4>
             <div className="text-sm text-muted-foreground">
               <div>
@@ -43,7 +43,7 @@ export function ApiBasicsSection({ locale }: { locale: Locale }) {
             </div>
           </div>
 
-          <div className="rounded-lg border border-border bg-muted/20 p-4">
+          <div className="rounded-lg bg-muted/30 p-4">
             <h4 className="mb-2 text-sm font-semibold">{t.httpMethodsTitle}</h4>
             <div className="space-y-2">
               {METHODS.map((method) => (
@@ -57,7 +57,7 @@ export function ApiBasicsSection({ locale }: { locale: Locale }) {
         </div>
 
         <div className="mt-4 grid gap-4 md:grid-cols-2">
-          <div className="rounded-lg border border-border bg-muted/20 p-4">
+          <div className="rounded-lg bg-muted/30 p-4">
             <h4 className="mb-2 text-sm font-semibold">{t.typicalHeadersTitle}</h4>
             <ul className="space-y-2 text-sm text-muted-foreground">
               <li className="flex gap-2">
@@ -95,7 +95,7 @@ export function ApiBasicsSection({ locale }: { locale: Locale }) {
         <p className="mb-4 leading-relaxed text-muted-foreground text-pretty">{t.responseFormatText}</p>
 
         <div className="grid gap-4 md:grid-cols-2">
-          <div className="rounded-lg border border-border bg-muted/20 p-4">
+          <div className="rounded-lg bg-muted/30 p-4">
             <h4 className="mb-2 text-sm font-semibold">{t.successTitle}</h4>
             <ul className="space-y-2 text-sm text-muted-foreground">
               <li className="flex gap-2">
@@ -125,7 +125,7 @@ Content-Type: application/json
             </div>
           </div>
 
-          <div className="rounded-lg border border-border bg-muted/20 p-4">
+          <div className="rounded-lg bg-muted/30 p-4">
             <h4 className="mb-2 text-sm font-semibold">{t.errorTitle}</h4>
             <ul className="space-y-2 text-sm text-muted-foreground">
               <li className="flex gap-2">
@@ -170,7 +170,7 @@ Content-Type: application/json
           {/* Policies side by side */}
           <div className="grid gap-4 lg:grid-cols-2">
             {/* validate-anon policy */}
-            <div className="rounded-lg border border-border bg-muted/20 p-4">
+            <div className="rounded-lg bg-muted/30 p-4">
               <div className="mb-2 flex flex-wrap items-center justify-between gap-2">
                 <h4 className="text-sm font-semibold">{t.anonPolicyTitle}</h4>
               </div>
@@ -185,7 +185,7 @@ Content-Type: application/json
               </ul>
             </div>
             {/* Default policy */}
-            <div className="rounded-lg border border-border bg-muted/20 p-4">
+            <div className="rounded-lg bg-muted/30 p-4">
               <div className="mb-2 flex flex-wrap items-center justify-between gap-2">
                 <h4 className="text-sm font-semibold">{t.defaultPolicyTitle}</h4>
               </div>
@@ -201,7 +201,7 @@ Content-Type: application/json
             </div>
 
             {/* Documents policy */}
-            <div className="rounded-lg border border-border bg-muted/20 p-4">
+            <div className="rounded-lg bg-muted/30 p-4">
               <div className="mb-2 flex flex-wrap items-center justify-between gap-2">
                 <h4 className="text-sm font-semibold">{t.documentsPolicyTitle}</h4>
               </div>
@@ -217,7 +217,7 @@ Content-Type: application/json
             </div>
 
             {/* Token policy */}
-            <div className="rounded-lg border border-border bg-muted/20 p-4">
+            <div className="rounded-lg bg-muted/30 p-4">
               <div className="mb-2 flex flex-wrap items-center justify-between gap-2">
                 <h4 className="text-sm font-semibold">{t.tokenPolicyTitle}</h4>
               </div>
@@ -234,7 +234,7 @@ Content-Type: application/json
           </div>
 
           {/* 429 behavior (collapsible) */}
-          <details className="rounded-lg border border-border bg-muted/20 p-4">
+          <details className="rounded-lg bg-muted/30 p-4">
             <summary className="cursor-pointer text-sm font-semibold">{t.limitReachedTitle}</summary>
 
             <div className="mt-3">

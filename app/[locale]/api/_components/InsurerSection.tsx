@@ -50,7 +50,7 @@ export function InsurerSection({ locale }: { locale: Locale }) {
         </ul>
       </div>
 
-      <div className="rounded-2xl border border-border bg-card/80 p-4 sm:p-5">
+      <div>
         <h3 className="mb-4 text-lg font-semibold sm:text-xl">{t.claimsTitle}</h3>
 
         <div className="space-y-4">
@@ -72,7 +72,7 @@ export function InsurerSection({ locale }: { locale: Locale }) {
         </div>
       </div>
 
-      <div className="rounded-2xl border border-border bg-card/80 p-4 sm:p-5">
+      <div>
         <h3 className="mb-4 text-lg font-semibold sm:text-xl">{t.claimDocsTitle}</h3>
 
         <div className="space-y-4">
@@ -94,7 +94,7 @@ export function InsurerSection({ locale }: { locale: Locale }) {
         </div>
       </div>
 
-      <div className="rounded-2xl border border-border bg-card/80 p-4 sm:p-5">
+      <div>
         <h3 className="mb-4 text-lg font-semibold sm:text-xl">{t.claimReportsTitle}</h3>
 
         <div className="space-y-4">

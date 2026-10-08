@@ -33,9 +33,6 @@ export default async function LegalNotice({ params }: Props) {
       />
       <section className="relative overflow-hidden">
         {/* Subtle Background Glow (Light) */}
-        <div className="pointer-events-none absolute inset-x-0 top-[-12rem] -z-10 transform-gpu overflow-hidden blur-3xl">
-          <div className="relative left-1/2 aspect-[1155/678] w-[72rem] -translate-x-1/2 bg-gradient-to-tr from-teal-500/20 via-cyan-400/15 to-sky-500/15" />
-        </div>
 
         <div className="relative mx-auto max-w-7xl px-6 pb-16 pt-10 md:pb-20 md:pt-16 lg:pb-24 lg:pt-20">
           <div className="absolute right-6 top-6 z-10">
@@ -46,7 +43,7 @@ export default async function LegalNotice({ params }: Props) {
             <h1 className="mt-4 text-3xl font-semibold tracking-tight text-gray-900 md:text-4xl lg:text-5xl mb-8">
               {t.title}
             </h1>
-            <div className="mt-10 rounded-2xl border border-slate-200 bg-white/80 shadow-sm backdrop-blur-xl p-8 md:p-12 space-y-8">
+            <div className="mt-10 rounded-xl border border-slate-200 bg-white p-8 md:p-12 space-y-8">
               <p className="text-gray-600">{t.legalBasis}</p>
 
               <section>

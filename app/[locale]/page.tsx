@@ -35,9 +35,6 @@ export default async function Home({ params }: Props) {
       {/* Hero + Tiles Section */}
       <section className="relative overflow-hidden">
         {/* Background Glow */}
-        <div className="pointer-events-none absolute inset-x-0 top-[-16rem] -z-10 transform-gpu overflow-hidden blur-3xl">
-          <div className="relative left-1/2 aspect-[1155/678] w-[72rem] -translate-x-1/2 bg-gradient-to-tr from-teal-500/60 via-cyan-400/40 to-sky-500/40 opacity-70" />
-        </div>
 
         <div className="relative mx-auto max-w-7xl px-6 pb-16 pt-10 md:pb-24 md:pt-16 lg:pb-28 lg:pt-20">
           {/* Language Switcher top right */}
@@ -46,9 +43,6 @@ export default async function Home({ params }: Props) {
           </div>
           {/* Hero */}
           <div className="w-full">
-            <p className="inline-flex items-center rounded-full bg-white/5 px-3 py-1 text-xs font-medium text-teal-200 ring-1 ring-white/10">
-              {t.badge}
-            </p>
             <h1 className="mt-4 text-3xl font-semibold tracking-tight text-slate-50 md:text-4xl lg:text-5xl">
               {t.title}
             </h1>
@@ -61,10 +55,9 @@ export default async function Home({ params }: Props) {
               const card = t.cards[key]
               return (
                 <Link key={key} href={`/${locale}/${path}`} aria-label={card.ariaLabel} className="group block h-full">
-                  <Card className="flex h-full flex-col justify-between border-slate-800/60 bg-white/10 backdrop-blur-xl transition-all duration-300 hover:-translate-y-1 hover:border-teal-400/70 hover:bg-white/15 hover:shadow-[0_18px_45px_rgba(15,23,42,0.75)]">
+                  <Card className="flex h-full flex-col justify-between border-slate-800/60 bg-white/10 transition-colors hover:border-teal-400/70 hover:bg-white/15">
                     <CardHeader className="flex flex-row items-start gap-4">
                       <div className="relative flex h-12 w-12 items-center justify-center rounded-xl bg-teal-500/10">
-                        <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-teal-400/60 to-cyan-400/40 opacity-0 blur-md transition-opacity duration-300 group-hover:opacity-25" />
                         <Icon className="relative h-6 w-6 text-[#7AE3E9]" />
                       </div>
                       <div>

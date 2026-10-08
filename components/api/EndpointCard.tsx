@@ -71,7 +71,7 @@ export function EndpointCard({
   return (
     <div
       className={cn(
-        "rounded-2xl border border-border/70 bg-muted/30 transition-shadow",
+        "rounded-xl border border-border/70 bg-muted/30 transition-shadow",
         hasDetails && open && "border-border/70",
       )}
     >
@@ -79,7 +79,7 @@ export function EndpointCard({
         <button
           type="button"
           onClick={() => setOpen((v) => !v)}
-          className="w-full rounded-2xl bg-transparent p-4 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2a8289] sm:p-5"
+          className="w-full rounded-xl bg-transparent p-4 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2a8289] sm:p-5"
           aria-expanded={open}
         >
           {headerContent}

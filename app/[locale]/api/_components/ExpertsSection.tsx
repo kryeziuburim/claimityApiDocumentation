@@ -45,7 +45,7 @@ export function ExpertsSection({ locale }: { locale: Locale }) {
       </div>
 
       {/* ========== CASES ========== */}
-      <div className="rounded-2xl border border-border bg-card/80 p-4 sm:p-5">
+      <div>
         <h3 className="mb-4 text-lg font-semibold sm:text-xl">{t.casesTitle}</h3>
 
         <div className="space-y-4">
@@ -72,7 +72,7 @@ export function ExpertsSection({ locale }: { locale: Locale }) {
       </div>
 
       {/* ========== CASE DOCUMENTS ========== */}
-      <div className="rounded-2xl border border-border bg-card/80 p-4 sm:p-5">
+      <div>
         <h3 className="mb-4 text-lg font-semibold sm:text-xl">{t.caseDocsTitle}</h3>
 
         <div className="space-y-4">
@@ -91,7 +91,7 @@ export function ExpertsSection({ locale }: { locale: Locale }) {
       </div>
 
       {/* ========== REPORTS (DRAFT + LIST) ========== */}
-      <div className="rounded-2xl border border-border bg-card/80 p-4 sm:p-5">
+      <div>
         <h3 className="mb-4 text-lg font-semibold sm:text-xl">{t.reportsTitle}</h3>
 
         <div className="space-y-4">
@@ -126,7 +126,7 @@ export function ExpertsSection({ locale }: { locale: Locale }) {
       </div>
 
       {/* ========== SUBMISSION DOCUMENTS + SUBMIT ========== */}
-      <div className="rounded-2xl border border-border bg-card/80 p-4 sm:p-5">
+      <div>
         <h3 className="mb-4 text-lg font-semibold sm:text-xl">{t.submissionDocsTitle}</h3>
 
         <div className="space-y-4">

@@ -47,10 +47,7 @@ export function PayloadCategoryPanel({ payload, state, t, copiedKey, onCopy }: P
   }, [schema, t])
 
   return (
-    <section
-      id={payload.anchorId}
-      className="space-y-6 rounded-3xl border border-border/60 bg-card/80 p-4 shadow-sm sm:p-6"
-    >
+    <section id={payload.anchorId} className="space-y-6">
       <div className="space-y-2 sm:flex sm:flex-wrap sm:items-start sm:justify-between sm:gap-4">
         <div className="sm:max-w-[75%]">
           <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">{t.category}</p>
@@ -80,7 +77,7 @@ export function PayloadCategoryPanel({ payload, state, t, copiedKey, onCopy }: P
                   <span className="font-medium text-foreground">{payload.label}</span>
                   {t.contextSuffix(stats?.totalFields ?? 0, stats?.requiredFields ?? 0)}
                 </p>
-                <div className="grid gap-3">
+                <div className="grid">
                   <InlineHint
                     icon={Info}
                     label={t.formatRequirements}
@@ -122,7 +119,7 @@ export function PayloadCategoryPanel({ payload, state, t, copiedKey, onCopy }: P
             </Card>
           </div>
 
-          <div className="rounded-3xl border border-border/60 bg-background/80">
+          <div className="rounded-xl border border-border/60 bg-background/80">
             <Accordion type="multiple" defaultValue={[]}>
               <AccordionItem value="example" className="border-border/40 px-4 sm:px-6">
                 <AccordionTrigger className="text-base font-semibold">
@@ -134,12 +131,12 @@ export function PayloadCategoryPanel({ payload, state, t, copiedKey, onCopy }: P
                 <AccordionContent forceMount className="px-1">
                   {exampleJson ? (
                     <div className="relative">
-                      <ScrollArea className="h-[360px] max-w-full rounded-2xl border border-border/60">
+                      <ScrollArea className="h-[360px] max-w-full rounded-xl border border-border/60">
                         <button
                           type="button"
                           onClick={() => void onCopy(payload.key, payload.label, exampleJson)}
                           className={cn(
-                            "block w-full rounded-2xl bg-background/90 p-4 text-left text-xs leading-relaxed text-foreground transition hover:bg-muted/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50",
+                            "block w-full rounded-xl bg-background/90 p-4 text-left text-xs leading-relaxed text-foreground transition hover:bg-muted/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50",
                             copiedKey === payload.key && "ring-2 ring-primary/60",
                           )}
                           aria-label={t.copyExampleAria(payload.label)}
@@ -149,7 +146,7 @@ export function PayloadCategoryPanel({ payload, state, t, copiedKey, onCopy }: P
                           </pre>
                         </button>
                       </ScrollArea>
-                      <span className="pointer-events-none absolute right-4 top-4 inline-flex items-center gap-1 rounded-full bg-background/95 px-3 py-1 text-[11px] font-medium text-foreground shadow">
+                      <span className="pointer-events-none absolute right-4 top-4 inline-flex items-center gap-1 rounded-full bg-background/95 px-3 py-1 text-[11px] font-medium text-foreground ">
                         {copiedKey === payload.key ? (
                           <>
                             <Check className="h-3.5 w-3.5 text-primary" aria-hidden="true" />
@@ -178,7 +175,7 @@ export function PayloadCategoryPanel({ payload, state, t, copiedKey, onCopy }: P
                     formatHints.map((hint) => (
                       <div
                         key={`${payload.key}-${hint.path}`}
-                        className="rounded-2xl border border-border/40 bg-muted/30 p-4"
+                        className="rounded-xl border border-border/40 bg-muted/30 p-4"
                       >
                         <p className="font-mono text-xs text-primary">{hint.path}</p>
                         <p className="text-sm text-muted-foreground">{hint.description}</p>
@@ -203,7 +200,7 @@ export function PayloadCategoryPanel({ payload, state, t, copiedKey, onCopy }: P
                     <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
                       {t.datePlausibilityTitle}
                     </p>
-                    <div className="rounded-2xl border border-border/40 bg-muted/30 p-4">
+                    <div className="rounded-xl border border-border/40 bg-muted/30 p-4">
                       <ul className="space-y-2 text-sm text-muted-foreground">
                         {t.datePlausibilityRules.map((rule) => (
                           <li key={rule} className="flex gap-2">
@@ -227,7 +224,7 @@ export function PayloadCategoryPanel({ payload, state, t, copiedKey, onCopy }: P
                           {group.rules.map((rule, index) => (
                             <div
                               key={`${payload.key}-${group.key}-rule-${index}`}
-                              className="rounded-2xl border border-border/40 bg-muted/30 p-4"
+                              className="rounded-xl border border-border/40 bg-muted/30 p-4"
                             >
                               <p className="text-sm font-semibold text-foreground">
                                 <RuleText text={rule.type === "if" ? t.ifThen(rule.condition) : rule.condition} />
