@@ -39,7 +39,6 @@ export default function ModernLoader({ message = "Laden …", className, variant
             height={isDark ? 49 : 45}
             priority
             className="mx-auto mb-5"
-            style={{ height: "auto" }}
           />
           <div
             className={cn(
