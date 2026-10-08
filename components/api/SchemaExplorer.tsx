@@ -55,6 +55,15 @@ const i18n: Record<
     nullable: "Nullable",
     enum: "Enum",
   },
+  it: {
+    noSchema: "Nessuno schema disponibile.",
+    type: "Tipo:",
+    noFields: "Nessun altro campo documentato.",
+    field: "Campo",
+    required: "Obbligatorio",
+    nullable: "Nullable",
+    enum: "Enum",
+  },
 }
 
 type SchemaExplorerProps = {

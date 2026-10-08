@@ -75,4 +75,28 @@ export const legalNoticeMessages: Record<Locale, typeof de> = {
     copyrightText:
       "Les droits d'auteur et tous les autres droits sur le contenu, les images, les photos ou autres fichiers du site web appartiennent exclusivement à Claimity AG ou aux détenteurs de droits spécifiquement nommés. Pour la reproduction de tout élément, le consentement écrit des détenteurs des droits d'auteur doit être obtenu au préalable.",
   },
+  it: {
+    title: "Note legali",
+    legalBasis: "Informazioni ai sensi dell'art. 3 lett. s n. 1 LCSl",
+    addressTitle: "Indirizzo",
+    country: "Svizzera",
+    contactTitle: "Contatto",
+    phoneLabel: "Telefono:",
+    emailLabel: "E-mail:",
+    registerTitle: "Registro di commercio",
+    registerLabel: "Registro di commercio:",
+    registerOffice: "Ufficio del registro di commercio del Cantone di Zurigo",
+    uidLabel: "IDI:",
+    representativesTitle: "Persone autorizzate a rappresentare la società",
+    management: "Direzione: Burim Kryeziu",
+    disclaimerTitle: "Esclusione di responsabilità",
+    disclaimerText:
+      "L'autore non si assume alcuna garanzia per quanto riguarda la correttezza, l'esattezza, l'attualità, l'affidabilità e la completezza delle informazioni. Sono escluse le pretese di responsabilità nei confronti dell'autore per danni di natura materiale o immateriale derivanti dall'accesso o dall'utilizzo o dal mancato utilizzo delle informazioni pubblicate, dall'uso improprio del collegamento o da guasti tecnici.",
+    linksTitle: "Responsabilità per i link",
+    linksText:
+      "I rimandi e i link a siti web di terzi esulano dal nostro ambito di responsabilità. Si declina qualsiasi responsabilità per tali siti web. L'accesso a tali siti web e il loro utilizzo avvengono a rischio dell'utente.",
+    copyrightTitle: "Diritti d'autore",
+    copyrightText:
+      "I diritti d'autore e tutti gli altri diritti su contenuti, immagini, foto o altri file presenti sul sito web appartengono esclusivamente a Claimity SA o ai titolari dei diritti espressamente indicati. Per la riproduzione di qualsiasi elemento occorre ottenere in anticipo il consenso scritto dei titolari dei diritti d'autore.",
+  },
 }

@@ -45,4 +45,18 @@ export const overviewMessages: Record<Locale, typeof de> = {
       "Vous serez informé à temps des changements importants.",
     ],
   },
+  it: {
+    title: "Panoramica",
+    intro:
+      "L'API utilizza metodi HTTPS ed endpoint RESTful per creare, modificare e gestire le risorse nel sistema. Come formato di scambio viene utilizzato JSON.",
+    firstStepsTitle: "Primi passi",
+    firstStepsText:
+      "Questa API offre un accesso completo alle funzioni principali. Che si tratti di integrazioni, automazione o applicazioni proprie, l'API offre la flessibilità necessaria per collegare Claimity ai Suoi sistemi.",
+    extensionTitle: "Estensione delle interfacce",
+    extensionItems: [
+      "Consulti regolarmente il registro delle modifiche per rimanere aggiornato.",
+      "Le modifiche incompatibili vengono annunciate in anticipo.",
+      "Sarà informato tempestivamente sulle modifiche sostanziali.",
+    ],
+  },
 }

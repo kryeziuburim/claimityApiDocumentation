@@ -482,4 +482,165 @@ export const authenticationMessages: Record<Locale, typeof de> = {
       </>,
     ],
   },
+  it: {
+    title: "Autenticazione",
+    intro: (
+      <>
+        La Claimity Partner API utilizza <strong>OAuth 2.0 Client Credentials</strong> con{" "}
+        <strong>JWT Client Assertion (RS256)</strong> e protegge inoltre ogni richiesta con{" "}
+        <strong>DPoP Proof-of-Possession (ES256)</strong>. L'access token è{" "}
+        <strong>vincolato alla Sua chiave DPoP</strong> (<span className="font-mono">cnf.jkt</span>): utilizzi{" "}
+        <strong>un'unica chiave</strong> per l'intera sessione — la richiesta del token <em>e</em> ogni chiamata API — e
+        firmi già la richiesta del token con un DPoP proof.
+      </>
+    ),
+
+    flowTitle: "Flusso di autenticazione",
+    flowIntro: "Ecco come funziona il flusso OAuth2 Client Credentials.",
+    flowImageAlt: "Diagramma di sequenza del flusso di autenticazione (OAuth2 Client Credentials + DPoP)",
+    flowStepsTitle: "Procedura",
+    flowSteps: [
+      <>
+        <strong className="text-foreground">Coppia di chiavi</strong>: l'organizzazione crea una coppia di chiavi RSA in
+        Claimity (la chiave privata viene conservata in modo sicuro).
+      </>,
+      <>
+        <strong className="text-foreground">JWT Client Assertion</strong>: il client genera un JWT di breve durata
+        (RS256).
+      </>,
+      <>
+        <strong className="text-foreground">Richiesta del token</strong>: il client invia{" "}
+        <span className="font-mono">POST /v1/oauth/token</span> (Client Credentials + Assertion){" "}
+        <strong>con un DPoP proof</strong>, che vincola il token emesso alla chiave DPoP.
+      </>,
+      <>
+        <strong className="text-foreground">Validazione</strong>: il server di autenticazione verifica la firma
+        dell'assertion e le autorizzazioni e restituisce la risposta con il token.
+      </>,
+      <>
+        <strong className="text-foreground">URL della richiesta</strong>: il client crea l'URL della richiesta (incl.
+        parametri di query).
+      </>,
+      <>
+        <strong className="text-foreground">DPoP Proof</strong>: per ogni richiesta il client crea un DPoP JWT (ES256)
+        vincolato a metodo + URL, firmato con <strong>la stessa chiave</strong> utilizzata per la richiesta del token.
+      </>,
+      <>
+        <strong className="text-foreground">Chiamata API</strong>: il client chiama l'endpoint con{" "}
+        <span className="font-mono">Authorization: DPoP </span>
+        <span className="font-mono">access_token</span> e <span className="font-mono">DPoP: …</span>.
+      </>,
+      <>
+        <strong className="text-foreground">Risposta</strong>: l'API verifica token/DPoP ed elabora la richiesta /
+        restituisce la risposta.
+      </>,
+    ],
+
+    accessTokenTitle: "Ottenere l'access token",
+    accessTokenIntro: (
+      <>
+        Per le integrazioni dei partner, la Sua organizzazione si autentica tramite una{" "}
+        <strong>JWT Client Assertion firmata</strong>.
+      </>
+    ),
+    prerequisitesTitle: "Prerequisiti",
+    prerequisites: [
+      <>
+        <strong>Client ID</strong> (ad es. <span className="font-mono">org-expo-00001</span>) disponibile nelle
+        impostazioni dell'organizzazione di Claimity
+      </>,
+      <>
+        <strong>Chiave privata RSA</strong> dalle impostazioni dell'organizzazione di Claimity (da conservare in modo
+        sicuro e da non condividere mai)
+      </>,
+    ],
+    tokenEndpointTitle: "Token endpoint",
+    formFieldsLabel: "Campi del modulo",
+    clientIdPlaceholder: "<il Suo client id>",
+    optional: "(facoltativo)",
+    assertionIntro: (
+      <>
+        L'assertion è un JWT di breve durata (10 minuti) e viene firmata con la Sua <strong>chiave privata RSA</strong>.
+      </>
+    ),
+    jtiValue: "UUID (univoco)",
+    tokenRequestExampleTitle: "Esempio: richiesta del token (cURL, segnaposto)",
+    tokenResponseTitle: "Risposta del token",
+    tokenResponseText: (
+      <>
+        La risposta contiene un <span className="font-mono">access_token</span>. Importante: per le chiamate API questo
+        token viene utilizzato come
+        <strong> DPoP token</strong>.
+      </>
+    ),
+
+    sendRequestsTitle: "Inviare richieste API",
+    sendRequestsIntro: (
+      <>
+        Ogni richiesta necessita inoltre di un <strong>DPoP Proof JWT</strong>. Per ogni richiesta viene generato e
+        firmato (ES256) un nuovo proof, per vincolare la richiesta a metodo + URL — sempre però con{" "}
+        <strong>la stessa chiave</strong> a cui è vincolato l'access token (<span className="font-mono">cnf.jkt</span>
+        ). Un proof firmato con un'altra chiave viene rifiutato con{" "}
+        <span className="font-mono">401 &quot;Access token is not bound to the DPoP proof key&quot;</span>.
+      </>
+    ),
+    requiredHeadersTitle: "Header obbligatori",
+    dpopContentTitle: "Contenuto del DPoP proof",
+    dpopContentItems: [
+      <>
+        <span className="font-mono">htu</span> deve essere l'<strong>URL esatto</strong> incl. query string
+      </>,
+      <>
+        <span className="font-mono">htm</span> deve corrispondere esattamente al metodo HTTP (GET/POST/PUT/DELETE)
+      </>,
+      <>
+        <span className="font-mono">jti</span> deve essere <strong>nuovo per ogni richiesta</strong> (nessun replay)
+      </>,
+      <>
+        <span className="font-mono">iat</span> deve rientrare nella finestra temporale consentita (evitare il clock
+        skew)
+      </>,
+    ],
+    apiCallExampleTitle: "Esempio: chiamata API autenticata (cURL)",
+    troubleshootingTitle: "Risoluzione dei problemi: 401 invalid_dpop",
+    troubleshootingIntro: "Cause frequenti:",
+    troubleshootingItems: [
+      <>
+        <strong>not bound</strong>: richiesta firmata con una chiave diversa da quella del token — riutilizzare la
+        stessa chiave di sessione e corredare la richiesta del token di un DPoP proof
+      </>,
+      <>
+        <strong>htu mismatch</strong>: l'URL deve essere esatto, incl. query
+      </>,
+      <>
+        <strong>htm mismatch</strong>: il metodo deve corrispondere
+      </>,
+      <>
+        <strong>iat</strong> fuori dalla finestra: correggere l'ora di sistema
+      </>,
+      <>
+        <strong>replay</strong>: <span className="font-mono">jti</span> deve essere nuovo per ogni richiesta
+      </>,
+      <>
+        <strong>ath mismatch</strong>: <span className="font-mono">SHA-256(access_token)</span> base64url
+      </>,
+    ],
+
+    correlationTitle: "Correlation ID",
+    correlationParagraphs: [
+      <>
+        Ogni risposta restituisce un header <span className="font-mono">X-Correlation-Id</span>. Claimity utilizza lo
+        stesso ID nei propri log del server e, in caso di errore, come campo <span className="font-mono">instance</span>{" "}
+        del body <span className="font-mono">application/problem+json</span> — lo registri nei Suoi log e lo indichi
+        nelle richieste di supporto.
+      </>,
+      <>
+        Può anche fornire un proprio ID per tracciare una richiesta end-to-end: invii un header di richiesta{" "}
+        <span className="font-mono">X-Correlation-Id</span> con un token breve e stampabile (≤ 80 caratteri). Un valore
+        valido viene restituito invariato; un valore non valido o troppo lungo viene ignorato e Claimity genera un
+        proprio ID. Il Correlation ID è indipendente da DPoP (il proof vincola solo metodo + URL), quindi l'aggiunta di
+        questo header non influisce sulla firma.
+      </>,
+    ],
+  },
 }

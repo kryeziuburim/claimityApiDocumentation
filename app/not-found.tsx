@@ -29,6 +29,12 @@ const messages: Record<Locale, { title: string; lead: string; ctaPrimary: string
     ctaPrimary: "Retour à l'accueil",
     ctaSecondary: "Contacter l'assistance",
   },
+  it: {
+    title: "Pagina non trovata",
+    lead: "La pagina richiesta non esiste o è stata spostata.",
+    ctaPrimary: "Torna alla pagina iniziale",
+    ctaSecondary: "Contatta il supporto",
+  },
 }
 
 const subscribeNoop = () => () => {}

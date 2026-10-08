@@ -58,4 +58,22 @@ export const reportingMessages: Record<Locale, typeof de> = {
     noteText:
       "L'API est fournie sur la base de cette documentation. Il n'y a pas d'implémentation guidée ou de support de code.",
   },
+  it: {
+    title: "Segnala un problema",
+    intro: "Se ha riscontrato un errore, siamo qui per aiutarLa. Si assicuri prima che il problema sia riproducibile.",
+    beforeTitle: "Prima della segnalazione",
+    doItems: [
+      "Verificare la riproducibilità",
+      "Eseguire test dell'API con Postman/Insomnia",
+      "Raccogliere i dettagli su richiesta e risposta",
+    ],
+    dontItem: "Non inviare dati di accesso nella segnalazione",
+    submitTitle: "Invia segnalazione",
+    submitText:
+      "Descriva i passaggi per riprodurre il problema. Il nostro supporto esaminerà il caso tempestivamente e La contatterà il prima possibile.",
+    submitButton: "Segnala un problema",
+    noteLabel: "Nota:",
+    noteText:
+      "L'API viene messa a disposizione sulla base di questa documentazione. Non è previsto alcun supporto all'implementazione né supporto sul codice.",
+  },
 }

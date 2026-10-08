@@ -44,7 +44,7 @@ describe("pageAlternates", () => {
   it("points every language at the same page", () => {
     expect(pageAlternates("en", "api/")).toEqual({
       canonical: "/en/api/",
-      languages: { "de-CH": "/de/api/", en: "/en/api/", fr: "/fr/api/", "x-default": "/de/api/" },
+      languages: { "de-CH": "/de/api/", en: "/en/api/", fr: "/fr/api/", it: "/it/api/", "x-default": "/de/api/" },
     })
   })
 })

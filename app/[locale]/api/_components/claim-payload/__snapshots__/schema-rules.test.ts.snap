@@ -216,6 +216,78 @@ exports[`appraiser schema > rules and format hints (fr) 1`] = `
 }
 `;
 
+exports[`appraiser schema > rules and format hints (it) 1`] = `
+{
+  "formatHints": [
+    {
+      "description": "Data in formato ISO YYYY-MM-DD",
+      "path": "payloadJson.incidentDate",
+    },
+    {
+      "description": "Stringa numerica senza segno (decimali facoltativi, punto come separatore)",
+      "path": "payloadJson.estimatedAmount",
+    },
+    {
+      "description": "Data in formato ISO YYYY-MM-DD",
+      "path": "payloadJson.inspectionDate",
+    },
+  ],
+  "ruleGroups": [
+    {
+      "key": "claimInsurance",
+      "rules": [
+        {
+          "condition": "\`claimInsurance\` ha il valore \`liability\`",
+          "details": [
+            "Campi obbligatori: \`counterparty\`",
+            "\`insured\` richiede \`name\`",
+            "\`counterparty\` richiede \`name\`, \`phone\`, \`city\`",
+          ],
+          "type": "if",
+        },
+        {
+          "condition": "\`claimInsurance\` ha il valore \`own\`",
+          "details": [
+            "\`insured\` richiede \`name\`, \`phone\`, \`city\`",
+          ],
+          "type": "if",
+        },
+      ],
+      "title": "In base al campo \`claimInsurance\`",
+    },
+    {
+      "key": "inspectionType",
+      "rules": [
+        {
+          "condition": "\`inspectionType\` ha il valore \`onsite\`",
+          "details": [
+            "Campi obbligatori: \`inspectionDate\`, \`inspectionContact\`",
+            "\`inspectionContact\` richiede \`name\`, \`postalCode\`, \`city\`, \`phone\`, \`country\`",
+            "\`inspectionContact.country\` deve avere uno dei valori \`CH\`, \`DE\`, \`AT\`, \`FR\`, \`IT\`, \`LI\`",
+          ],
+          "type": "if",
+        },
+      ],
+      "title": "In base al campo \`inspectionType\`",
+    },
+    {
+      "key": "inspectionContact",
+      "rules": [
+        {
+          "condition": "il campo \`inspectionContact\` è presente",
+          "details": [
+            "\`inspectionContact\` richiede \`name\`, \`postalCode\`, \`city\`, \`phone\`, \`country\`",
+            "\`inspectionContact.country\` deve avere uno dei valori \`CH\`, \`DE\`, \`AT\`, \`FR\`, \`IT\`, \`LI\`",
+          ],
+          "type": "if",
+        },
+      ],
+      "title": "In base al campo \`inspectionContact\`",
+    },
+  ],
+}
+`;
+
 exports[`appraiser schema > stats 1`] = `
 {
   "arrayNodes": 0,
@@ -415,6 +487,71 @@ exports[`fraud schema > rules and format hints (fr) 1`] = `
         },
       ],
       "title": "Selon \`claimInsurance\`",
+    },
+  ],
+}
+`;
+
+exports[`fraud schema > rules and format hints (it) 1`] = `
+{
+  "formatHints": [
+    {
+      "description": "Data in formato ISO YYYY-MM-DD, stringa vuota ("") o null",
+      "path": "payloadJson.insured.birthDate",
+    },
+    {
+      "description": "Data in formato ISO YYYY-MM-DD, stringa vuota ("") o null",
+      "path": "payloadJson.counterparty.birthDate",
+    },
+    {
+      "description": "Data in formato ISO YYYY-MM-DD, stringa vuota ("") o null",
+      "path": "payloadJson.insuredPersons[].birthDate",
+    },
+    {
+      "description": "Data in formato ISO YYYY-MM-DD, stringa vuota ("") o null",
+      "path": "payloadJson.counterpartyPersons[].birthDate",
+    },
+    {
+      "description": "Data in formato ISO YYYY-MM-DD",
+      "path": "payloadJson.incidentDate",
+    },
+    {
+      "description": "Campo orario HH:MM (24h)",
+      "path": "payloadJson.incidentTime",
+    },
+    {
+      "description": "Stringa numerica senza segno (decimali facoltativi, punto come separatore)",
+      "path": "payloadJson.estimatedAmount",
+    },
+  ],
+  "ruleGroups": [
+    {
+      "key": "driverAtIncident",
+      "rules": [
+        {
+          "condition": "\`driverAtIncident\` è impostato",
+          "details": [
+            "Parte assicurata: in insured e insuredPersons[] al massimo una persona può avere driverAtIncident = "yes" (anche nessuna).",
+            "Controparte: in counterparty e counterpartyPersons[] al massimo una persona può avere driverAtIncident = "yes" (anche nessuna).",
+          ],
+          "type": "if",
+        },
+      ],
+      "title": "In base al campo \`driverAtIncident\`",
+    },
+    {
+      "key": "claimInsurance",
+      "rules": [
+        {
+          "condition": "\`claimInsurance\` ha il valore \`liability\`",
+          "details": [
+            "Campi obbligatori: \`counterparty\`",
+            "\`counterparty\` richiede \`name\`, \`address\`, \`postalCode\`, \`city\`, \`phone\`, \`email\`",
+          ],
+          "type": "if",
+        },
+      ],
+      "title": "In base al campo \`claimInsurance\`",
     },
   ],
 }
@@ -900,6 +1037,163 @@ exports[`special schema > rules and format hints (fr) 1`] = `
 }
 `;
 
+exports[`special schema > rules and format hints (it) 1`] = `
+{
+  "formatHints": [
+    {
+      "description": "Data in formato ISO YYYY-MM-DD, stringa vuota ("") o null",
+      "path": "payloadJson.insured.firstRegistration",
+    },
+    {
+      "description": "Data in formato ISO YYYY-MM-DD, stringa vuota ("") o null",
+      "path": "payloadJson.counterparty.firstRegistration",
+    },
+    {
+      "description": "Data in formato ISO YYYY-MM-DD",
+      "path": "payloadJson.incidentDate",
+    },
+    {
+      "description": "Stringa numerica senza segno (decimali facoltativi, punto come separatore)",
+      "path": "payloadJson.estimatedAmount",
+    },
+    {
+      "description": "Data in formato ISO YYYY-MM-DD",
+      "path": "payloadJson.inspectionDate",
+    },
+  ],
+  "ruleGroups": [
+    {
+      "key": "machineCategory",
+      "rules": [
+        {
+          "condition": "\`machineCategory\` ha uno dei valori \`rail_vehicle\`, \`aircraft\`",
+          "details": [
+            "\`claimInsurance\` deve essere \`liability\`",
+          ],
+          "type": "if",
+        },
+        {
+          "condition": "\`machineCategory\` ha il valore \`rail_vehicle\`",
+          "details": [
+            "\`machineType\` deve avere uno dei valori \`gondola\`, \`train\`, \`tram\`, \`rack_railway\`",
+          ],
+          "type": "if",
+        },
+        {
+          "condition": "\`machineCategory\` ha il valore \`aircraft\`",
+          "details": [
+            "\`machineType\` deve avere uno dei valori \`glider\`, \`powered_aircraft\`, \`drone\`",
+          ],
+          "type": "if",
+        },
+        {
+          "condition": "\`machineCategory\` ha il valore \`land_machine\`",
+          "details": [
+            "\`machineType\` deve avere uno dei valori \`tractor\`, \`trailer\`, \`harvester\`, \`stationary_machine\`",
+          ],
+          "type": "if",
+        },
+        {
+          "condition": "\`machineCategory\` ha il valore \`land_machine\`",
+          "details": [
+            "\`inspectionType\` deve avere uno dei valori \`workshop\`, \`private\`, \`estimate_review\`, \`invoice_review\`",
+          ],
+          "type": "if",
+        },
+        {
+          "condition": "\`machineCategory\` ha uno dei valori \`rail_vehicle\`, \`aircraft\`",
+          "details": [
+            "\`inspectionType\` deve avere uno dei valori \`onsite\`, \`estimate_review\`, \`invoice_review\`",
+          ],
+          "type": "if",
+        },
+        {
+          "condition": "\`machineCategory\` ha uno dei valori \`aircraft\`, \`land_machine\` e \`claimInsurance\` ha il valore \`liability\`",
+          "details": [
+            "Campi obbligatori: \`counterparty\`",
+            "\`counterparty\` richiede \`make\`",
+          ],
+          "type": "if",
+        },
+        {
+          "condition": "\`machineCategory\` ha il valore \`land_machine\` e \`claimInsurance\` ha uno dei valori \`partial\`, \`comprehensive\`",
+          "details": [
+            "Campi obbligatori: \`insured\`",
+            "\`insured\` richiede \`carMake\`",
+          ],
+          "type": "if",
+        },
+      ],
+      "title": "In base al campo \`machineCategory\`",
+    },
+    {
+      "key": "claimInsurance",
+      "rules": [
+        {
+          "condition": "\`claimInsurance\` ha il valore \`liability\`",
+          "details": [
+            "Campi obbligatori: \`counterparty\`",
+            "\`counterparty\` richiede \`name\`, \`phone\`, \`city\`",
+          ],
+          "type": "if",
+        },
+        {
+          "condition": "\`claimInsurance\` ha uno dei valori \`partial\`, \`comprehensive\`",
+          "details": [
+            "Campi obbligatori: \`insured\`",
+            "\`insured\` richiede \`name\`, \`phone\`, \`address\`, \`postalCode\`, \`city\`",
+          ],
+          "type": "if",
+        },
+      ],
+      "title": "In base al campo \`claimInsurance\`",
+    },
+    {
+      "key": "inspectionType",
+      "rules": [
+        {
+          "condition": "\`inspectionType\` ha il valore \`workshop\`",
+          "details": [
+            "Campi obbligatori: \`inspectionDate\`, \`workshop\`",
+            "\`workshop\` richiede \`name\`, \`phone\`, \`city\`, \`postalCode\`",
+          ],
+          "type": "if",
+        },
+        {
+          "condition": "\`inspectionType\` ha uno dei valori \`estimate_review\`, \`invoice_review\`",
+          "details": [
+            "Campi obbligatori: \`workshop\`",
+            "\`workshop\` richiede \`name\`, \`phone\`",
+          ],
+          "type": "if",
+        },
+        {
+          "condition": "\`inspectionType\` ha uno dei valori \`private\`, \`onsite\`",
+          "details": [
+            "Campi obbligatori: \`inspectionDate\`, \`inspectionContact\`",
+          ],
+          "type": "if",
+        },
+      ],
+      "title": "In base al campo \`inspectionType\`",
+    },
+    {
+      "key": "inspectionContact",
+      "rules": [
+        {
+          "condition": "il campo \`inspectionContact\` è presente",
+          "details": [
+            "\`inspectionContact\` richiede \`name\`, \`address\`, \`postalCode\`, \`city\`, \`phone\`",
+          ],
+          "type": "if",
+        },
+      ],
+      "title": "In base al campo \`inspectionContact\`",
+    },
+  ],
+}
+`;
+
 exports[`special schema > stats 1`] = `
 {
   "arrayNodes": 0,
@@ -1210,6 +1504,108 @@ exports[`vehicle schema > rules and format hints (fr) 1`] = `
         },
       ],
       "title": "Selon \`inspectionContact\`",
+    },
+  ],
+}
+`;
+
+exports[`vehicle schema > rules and format hints (it) 1`] = `
+{
+  "formatHints": [
+    {
+      "description": "Data in formato ISO YYYY-MM-DD, stringa vuota ("") o null",
+      "path": "payloadJson.insured.firstRegistration",
+    },
+    {
+      "description": "Data in formato ISO YYYY-MM-DD, stringa vuota ("") o null",
+      "path": "payloadJson.counterparty.firstRegistration",
+    },
+    {
+      "description": "Data in formato ISO YYYY-MM-DD",
+      "path": "payloadJson.incidentDate",
+    },
+    {
+      "description": "Stringa numerica senza segno (decimali facoltativi, punto come separatore)",
+      "path": "payloadJson.estimatedAmount",
+    },
+    {
+      "description": "Data in formato ISO YYYY-MM-DD",
+      "path": "payloadJson.inspectionDate",
+    },
+  ],
+  "ruleGroups": [
+    {
+      "key": "claimInsurance",
+      "rules": [
+        {
+          "condition": "\`claimInsurance\` ha il valore \`liability\`",
+          "details": [
+            "Campi obbligatori: \`counterparty\`",
+            "\`counterparty\` richiede \`name\`, \`phone\`, \`licensePlate\`, \`city\`, \`carMake\`",
+          ],
+          "type": "if",
+        },
+        {
+          "condition": "\`claimInsurance\` ha uno dei valori \`partial\`, \`comprehensive\`",
+          "details": [
+            "Campi obbligatori: \`insured\`",
+            "\`insured\` richiede \`name\`, \`phone\`, \`licensePlate\`, \`address\`, \`postalCode\`, \`city\`, \`carMake\`",
+          ],
+          "type": "if",
+        },
+        {
+          "condition": "\`claimInsurance\` ha il valore \`partial\`",
+          "details": [
+            "\`claimType\` deve avere uno dei valori \`fire\`, \`natural_hazard\`, \`hail_damage\`, \`snow_slide\`, \`theft\`, \`animal_collision\`, \`marten_damage\`, \`glass_breakage\`, \`vandalism\`, \`assistance\`, \`falling_objects\`, \`parking_damage\`",
+          ],
+          "type": "if",
+        },
+      ],
+      "title": "In base al campo \`claimInsurance\`",
+    },
+    {
+      "key": "inspectionType",
+      "rules": [
+        {
+          "condition": "\`inspectionType\` ha il valore \`workshop\`",
+          "details": [
+            "Campi obbligatori: \`inspectionDate\`, \`workshop\`",
+            "\`workshop\` richiede \`name\`, \`phone\`, \`city\`, \`postalCode\`, \`country\`",
+            "\`workshop.country\` deve avere uno dei valori \`CH\`, \`DE\`, \`AT\`, \`FR\`, \`IT\`, \`LI\`",
+          ],
+          "type": "if",
+        },
+        {
+          "condition": "\`inspectionType\` ha uno dei valori \`estimate_review\`, \`invoice_review\`",
+          "details": [
+            "Campi obbligatori: \`workshop\`",
+            "\`workshop\` richiede \`name\`, \`phone\`",
+          ],
+          "type": "if",
+        },
+        {
+          "condition": "\`inspectionType\` ha uno dei valori \`private\`, \`live_expertise\`",
+          "details": [
+            "Campi obbligatori: \`inspectionDate\`, \`inspectionContact\`",
+          ],
+          "type": "if",
+        },
+      ],
+      "title": "In base al campo \`inspectionType\`",
+    },
+    {
+      "key": "inspectionContact",
+      "rules": [
+        {
+          "condition": "il campo \`inspectionContact\` è presente",
+          "details": [
+            "\`inspectionContact\` richiede \`name\`, \`address\`, \`postalCode\`, \`city\`, \`phone\`, \`country\`",
+            "\`inspectionContact.country\` deve avere uno dei valori \`CH\`, \`DE\`, \`AT\`, \`FR\`, \`IT\`, \`LI\`",
+          ],
+          "type": "if",
+        },
+      ],
+      "title": "In base al campo \`inspectionContact\`",
     },
   ],
 }

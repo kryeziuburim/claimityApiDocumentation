@@ -20,6 +20,10 @@ const meta: Record<Locale, { title: string; description: string }> = {
     title: "Claimity - Documentation API",
     description: "Instructions et documentation pour l'utilisation de l'API Claimity.",
   },
+  it: {
+    title: "Claimity - Documentazione API",
+    description: "Istruzioni e documentazione per l'utilizzo dell'API Claimity.",
+  },
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {

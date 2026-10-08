@@ -51,7 +51,7 @@ const de = {
   endpoints: {
     claimsList: "Paginierte Liste der Claims.",
     claimsCreate: "Claim erstellen.",
-    claimsValidate: "Claim-Request validieren (ohne Anlage).",
+    claimsValidate: "Claim-Request validieren, ohne den Claim anzulegen.",
     claimsGet: "Claim-Details abrufen.",
     claimDocsList: "Paginierte Liste der Claim-Dokumente.",
     claimDocsAdd: "Dokument hochladen.",
@@ -107,7 +107,7 @@ export const insurerMessages: Record<Locale, typeof de> = {
     endpoints: {
       claimsList: "Paginated list of claims.",
       claimsCreate: "Create claim.",
-      claimsValidate: "Validate claim request (without attachment).",
+      claimsValidate: "Validate a claim request without creating the claim.",
       claimsGet: "Get claim details.",
       claimDocsList: "Paginated list of claim documents.",
       claimDocsAdd: "Upload document.",
@@ -161,13 +161,67 @@ export const insurerMessages: Record<Locale, typeof de> = {
     endpoints: {
       claimsList: "Liste paginée des sinistres.",
       claimsCreate: "Créer un sinistre.",
-      claimsValidate: "Valider la demande de sinistre (sans pièce jointe).",
+      claimsValidate: "Valider la demande de sinistre sans créer le sinistre.",
       claimsGet: "Obtenir les détails du sinistre.",
       claimDocsList: "Liste paginée des documents de sinistre.",
       claimDocsAdd: "Télécharger un document.",
       claimDocsGet: "Obtenir le contenu du document (y compris ContentBase64).",
       claimReportsList: "Lister les rapports (soumissions) pour un sinistre.",
       claimReportDocsList: "Obtenir le contenu des documents d'une soumission de rapport.",
+    },
+  },
+  it: {
+    title: "Assicuratori",
+    intro:
+      "Endpoint per gli assicuratori per creare/validare/recuperare sinistri, documenti e panoramiche dei rapporti.",
+    timestampsTitle: "Timestamp & sincronizzazione incrementale",
+    timestampsIntro:
+      "Quattro timestamp determinano i filtri degli elenchi e la sincronizzazione. I filtri di sincronizzazione portano il nome del campo che filtrano ed effettuano un confronto inclusivo (>=).",
+    timestampItems: [
+      { field: "CreatedAt", text: "Momento di creazione del sinistro. Filtri: createdFrom / createdTo." },
+      {
+        text: "completedFrom / completedTo filtrano in base al momento della chiusura più recente del caso (evento Finalized; per i casi riaperti conta la chiusura più recente). Pensati per periodi di analisi («tutti i casi chiusi nel Q2») — non per la sincronizzazione.",
+      },
+      {
+        field: "LastChangedAt",
+        text: "Ultima modifica rilevante per il partner (stato, documenti, rapporti, commenti, importi). Filtro: lastChangedSince.",
+      },
+      {
+        field: "LastReportApprovedAt",
+        text: "Momento dell'ultima approvazione di un rapporto (null, se non ancora avvenuta). Filtro: lastReportApprovedSince — i sinistri senza rapporto approvato non corrispondono mai.",
+      },
+    ],
+    syncRecipeTitle: "Procedura di sincronizzazione (poller giornaliero)",
+    syncRecipeSteps: [
+      "Eseguire la richiesta con lastChangedSince=<cursore salvato> (prima esecuzione: senza filtro).",
+      "Elaborare i risultati in modo idempotente — il confronto è inclusivo, il valore limite può ricomparire.",
+      "Salvare come nuovo cursore il valore massimo di LastChangedAt ricevuto.",
+      "Le interessano solo i nuovi rapporti approvati? Stessa procedura con lastReportApprovedSince e LastReportApprovedAt.",
+    ],
+    amountsTitle: "Importi (CHF)",
+    amountsIntro:
+      "L'elenco dei sinistri e i dettagli del sinistro forniscono gli importi registrati dal perito in CHF (null = non ancora registrato).",
+    amountItems: [
+      { field: "CostEstimateAmount", text: "Preventivo dell'officina." },
+      { field: "ApprovedAmount", text: "Importo approvato dalla perizia." },
+      {
+        field: "SavingsAmount",
+        text: "Risparmio = CostEstimateAmount − ApprovedAmount; solo se entrambi sono impostati e il preventivo è più alto, altrimenti null.",
+      },
+    ],
+    claimsTitle: "Sinistri",
+    claimDocsTitle: "Documenti del sinistro",
+    claimReportsTitle: "Rapporti sui sinistri",
+    endpoints: {
+      claimsList: "Elenco paginato dei sinistri.",
+      claimsCreate: "Creare un sinistro.",
+      claimsValidate: "Validare la richiesta del sinistro senza creare il sinistro.",
+      claimsGet: "Recuperare i dettagli del sinistro.",
+      claimDocsList: "Elenco paginato dei documenti del sinistro.",
+      claimDocsAdd: "Caricare un documento.",
+      claimDocsGet: "Recuperare il contenuto del documento (incl. ContentBase64).",
+      claimReportsList: "Elencare i rapporti (submission) di un sinistro.",
+      claimReportDocsList: "Recuperare i contenuti dei documenti di una submission di rapporto.",
     },
   },
 }

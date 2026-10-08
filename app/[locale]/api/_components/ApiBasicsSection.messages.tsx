@@ -413,4 +413,141 @@ export const apiBasicsMessages: Record<Locale, typeof de> = {
     },
     validationExampleTitle: "Exemple : 400 lors de la validation du payload (POST /v1/insurers/claims:validate)",
   },
+  it: {
+    title: "Nozioni di base dell'API",
+    intro: "Concetti e convenzioni fondamentali utilizzati nell'intera API.",
+
+    requestFormatTitle: "Formato della richiesta",
+    requestFormatText: (
+      <>
+        Ogni richiesta è composta da <strong>metodo</strong>, <strong>URL</strong>, eventuali{" "}
+        <strong>parametri di query</strong>, <strong>header </strong>e (per <span className="font-mono">POST</span>/
+        <span className="font-mono">PUT</span>) un <strong>body JSON</strong>.
+      </>
+    ),
+    urlStructureTitle: "Struttura dell'URL",
+    baseUrlLabel: "Base URL:",
+    pathLabel: "Path:",
+    pathValue: "/v1/<resource>",
+    queryLabel: "Query:",
+    eg: "ad es.",
+    exampleUrlTitle: "Esempio di URL",
+    httpMethodsTitle: "Metodi HTTP",
+    methods: {
+      GET: "Recuperare risorse",
+      POST: "Creare risorse",
+      PUT: "Sostituire/aggiornare risorse",
+      DELETE: "Eliminare risorse",
+    },
+    typicalHeadersTitle: "Header tipici",
+    contentTypeNote: "(con body JSON)",
+
+    responseFormatTitle: "Formato della risposta",
+    responseFormatText: (
+      <>
+        Le risposte sono di norma in formato <strong>JSON</strong> (
+        <span className="font-mono">Content-Type: application/json</span>) e utilizzano i codici di stato HTTP per
+        segnalare l'esito positivo o l'errore.
+      </>
+    ),
+    successTitle: "Risposte di successo",
+    successBody: "Il body contiene di norma un oggetto o un elenco",
+    exampleObjectTitle: "Esempio (oggetto)",
+    errorTitle: "Risposte di errore (ProblemDetails)",
+    errorBody: "Il body segue una struttura simile a ProblemDetails",
+    exampleProblemTitle: "Esempio (Problem JSON)",
+
+    rateLimitTitle: "Rate Limiting",
+    rateLimitIntro: (
+      <>
+        La Partner API è protetta da rate limiting per garantire un utilizzo equo e la stabilità. I limiti vengono
+        applicati <strong>per ogni partizione client</strong>.
+      </>
+    ),
+    anonPolicyTitle: "Validazione anonima",
+    anonPolicyText:
+      "POST /v1/insurers/claims:validate è utilizzabile senza token ed è quindi soggetto a limiti più restrittivi.",
+    anonPolicyLimit: "FixedWindow: 10 richieste/minuto per client/IP",
+    defaultPolicyTitle: "Standard per la Partner API",
+    defaultPolicyText: "Per gli endpoint standard il numero di richieste è leggermente limitato.",
+    defaultPolicyLimit: (
+      <>
+        <strong>TokenBucket</strong>: ca. <strong>60 richieste/minuto</strong>, <strong>Burst</strong> fino a{" "}
+        <strong>20</strong>, <strong>Queue</strong> <strong>0</strong>
+      </>
+    ),
+    documentsPolicyTitle: "Route dei documenti",
+    documentsPolicyText: (
+      <>
+        Per gli endpoint con <span className="font-mono">.../documents...</span> valgono limiti più restrittivi (ad es.
+        per upload/download).
+      </>
+    ),
+    documentsPolicyLimit: (
+      <>
+        <strong>TokenBucket</strong>: ca. <strong>20 richieste/minuto</strong>, <strong>Burst</strong> fino a{" "}
+        <strong>10</strong>, <strong>Queue</strong> <strong>0</strong>
+      </>
+    ),
+    tokenPolicyTitle: "Token endpoint",
+    tokenPolicyText: "Il token endpoint è soggetto a limiti rigorosi per prevenire possibili attacchi.",
+    tokenPolicyLimit: (
+      <>
+        <strong>Fixed Window</strong>: <strong>10 richieste/minuto</strong> per <strong>client</strong>
+      </>
+    ),
+    limitReachedTitle: "Quando viene raggiunto un limite (HTTP 429)",
+    limitReachedItems: [
+      <>
+        Risposta: <strong>429 Too Many Requests</strong> (Rejection Code 429)
+      </>,
+      <>
+        Header facoltativo: <span className="font-mono">Retry-After</span>
+      </>,
+      <>
+        Indicazione di diagnosi/policy: <span className="font-mono">X-RateLimit-Policy</span>
+      </>,
+      <>
+        Body: <strong>Problem JSON</strong>
+      </>,
+    ],
+    recommendationsTitle: "Raccomandazioni per i client",
+    recommendations: [
+      <>
+        In caso di <span className="font-mono">429</span> ripetere le richieste con <strong>backoff</strong> e
+        rispettare <span className="font-mono">Retry-After</span>.
+      </>,
+      <>Limitare la frequenza (throttling) di upload/download dei documenti.</>,
+      <>I burst sono limitati (nessun queueing) – con un elevato parallelismo si arriva più rapidamente al 429.</>,
+    ],
+
+    idempotencyTitle: "Idempotenza (Idempotency-Key)",
+    idempotencyIntro:
+      "Le richieste POST possono contenere l'header Idempotency-Key (valore univoco a libera scelta, ad es. un UUID). Se la stessa richiesta viene ripetuta — ad esempio dopo un timeout — l'API restituisce nuovamente la risposta salvata, senza eseguire l'operazione una seconda volta.",
+    idempotencyItems: [
+      "La chiave è vincolata a metodo, path, client e hash del payload — la stessa chiave con un payload diverso vale come nuova richiesta.",
+      "Le risposte salvate vengono conservate per 24 ore per il replay.",
+      "I body delle richieste superiori a 16 MB aggirano l'idempotenza; le risposte superiori a 16 MB non vengono salvate per il replay (un retry esegue nuovamente l'operazione).",
+      "Raccomandazione: impostarla sempre per POST /v1/insurers/claims — così un retry dopo errori di rete è garantito senza creazioni doppie.",
+    ],
+
+    errorCatalogTitle: "Catalogo degli errori",
+    errorCatalogIntro:
+      "Gli errori seguono la struttura ProblemDetails (title, status, detail). Gli errori di validazione del payload vengono restituiti come ValidationProblemDetails con una mappa errors; ogni messaggio indica il percorso del campo e il requisito concreto.",
+    meaningHeader: "Significato",
+    errorMeanings: {
+      invalid_org_context: "Il token non è associato a un'organizzazione (univoca) del tipo previsto.",
+      forbidden: "Con questo token l'accesso alla risorsa non è consentito.",
+      org_without_members: "L'organizzazione non ha membri — creazione/recupero non possibili.",
+      invalid_category: "Categoria del caso sconosciuta (consentite: vehicle, appraiser, fraud, special).",
+      invalid_payload: "PayloadJson manca o non è un JSON valido.",
+      invalid_state:
+        "L'azione non è consentita nello stato attuale del caso (ad es. riapertura di un caso non ancora chiuso).",
+      "invalid_document / missing_documents": "Documento non valido o documenti obbligatori mancanti.",
+      "unsupported_content_type / size_limit_exceeded": "Tipo di file non consentito o limite di upload superato.",
+      "upstream_timeout / upstream_error":
+        "Un servizio a valle non ha risposto (in tempo) — eseguire un retry con backoff.",
+    },
+    validationExampleTitle: "Esempio: 400 nella validazione del payload (POST /v1/insurers/claims:validate)",
+  },
 }

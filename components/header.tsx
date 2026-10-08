@@ -14,6 +14,7 @@ const headerMessages: Record<Locale, { navTitle: string; clientLogin: string }> 
   de: { navTitle: "Navigation", clientLogin: "Anmelden" },
   en: { navTitle: "Navigation", clientLogin: "Login" },
   fr: { navTitle: "Navigation", clientLogin: "Connexion" },
+  it: { navTitle: "Navigazione", clientLogin: "Accedi" },
 }
 
 export function Header() {

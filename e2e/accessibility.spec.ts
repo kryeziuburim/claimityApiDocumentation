@@ -5,7 +5,16 @@ import { expect, test, waitForClaimSchemas } from "./fixtures"
 // WCAG 2.1 A/AA rules; the build fails on serious and critical violations.
 const BLOCKING = new Set(["serious", "critical"])
 
-for (const path of ["/de/", "/de/api/", "/de/manual/", "/de/support/", "/de/legal-notice/", "/en/api/", "/fr/api/"]) {
+for (const path of [
+  "/de/",
+  "/de/api/",
+  "/de/manual/",
+  "/de/support/",
+  "/de/legal-notice/",
+  "/en/api/",
+  "/fr/api/",
+  "/it/api/",
+]) {
   test(`${path} has no serious accessibility violations`, async ({ page }) => {
     await page.goto(path)
     if (path.endsWith("/api/")) await waitForClaimSchemas(page)

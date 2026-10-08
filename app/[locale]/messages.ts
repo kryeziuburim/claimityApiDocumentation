@@ -137,4 +137,50 @@ export const homeMessages: Record<Locale, typeof de> = {
       },
     },
   },
+  it: {
+    meta: {
+      title: "Claimity – Centro assistenza",
+      description:
+        "Centro assistenza della piattaforma Claimity. Claimity assegna automaticamente periti certificati – per un'elaborazione più rapida, meno oneri e piena trasparenza.",
+      socialDescription: "Centro assistenza della piattaforma Claimity.",
+    },
+    badge: "Centro assistenza Claimity",
+    title: "Tutto ciò che Le serve per Claimity – in un unico posto.",
+    intro:
+      "Che si tratti dei primi passi, di domande approfondite sul prodotto o dell'integrazione tecnica: scelga l'area più adatta alle Sue esigenze attuali.",
+    cards: {
+      manual: {
+        ariaLabel: "Manuale d'uso",
+        title: "Manuale d'uso",
+        description: "Istruzioni passo passo per i flussi di lavoro quotidiani.",
+        body: "Dai primi passi ai sinistri più complessi – ideale per l'onboarding e la formazione interna.",
+        items: [
+          "Onboarding per collaboratori e amministratori",
+          "Registrazione e gestione dei sinistri",
+          "Comprendere ruoli, autorizzazioni e processi",
+        ],
+        cta: "Vai al manuale d'uso",
+      },
+      api: {
+        ariaLabel: "Integrazione API",
+        title: "Integrazione API",
+        description: "Documentazione tecnica, esempi e best practice.",
+        body: "Per i team che desiderano integrare Claimity senza interruzioni nei sistemi esistenti, nei portali o nei sistemi di data warehouse.",
+        items: [
+          "Endpoint REST e modelli di dati",
+          "Autenticazione, webhook e sicurezza",
+          "Esempi di integrazione e snippet",
+        ],
+        cta: "Vai alla documentazione API",
+      },
+      support: {
+        ariaLabel: "Supporto",
+        title: "Supporto",
+        description: "Linea diretta con Claimity – ottenga aiuto rapidamente.",
+        body: "Ideale quando nell'attività quotidiana qualcosa non funziona come previsto o ha domande concrete sull'utilizzo.",
+        items: ["Domande frequenti (FAQ)", "Ticket", "E-mail e canali di contatto"],
+        cta: "Vai all'area supporto",
+      },
+    },
+  },
 }

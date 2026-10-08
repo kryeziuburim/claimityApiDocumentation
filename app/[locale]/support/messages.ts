@@ -158,4 +158,56 @@ export const supportMessages: Record<Locale, typeof de> = {
     ticketTitle: "Ticket de support",
     ticketIntro: "Pas trouvé de réponse appropriée ? Envoyez-nous les détails – nous vous répondrons rapidement.",
   },
+  it: {
+    meta: {
+      title: "Claimity – Supporto",
+      description: "Supporto, aiuto e contatti per la piattaforma Claimity.",
+    },
+    badge: "Supporto Claimity",
+    title: "Come possiamo aiutarLa?",
+    intro: "Risposte rapide nelle FAQ, oppure ci invii la Sua richiesta direttamente tramite il modulo.",
+    faqTitle: "Domande frequenti (FAQ)",
+    faqIntro: "Risposte alle domande più frequenti sull'utilizzo di Claimity.",
+    faqs: [
+      {
+        question:
+          "Nella mia organizzazione ci sono moltissimi casi: come mantengo la panoramica sulle mie responsabilità?",
+        answer:
+          "Nell'elenco dei casi, accanto al campo di ricerca, può filtrare i casi assegnati a Lei. In questo modo mantiene la panoramica sulle Sue responsabilità.",
+      },
+      {
+        question: "Come aggiungo altri utenti a Claimity?",
+        answer:
+          "In qualità di amministratore dell'organizzazione, può aggiungere nuovi utenti nelle impostazioni dell'organizzazione. Questi riceveranno automaticamente un'e-mail con un link di invito.",
+      },
+      {
+        question: "Come rimuovo utenti dalla mia organizzazione Claimity?",
+        answer:
+          "In qualità di amministratore dell'organizzazione, può rimuovere gli utenti esistenti nelle impostazioni dell'organizzazione. Questi non avranno più accesso ai Suoi dati. Deve tuttavia esserci sempre almeno un utente amministratore in grado di gestire l'organizzazione.",
+      },
+      {
+        question: "Come ricevo notifiche sulle attività importanti?",
+        answer:
+          "In qualità di amministratore dell'organizzazione, può attivare le notifiche via e-mail nelle impostazioni dell'organizzazione. Per le integrazioni sono inoltre disponibili webhook nell'API.",
+      },
+      {
+        question: "Esistono un'API ed esempi di integrazione?",
+        answer:
+          "Sì. La documentazione API descrive endpoint, modelli di dati e webhook. Gli snippet di esempio facilitano un avvio rapido.",
+      },
+      {
+        question: "A chi posso rivolgermi in caso di problemi tecnici?",
+        answer:
+          "Utilizzi il modulo di supporto qui sotto. In caso di guasti critici, indichi inoltre lo stato nella Sua segnalazione.",
+      },
+    ],
+    contactTitle: "Contatto",
+    contactIntro: "Può raggiungerci attraverso i seguenti canali.",
+    email: "E-mail",
+    phone: "Telefono",
+    address: "Indirizzo",
+    country: "Svizzera",
+    ticketTitle: "Ticket di supporto",
+    ticketIntro: "Non ha trovato una risposta adatta? Ci invii i dettagli – La ricontatteremo al più presto.",
+  },
 }

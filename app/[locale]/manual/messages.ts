@@ -80,4 +80,29 @@ export const manualMessages: Record<Locale, typeof de> = {
     helpText: "Contactez-nous ou prenez rendez-vous – nous sommes heureux de vous aider.",
     contactForm: "Formulaire de contact",
   },
+  it: {
+    meta: {
+      title: "Claimity - Manuale d'uso",
+      description: "Istruzioni e aiuti per l'utilizzo della piattaforma Claimity.",
+    },
+    badge: "Manuale d'uso Claimity",
+    title: "Supporto e istruzioni",
+    intro: "Istruzioni passo passo e best practice per l'utilizzo di Claimity.",
+    downloadTitle: "Scarica i manuali d'uso",
+    downloadText: "Qui trova i manuali completi in PDF per periti e assicuratori.",
+    downloadButton: "Scarica PDF",
+    experts: {
+      title: "Per i periti",
+      description: "Manuale d'uso Claimity (PDF) – Ruoli, flussi di lavoro e best practice per i periti.",
+      pdf: "/assets/it/Claimity_Guida_Experti_it.pdf",
+    },
+    insurers: {
+      title: "Per gli assicuratori",
+      description: "Manuale d'uso Claimity (PDF) – Ruoli, flussi di lavoro e best practice per gli assicuratori.",
+      pdf: "/assets/it/Claimity_Guida_Assicurazione_it.pdf",
+    },
+    helpTitle: "Le servono ulteriori informazioni o altro aiuto?",
+    helpText: "Ci contatti o prenoti un appuntamento – saremo lieti di aiutarLa.",
+    contactForm: "Modulo di contatto",
+  },
 }

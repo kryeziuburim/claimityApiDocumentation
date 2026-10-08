@@ -95,4 +95,34 @@ export const firstStepsMessages: Record<Locale, typeof de> = {
       "Pour un démarrage rapide, nous mettons à votre disposition des notebooks Python avec lesquels vous pouvez exécuter des requêtes API et consulter directement les réponses.",
     notebooksLink: "Voir les notebooks sur GitHub",
   },
+  it: {
+    title: "Primi passi",
+    intro: "Ecco come iniziare a utilizzare l'API:",
+    steps: [
+      {
+        title: "Creare una coppia di chiavi",
+        description:
+          "In qualità di amministratore dell'organizzazione, può creare una coppia di chiavi nelle impostazioni dell'organizzazione del Suo account Claimity. Successivamente scarichi la chiave privata (Private Key) e la conservi in un luogo sicuro.",
+      },
+      {
+        title: "Autenticarsi",
+        description:
+          "Con la coppia di chiavi creata e il Suo Client ID può autenticarsi presso l'API Claimity e ottenere così un access token per le Sue richieste.",
+      },
+      {
+        title: "Preparare l'header DPoP",
+        description:
+          "Per inviare una richiesta all'API è necessario creare un header DPoP. Questo header viene firmato con la chiave privata e protegge la richiesta da potenziali rischi per la sicurezza.",
+      },
+      {
+        title: "Prima richiesta",
+        description: "Invii una richiesta autenticata a un endpoint con il Suo access token e l'header DPoP.",
+      },
+    ],
+    exampleRequestTitle: "Esempio di richiesta",
+    notebooksTitle: "Notebook Python",
+    notebooksText:
+      "Per iniziare rapidamente, mettiamo a Sua disposizione dei notebook Python con cui può eseguire richieste API e visualizzare direttamente le risposte.",
+    notebooksLink: "Visualizza i notebook su GitHub",
+  },
 }

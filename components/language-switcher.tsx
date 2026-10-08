@@ -13,6 +13,7 @@ const languageInfo: Record<Locale, { label: string; country: string }> = {
   de: { label: "Deutsch", country: "DE" },
   en: { label: "English", country: "GB" },
   fr: { label: "Français", country: "FR" },
+  it: { label: "Italiano", country: "IT" },
 }
 const languages = locales.map((code) => ({ code, ...languageInfo[code] }))
 

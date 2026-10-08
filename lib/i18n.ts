@@ -1,14 +1,14 @@
 import type { Metadata } from "next"
 
-export const locales = ["de", "en", "fr"] as const
+export const locales = ["de", "en", "fr", "it"] as const
 export type Locale = (typeof locales)[number]
 export const defaultLocale: Locale = "de"
 
 /** Value for <html lang>. */
-export const htmlLang: Record<Locale, string> = { de: "de-CH", en: "en", fr: "fr-CH" }
+export const htmlLang: Record<Locale, string> = { de: "de-CH", en: "en", fr: "fr-CH", it: "it-CH" }
 
 /** Value for hreflang alternates. */
-const hrefLang: Record<Locale, string> = { de: "de-CH", en: "en", fr: "fr" }
+const hrefLang: Record<Locale, string> = { de: "de-CH", en: "en", fr: "fr", it: "it" }
 
 export function isLocale(value: unknown): value is Locale {
   return typeof value === "string" && (locales as readonly string[]).includes(value)

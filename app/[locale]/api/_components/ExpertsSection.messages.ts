@@ -162,4 +162,54 @@ export const expertsMessages: Record<Locale, typeof de> = {
       submissionSubmit: "Soumettre la soumission finale.",
     },
   },
+  it: {
+    title: "Periti",
+    intro: "Endpoint per i periti per lavorare con casi, documenti e submission di perizie/rapporti.",
+    timestampsTitle: "Timestamp & sincronizzazione incrementale",
+    timestampsIntro: "Timestamp e filtri di sincronizzazione (inclusivi >=), denominati come il campo che filtrano:",
+    timestampItems: [
+      { field: "CreatedAt", text: "Momento di creazione del sinistro. Filtri: createdFrom / createdTo." },
+      {
+        text: "completedFrom / completedTo filtrano in base al momento della chiusura più recente del caso (evento Finalized; per i casi riaperti conta la chiusura più recente). Pensati per periodi di analisi («tutti i casi chiusi nel Q2») — non per la sincronizzazione.",
+      },
+      {
+        field: "LastChangedAt",
+        text: "Ultima modifica rilevante per il partner (stato, documenti, rapporti, commenti, importi). Filtro: lastChangedSince.",
+      },
+    ],
+    amountsTitle: "Importi (CHF)",
+    amountsIntro:
+      "L'elenco dei casi e i dettagli del caso forniscono tre importi in CHF (null = non ancora registrato). Vengono impostati tramite PUT /v1/experts/cases/{caseId}/amounts.",
+    amountItems: [
+      { field: "CostEstimateAmount", text: "Preventivo dell'officina." },
+      { field: "ApprovedAmount", text: "Importo approvato dalla perizia." },
+      {
+        field: "SavingsAmount",
+        text: "Risparmio = CostEstimateAmount − ApprovedAmount; solo se entrambi sono impostati e il preventivo è più alto, altrimenti null.",
+      },
+    ],
+    casesTitle: "Casi",
+    caseDocsTitle: "Documenti del caso",
+    reportsTitle: "Rapporti & Submission",
+    submissionDocsTitle: "Documenti della submission",
+    endpoints: {
+      casesList: "Elenco paginato dei casi.",
+      casesGet: "Recuperare i dettagli di un caso.",
+      casesComment: "Impostare/aggiornare il commento del perito.",
+      casesAmounts:
+        "Impostare gli importi del caso in CHF: { CostEstimateAmount, ApprovedAmount }. Sostituisce entrambi i valori (null ne cancella uno), ≥ 0, max. 2 decimali. Solo fino alla chiusura del caso (dopo 409 – riaprire prima il caso). Restituisce 204 No Content.",
+      casesReopen:
+        "Riaprire un caso chiuso per continuare a lavorarci (ad es. rapporto corretto). È necessario indicare un motivo. Restituisce 204 No Content.",
+      caseDocsList: "Elenco paginato dei documenti del caso.",
+      caseDocsGet: "Recuperare il contenuto del documento (incl. ContentBase64).",
+      reportsDraftCreate: "Creare una submission in bozza per un caso.",
+      reportsDraftUpdate: "Aggiornare la submission in bozza (ad es. Comment).",
+      reportsList: "Elencare i rapporti di un caso.",
+      reportsSubmissionGet: "Recuperare i dettagli di una submission.",
+      submissionDocsList: "Elenco paginato dei documenti di una submission.",
+      submissionDocsAdd: "Caricare un documento in una submission.",
+      submissionDocsDelete: "Eliminare un documento dalla submission.",
+      submissionSubmit: "Inviare definitivamente la submission.",
+    },
+  },
 }

@@ -180,6 +180,42 @@ const i18n: Record<
       messageMin: "Veuillez décrire votre demande (au moins 10 caractères).",
     },
   },
+  it: {
+    labels: {
+      name: "Nome",
+      email: "E-mail",
+      subject: "Oggetto",
+      category: "Categoria",
+      message: "Messaggio",
+      submit: "Invia ticket",
+      sending: "Invio in corso …",
+    },
+    placeholders: {
+      name: "Mario Rossi",
+      email: "nome@azienda.ch",
+      subject: "Breve titolo della Sua richiesta",
+      message: "Descriva la Sua richiesta nel modo più concreto possibile …",
+    },
+    categories: {
+      general: "Generale",
+      technical: "Tecnica",
+      billing: "Fatturazione",
+      other: "Altro",
+    },
+    feedback: {
+      success: "Grazie! Il Suo ticket è stato inviato.",
+      errorGeneric: "Invio non riuscito. Riprovi oppure ci contatti via e-mail.",
+      errorConfig: "Il servizio e-mail non è configurato. Imposti le variabili d'ambiente di EmailJS.",
+      errorTooFrequent: "Attenda un momento prima di inviare un altro ticket.",
+      hint: "Nota: inviando il modulo acconsente al trattamento dei Suoi dati ai fini della gestione della richiesta di supporto.",
+    },
+    validation: {
+      nameMin: "Indichi il Suo nome.",
+      emailInvalid: "Indichi un indirizzo e-mail valido.",
+      subjectMin: "Indichi un oggetto significativo.",
+      messageMin: "Descriva la Sua richiesta (almeno 10 caratteri).",
+    },
+  },
 }
 
 function makeSchema(t: (typeof i18n)[Lang]) {

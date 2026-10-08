@@ -55,6 +55,24 @@ export const footerMessages: Record<Locale, typeof de> = {
     companyBlurb:
       "La plateforme numérique pour une gestion efficace des sinistres. Automatisée, transparente, sécurisée.",
   },
+  it: {
+    support: "Supporto",
+    manual: "Manuale d'uso",
+    api: "Integrazione API",
+    website: "Sito web",
+    booking: "Prenota un appuntamento",
+    help: "Assistenza",
+    company: "Azienda",
+    contactSection: "Contatti",
+    rights: "Tutti i diritti riservati.",
+    privacy: "Informativa sulla privacy",
+    terms: "Condizioni d'uso",
+    imprint: "Note legali",
+    companyName: "Claimity SA",
+    country: "Svizzera",
+    companyBlurb:
+      "La piattaforma digitale per una gestione efficiente dei sinistri. Automatizzata, trasparente, sicura.",
+  },
 }
 
 export const companyContact = {
@@ -65,8 +83,14 @@ export const companyContact = {
   phoneHref: "tel:+41783447736",
 }
 
-/** Links to the marketing website (www.claimity.ch), which has the same locale prefixes. */
+/**
+ * Language versions of the marketing website (www.claimity.ch). It has no Italian version yet, so
+ * Italian pages link to the German one; add "it" here once www.claimity.ch/it/ exists.
+ */
+const WEBSITE_LOCALES: Partial<Record<Locale, string>> = { de: "de", en: "en", fr: "fr" }
+
+/** Links to the marketing website (www.claimity.ch). */
 export function websiteLinks(locale: Locale) {
-  const root = `https://www.claimity.ch/${locale}/`
+  const root = `https://www.claimity.ch/${WEBSITE_LOCALES[locale] ?? "de"}/`
   return { website: root, booking: `${root}#book`, privacy: `${root}privacy`, terms: `${root}terms` }
 }

@@ -1,8 +1,8 @@
 import { expect, test } from "./fixtures"
 
 const PAGES = ["", "api/", "manual/", "support/", "legal-notice/"]
-const LOCALES = ["de", "en", "fr"] as const
-const HTML_LANG = { de: "de-CH", en: "en", fr: "fr-CH" }
+const LOCALES = ["de", "en", "fr", "it"] as const
+const HTML_LANG = { de: "de-CH", en: "en", fr: "fr-CH", it: "it-CH" }
 
 test.describe("localized pages", () => {
   for (const locale of LOCALES) {
@@ -29,6 +29,7 @@ test.describe("localized pages", () => {
     ["de", "Seite nicht gefunden", "Support kontaktieren"],
     ["en", "Page not found", "Contact Support"],
     ["fr", "Page introuvable", "Contacter l'assistance"],
+    ["it", "Pagina non trovata", "Contatta il supporto"],
   ] as const) {
     // 404.html is prerendered once; it must hydrate cleanly and then switch to the URL's language.
     test(`404 page is shown in ${locale}`, async ({ page }) => {

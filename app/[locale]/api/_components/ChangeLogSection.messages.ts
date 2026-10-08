@@ -112,4 +112,37 @@ export const changeLogMessages: Record<Locale, typeof de> = {
       },
     ],
   },
+  it: {
+    title: "Registro delle modifiche",
+    intro: "Tutte le modifiche e gli aggiornamenti della versione attuale dell'API in sintesi.",
+    entries: [
+      {
+        date: "2026-10-07",
+        changes:
+          "Novità: importi del caso. I sinistri (assicuratori) e i casi (periti) forniscono nell'elenco e nei dettagli CostEstimateAmount (preventivo), ApprovedAmount (importo approvato dalla perizia) e SavingsAmount (risparmio = preventivo − importo approvato, solo se positivo) – tutti in CHF, null = non registrato. I periti impostano gli importi tramite PUT /v1/experts/cases/{caseId}/amounts (204). Una modifica degli importi aggiorna LastChangedAt. L'estensione è retrocompatibile.",
+      },
+      {
+        date: "2026-08-02",
+        changes:
+          "Filtri di sincronizzazione rivisti: updatedSince si chiama ora lastChangedSince (entrambi gli endpoint /v1/insurers/claims e /v1/experts/cases) — il filtro porta così il nome del campo che filtra (LastChangedAt). Novità: lastReportApprovedSince su /v1/insurers/claims restituisce solo i sinistri la cui ultima approvazione di un rapporto è avvenuta in corrispondenza o dopo il momento indicato (i sinistri senza rapporto approvato non corrispondono mai). completedFrom/completedTo restano invariati e filtrano il momento della chiusura più recente del caso.",
+      },
+      {
+        date: "2026-07-15",
+        changes:
+          "API per periti: nuovo endpoint per riaprire un caso chiuso (POST /v1/experts/cases/{caseId}:reopen, restituisce 204). Gli endpoint di elenco sono stati ampliati con filtri (ricerca a testo libero q, intervalli di date per creazione/chiusura) e un cursore updatedSince per la sincronizzazione incrementale. I casi forniscono ora LastChangedAt; i sinistri anche LastReportApprovedAt. Gli endpoint di creazione e di caricamento restituiscono ora 201 Created. Ogni risposta restituisce ora un header X-Correlation-Id (un valore valido in entrata viene restituito) per il tracing end-to-end; in caso di errore corrisponde anche all'instance di ProblemDetails.",
+      },
+      {
+        date: "2026-06-09",
+        changes: "Aggiunta la nuova categoria «Perizie speciali», inclusi schema e struttura del payload.",
+      },
+      {
+        date: "2025-12-30",
+        changes: "Aggiunta di un nuovo endpoint all'API per assicuratori per la validazione della struttura del caso.",
+      },
+      {
+        date: "2025-12-28",
+        changes: "Pubblicata la prima versione dell'API.",
+      },
+    ],
+  },
 }

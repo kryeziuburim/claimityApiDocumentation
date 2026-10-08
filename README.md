@@ -49,7 +49,7 @@ What the tests guard:
 
 ```
 app/
-  [locale]/                  one route tree for all languages (de, en, fr)
+  [locale]/                  one route tree for all languages (de, en, fr, it)
     page.tsx                 help center home
     api/_components/         API documentation
       ApiPageClient.tsx      page shell: composes sidebar, sections and payloads
