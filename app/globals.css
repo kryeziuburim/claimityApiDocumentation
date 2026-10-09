@@ -140,8 +140,10 @@
     @apply border-border outline-ring/50;
   }
 
-  /* Verhindert horizontales Scrollen global */
-  html,
+  /* Verhindert horizontales Scrollen global. Only on body (not html): with html at overflow: visible the
+     browser applies body's overflow to the viewport, so the scroll lock of menus and dialogs (overflow:
+     hidden on body) locks the viewport. If html had an overflow too, body would become its own scroll
+     container instead: the sticky header would scroll away and the scrollbar gap would show twice. */
   body {
     overflow-x: clip;
   }

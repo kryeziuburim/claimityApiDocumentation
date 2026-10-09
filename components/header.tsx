@@ -12,11 +12,11 @@ import { useLocale } from "@/hooks/use-locale"
 import type { Locale } from "@/lib/i18n"
 import { cn } from "@/lib/utils"
 
-const headerMessages: Record<Locale, { navTitle: string; clientLogin: string; helpCenter: string }> = {
-  de: { navTitle: "Navigation", clientLogin: "Anmelden", helpCenter: "Hilfe-Center" },
-  en: { navTitle: "Navigation", clientLogin: "Login", helpCenter: "Help Center" },
-  fr: { navTitle: "Navigation", clientLogin: "Connexion", helpCenter: "Centre d'aide" },
-  it: { navTitle: "Navigazione", clientLogin: "Accedi", helpCenter: "Centro assistenza" },
+const headerMessages: Record<Locale, { navTitle: string; clientLogin: string }> = {
+  de: { navTitle: "Navigation", clientLogin: "Anmelden" },
+  en: { navTitle: "Navigation", clientLogin: "Login" },
+  fr: { navTitle: "Navigation", clientLogin: "Connexion" },
+  it: { navTitle: "Navigazione", clientLogin: "Accedi" },
 }
 
 /** Sticky site header: logo, links to the help center areas, login and language. Height: h-16 (4rem). */
@@ -38,11 +38,7 @@ export function Header() {
     <header className="sticky top-0 z-40 h-16 border-b backdrop-blur-md border-border bg-background/80 supports-[backdrop-filter]:bg-background/70">
       {/* Three columns so the navigation sits exactly in the middle, independent of the side widths. */}
       <div className="grid h-full grid-cols-[1fr_auto_1fr] items-center gap-4 px-4 sm:px-6 lg:px-8">
-        <Link
-          href={`${base}/`}
-          aria-label="Claimity home"
-          className="flex shrink-0 items-center gap-3 justify-self-start"
-        >
+        <Link href={`${base}/`} aria-label="Claimity home" className="flex shrink-0 items-center justify-self-start">
           <Image
             src="/logo.png"
             alt="Claimity Logo"
@@ -50,11 +46,9 @@ export function Header() {
             height={27}
             className="h-[27px] w-[84px] object-contain"
           />
-          <span className="hidden h-5 w-px sm:block bg-border" aria-hidden="true" />
-          <span className="hidden text-sm font-medium sm:block text-muted-foreground">{L.helpCenter}</span>
         </Link>
 
-        <nav className="hidden items-center gap-1 md:flex" aria-label={L.navTitle}>
+        <nav className="hidden items-center gap-2 md:flex lg:gap-6" aria-label={L.navTitle}>
           {menu.map((item) => {
             const active = isActive(item.href)
             return (
