@@ -1,6 +1,5 @@
 import type { Metadata } from "next"
 
-import ModernLoader from "@/components/modern-loader"
 import { defaultLocale } from "@/lib/i18n"
 import { SITE_NAME } from "@/lib/site"
 
@@ -18,13 +17,12 @@ export default function RootRedirect() {
     <>
       {/* React hoists this into <head>. */}
       <meta httpEquiv="refresh" content={`0; url=${home}`} />
-      <ModernLoader variant="dark" message="Daten werden geladen …" className="px-6" />
       <noscript>
-        <main className="min-h-screen flex items-center justify-center bg-slate-950 p-8 text-slate-50">
-          <div className="text-center text-sm text-slate-200/80">
+        <main className="flex min-h-screen items-center justify-center bg-background p-8">
+          <div className="text-center text-sm text-muted-foreground">
             <p>
               Weiter zu{" "}
-              <a href={home} className="text-teal-200 underline">
+              <a href={home} className="text-primary underline">
                 {home}
               </a>
               .

@@ -48,7 +48,7 @@ export default async function Home({ params }: Props) {
       <Header />
 
       {/* Hero band: light brand gradient with a faint dot grid and a soft glow on the right */}
-      <section className="relative overflow-hidden border-b border-border bg-gradient-to-b from-teal-50/50 to-background">
+      <section className="relative overflow-hidden bg-gradient-to-b from-teal-50/50 to-background">
         <div
           className="pointer-events-none absolute inset-0 bg-[radial-gradient(#a9e5e9_1px,transparent_1px)] bg-[size:22px_22px] [mask-image:linear-gradient(to_bottom,black,transparent_85%)]"
           aria-hidden="true"
@@ -67,25 +67,10 @@ export default async function Home({ params }: Props) {
             {titleAccent ? <span className="text-primary"> – {titleAccent}</span> : null}
           </h1>
           <p className="mt-4 max-w-2xl text-sm leading-relaxed text-muted-foreground md:text-base">{t.intro}</p>
-          <div className="mt-6 flex flex-wrap gap-3">
-            <Link
-              href={`/${locale}/api/`}
-              className="inline-flex h-10 items-center gap-2 rounded-md bg-primary px-4 text-sm font-medium text-primary-foreground shadow-sm transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2"
-            >
-              {t.cards.api.cta}
-              <ArrowRight className="h-4 w-4" aria-hidden="true" />
-            </Link>
-            <Link
-              href={`/${locale}/manual/`}
-              className="inline-flex h-10 items-center gap-2 rounded-md border border-border bg-background px-4 text-sm font-medium text-foreground shadow-sm transition-colors hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand"
-            >
-              {t.cards.manual.cta}
-            </Link>
-          </div>
         </div>
       </section>
 
-      <main className="mx-auto max-w-7xl px-6 pb-16 pt-10 md:pb-20 md:pt-12">
+      <main className="mx-auto max-w-7xl px-6 pb-16 pt-2 md:pb-20 md:pt-4">
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           {cards.map(({ key, path, icon: Icon }) => {
             const card = t.cards[key]
@@ -96,8 +81,8 @@ export default async function Home({ params }: Props) {
                 aria-label={card.ariaLabel}
                 className="group flex h-full flex-col rounded-xl border border-border bg-card p-5 transition-all duration-200 hover:-translate-y-0.5 hover:border-brand/60 hover:shadow-lg hover:shadow-teal-900/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand sm:p-6"
               >
-                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-br from-teal-400 to-teal-700 shadow-sm shadow-teal-700/20">
-                  <Icon className="h-5 w-5 text-white" aria-hidden="true" />
+                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-teal-50 ring-1 ring-inset ring-teal-100">
+                  <Icon className="h-5 w-5 text-primary" aria-hidden="true" />
                 </div>
                 <h2 className="mt-4 text-base font-semibold text-foreground">{card.title}</h2>
                 <p className="mt-1 text-sm leading-relaxed text-muted-foreground">{card.description}</p>

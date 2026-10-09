@@ -30,7 +30,9 @@ export function LanguageSwitcher() {
   )
 
   return (
-    <DropdownMenu>
+    // Non-modal: a small menu needs no scroll lock, which would hide the scrollbar while it is open
+    // and leave a gap at the right edge.
+    <DropdownMenu modal={false}>
       <DropdownMenuTrigger
         aria-label="Language selection"
         className="inline-flex h-9 items-center gap-1.5 rounded-md px-2.5 text-sm font-medium outline-none transition-colors focus-visible:ring-2 focus-visible:ring-brand text-muted-foreground hover:bg-muted hover:text-foreground data-[state=open]:bg-muted"
