@@ -153,6 +153,13 @@
     scroll-padding-top: 4rem;
   }
 
+  /* API page below lg: plus the sticky section bar under the header (h-11, ApiPageClient.tsx). */
+  @media (width < 64rem) {
+    html:has(#api-sidebar) {
+      scroll-padding-top: 6.75rem;
+    }
+  }
+
   body {
     @apply bg-background text-foreground;
   }

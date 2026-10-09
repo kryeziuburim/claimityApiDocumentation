@@ -22,7 +22,7 @@ test.describe("API page menu (off-canvas sidebar)", () => {
 
   test("opens, locks page scrolling and closes via the backdrop", async ({ page }) => {
     await page.goto("/de/api/")
-    const menuButton = page.getByRole("button", { name: "Menü", exact: true })
+    const menuButton = page.getByRole("button", { name: /^Menü:/ })
 
     await expect(menuButton).toHaveAttribute("aria-expanded", "false")
     await menuButton.click()
@@ -37,7 +37,7 @@ test.describe("API page menu (off-canvas sidebar)", () => {
 
   test("navigating from the menu closes it and scrolls to the section", async ({ page }) => {
     await page.goto("/de/api/")
-    await page.getByRole("button", { name: "Menü", exact: true }).click()
+    await page.getByRole("button", { name: /^Menü:/ }).click()
     await page.locator('[data-nav-id="insurer"]').click()
     await page.locator('[data-nav-id="insurer-claims-create"]').click()
 
@@ -45,18 +45,18 @@ test.describe("API page menu (off-canvas sidebar)", () => {
     await expect
       .poll(() => navState(page))
       .toEqual({ hash: "#insurer-claims-create", activeNav: "insurer-claims-create" })
-    await expect.poll(() => topOf(page, "insurer-claims-create")).toBeCloseTo(96, -1)
+    await expect.poll(() => topOf(page, "insurer-claims-create")).toBeCloseTo(140, -1) // header 64 + section bar 44 + scroll-mt-8 32
   })
 
   test("payload tab from the menu selects and shows the tab", async ({ page }) => {
     await page.goto("/de/api/")
     await waitForClaimSchemas(page)
-    await page.getByRole("button", { name: "Menü", exact: true }).click()
+    await page.getByRole("button", { name: /^Menü:/ }).click()
     await page.locator('[data-nav-id="payloads"]').click()
     await page.locator('[data-nav-id="payloads-special"]').click()
 
     await expect(page.locator("#claim-payloads").getByRole("tab", { selected: true })).toHaveText("Spezialexpertisen")
-    await expect.poll(() => topOf(page, "payloads-special")).toBeCloseTo(64, -1) // below the sticky header
+    await expect.poll(() => topOf(page, "payloads-special")).toBeCloseTo(108, -1) // below the sticky header and section bar
   })
 
   test("language switcher works on mobile", async ({ page }) => {
@@ -65,7 +65,7 @@ test.describe("API page menu (off-canvas sidebar)", () => {
     await page.getByRole("button", { name: "Language selection" }).locator("visible=true").click()
     await page.getByRole("menuitem", { name: /English/ }).click()
     await expect(page).toHaveURL(/\/en\/api\/$/)
-    await expect(page.getByRole("button", { name: "Menu", exact: true })).toBeVisible()
+    await expect(page.getByRole("button", { name: /^Menu:/ })).toBeVisible()
   })
 })
 

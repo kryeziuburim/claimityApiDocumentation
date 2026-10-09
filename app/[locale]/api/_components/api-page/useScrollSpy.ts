@@ -15,6 +15,11 @@ type ScrollSpyOptions = {
   pastHero: boolean
 }
 
+/** The page's scroll-padding-top in px (64 on desktop, 108 on mobile with the API bar; see globals.css). */
+function scrollPaddingTop(): number {
+  return parseFloat(getComputedStyle(document.documentElement).scrollPaddingTop) || 0
+}
+
 /**
  * The section currently being read, for highlighting the sidebar, mirrored into the URL hash.
  * Returns the setter as well so explicit navigation can set it immediately.
@@ -54,9 +59,10 @@ export function useScrollSpy({
       },
       {
         root: null,
-        // The band starts just above where scrollIntoView puts a section (header 64px + scroll-mt-8 = 96px), so the
-        // section navigated to is inside it rather than the one below it.
-        rootMargin: "-90px 0px -70% 0px",
+        // The band starts just above where scrollIntoView puts a section (scroll-padding for the sticky header,
+        // plus the mobile bar below lg, + scroll-mt-8), so the section navigated to is inside it rather than
+        // the one above it.
+        rootMargin: `-${scrollPaddingTop() + 26}px 0px -70% 0px`,
         threshold: [0, 0.25, 0.5, 0.75, 1],
       },
     )
