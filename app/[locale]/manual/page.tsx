@@ -62,9 +62,13 @@ export default async function ManualPage({ params }: Props) {
 
               <div className="grid gap-6 md:grid-cols-2">
                 {guides.map(({ key, icon: Icon, title, description, pdf }) => (
-                  <div
+                  // The whole card is the download link; the "button" inside is only its visual label.
+                  <a
                     key={key}
-                    className="group relative flex flex-col overflow-hidden rounded-xl border border-border bg-card p-5 transition-[border-color,box-shadow] hover:border-brand/60 hover:shadow-lg hover:shadow-teal-900/5 sm:p-6"
+                    href={pdf}
+                    download
+                    aria-label={`${t.downloadButton}: ${title}`}
+                    className="group relative flex cursor-pointer flex-col overflow-hidden rounded-xl border border-border bg-card p-5 transition-[border-color,box-shadow] hover:border-brand/60 hover:shadow-lg hover:shadow-teal-900/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 sm:p-6"
                   >
                     {/* Accent bar along the top edge */}
                     <span
@@ -79,16 +83,11 @@ export default async function ManualPage({ params }: Props) {
                     </div>
                     <p className="mt-4 text-sm leading-relaxed text-muted-foreground">{description}</p>
 
-                    <Button
-                      asChild
-                      className="mt-6 w-full rounded-lg bg-primary px-6 text-primary-foreground hover:bg-primary/90"
-                    >
-                      <a href={pdf} download>
-                        <FileDown className="h-4 w-4" aria-hidden="true" />
-                        {t.downloadButton}
-                      </a>
-                    </Button>
-                  </div>
+                    <span className="mt-6 inline-flex h-9 w-full items-center justify-center gap-2 rounded-lg border border-border bg-background px-6 text-sm font-medium text-foreground shadow-xs transition-colors group-hover:border-brand/60 group-hover:bg-teal-50 group-hover:text-teal-900">
+                      <FileDown className="h-4 w-4" aria-hidden="true" />
+                      {t.downloadButton}
+                    </span>
+                  </a>
                 ))}
               </div>
               <div className="pt-4">
