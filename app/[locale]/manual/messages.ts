@@ -16,12 +16,12 @@ const de = {
   experts: {
     title: "Für Experten",
     description: "Claimity Bedienungsanleitung (PDF) – Rollen, Workflows und Best Practices für Experten.",
-    pdf: "/assets/de/Claimity_Guide_Experten_de.pdf",
+    pdf: "/assets/de/claimity-anleitung-experten.pdf",
   },
   insurers: {
     title: "Für Versicherer",
     description: "Claimity Bedienungsanleitung (PDF) – Rollen, Workflows und Best Practices für Versicherer.",
-    pdf: "/assets/de/Claimity_Guide_Versicherungen_de.pdf",
+    pdf: "/assets/de/claimity-anleitung-versicherer.pdf",
   },
   helpTitle: "Sie benötigen weitere Informationen oder zusätzliche Hilfe?",
   helpText: "Kontaktieren Sie uns oder vereinbaren Sie einen Termin – wir unterstützen Sie gerne.",
@@ -46,12 +46,12 @@ export const manualMessages: Record<Locale, typeof de> = {
     experts: {
       title: "For Experts",
       description: "Claimity User Manual (PDF) – Roles, workflows, and best practices for experts.",
-      pdf: "/assets/en/Claimity_Guide_Experts_en.pdf",
+      pdf: "/assets/en/claimity-guide-experts.pdf",
     },
     insurers: {
       title: "For Insurers",
       description: "Claimity User Manual (PDF) – Roles, workflows, and best practices for insurers.",
-      pdf: "/assets/en/Claimity_Guide_Insurer_en.pdf",
+      pdf: "/assets/en/claimity-guide-insurers.pdf",
     },
     helpTitle: "Need more information or additional help?",
     helpText: "Contact us or schedule an appointment – we are happy to support you.",
@@ -74,13 +74,13 @@ export const manualMessages: Record<Locale, typeof de> = {
       title: "Pour les Experts",
       description:
         "Manuel d'utilisation Claimity (PDF) – Rôles, flux de travail et meilleures pratiques pour les experts.",
-      pdf: "/assets/fr/Claimity_Guide_Experts_fr.pdf",
+      pdf: "/assets/fr/claimity-guide-experts.pdf",
     },
     insurers: {
       title: "Pour les Assureurs",
       description:
         "Manuel d'utilisation Claimity (PDF) – Rôles, flux de travail et meilleures pratiques pour les assureurs.",
-      pdf: "/assets/fr/Claimity_Guide_Asurance_fr.pdf",
+      pdf: "/assets/fr/claimity-guide-assureurs.pdf",
     },
     helpTitle: "Besoin de plus d'informations ou d'aide supplémentaire ?",
     helpText: "Contactez-nous ou prenez rendez-vous – nous sommes heureux de vous aider.",
@@ -102,12 +102,12 @@ export const manualMessages: Record<Locale, typeof de> = {
     experts: {
       title: "Per i periti",
       description: "Manuale d'uso Claimity (PDF) – Ruoli, flussi di lavoro e best practice per i periti.",
-      pdf: "/assets/it/Claimity_Guida_Experti_it.pdf",
+      pdf: "/assets/it/claimity-guida-periti.pdf",
     },
     insurers: {
       title: "Per gli assicuratori",
       description: "Manuale d'uso Claimity (PDF) – Ruoli, flussi di lavoro e best practice per gli assicuratori.",
-      pdf: "/assets/it/Claimity_Guida_Assicurazione_it.pdf",
+      pdf: "/assets/it/claimity-guida-assicuratori.pdf",
     },
     helpTitle: "Le servono ulteriori informazioni o altro aiuto?",
     helpText: "Ci contatti o prenoti un appuntamento – saremo lieti di aiutarLa.",
